@@ -1,0 +1,240 @@
+<template>
+  <el-row class="main">
+    <div class="content-header">
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+        <el-menu-item index="1">{{$t('index.product_name')}}</el-menu-item>
+      </el-menu>
+    </div>
+    <!--表单-->
+    <div class="content-search">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline text-right form-top">
+        <el-form-item :label="$t('index.product_name')" prop="f_like_name" class="searchitem">
+          <el-input v-model="formInline.f_like_name" ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('index.unique_identification')"  prop="f_like_mark" class="searchitem">
+          <el-input v-model="formInline.f_like_mark"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('index.creator_name')"  prop="f_like_creatorName" class="searchitem">
+          <el-input v-model="formInline.f_like_creatorName"></el-input>
+        </el-form-item>
+        <el-form-item class="searchitem" style="float: right">
+          <el-button type="primary" @click="buttonConfigList" icon="el-icon-search" class="searchButtonW12">{{$t('common.search')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+      <el-row class="line"></el-row>
+      <el-row :span="24" class="content">
+        <div class="content-table">
+          <el-table :data="index_projectList" style="width: 100%" border>
+            <el-table-column :label="$t('index.product_name')" min-width="180" align="center"  prop="name"></el-table-column>
+            <el-table-column :label="$t('index.unique_identification')" min-width="180" align="center" prop="mark"></el-table-column>
+            <el-table-column :label="$t('index.creator_name')" min-width="180" align="center" prop="creatorName"></el-table-column>
+            <el-table-column :label="$t('common.deal')" min-width="200" align="center">
+              <template slot-scope="scope">
+                <a class="tableActionStyle" @click="handleShow(scope.$index, scope.row)">{{$t('common.show')}}</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination v-if="formConfigModelData.total != 0" @size-change="sizeChange" @current-change="currentChange" :page-size="formConfigModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formConfigModelData.total" class="paginationStyle"></el-pagination>
+        </div>
+      </el-row>
+  </el-row>
+</template>
+
+<script>
+  import {mapState, mapActions} from 'vuex'
+  export default {
+    name: 'indexContent',
+    data () {
+      return {
+        activeIndex: '1',
+        formInline: {
+          f_like_name: '',
+          f_like_mark: '',
+          f_like_creatorName: ''
+        }
+      }
+    },
+    methods: {
+      ...mapActions([
+        'getConfigsList'
+      ]),
+      sizeChange (val) {
+        this.formConfigModelData.pageSize = val
+        this.getProList()
+      },
+      currentChange (val) {
+        this.formConfigModelData.pageNo = val
+        this.getProList()
+      },
+      handleShow (index, row) {
+        this.$router.push({name: 'list', params: {id: row.id, mark: row.mark}})
+      },
+      getProList () {
+        let params = Object.assign(this.formInline, this.formConfigModelData)
+        this.getConfigsList(params)
+      },
+      buttonConfigList () {
+        this.formConfigModelData.pageNo = 1
+        this.getProList()
+      }
+    },
+    computed: {
+      ...mapState({
+        formConfigModelData: (index) => index.config.formConfigModelData,
+        index_projectList: (index) => index.config.index_projectList
+      })
+    },
+    mounted () {
+      this.getProList()
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+  .content-table {
+    height: 72px;
+    background: #ffffff;
+    margin: 10px 10px;
+  }
+  .content-search{
+    height: 72px;
+    background: #ffffff;
+    margin: 0 10px;
+  }
+  .content-header{
+    height: 72px;
+    margin: 10px 10px 0 10px;
+  }
+  .form-top{
+    margin-top: 0;
+    margin-right: 22px;
+    /deep/.el-form-item__label {
+      font-family:PingFangSC-Regular;
+      font-size:12px;
+      color:#606266;
+      letter-spacing:0;
+      text-align:right;
+    };
+    /deep/.el-input__inner {
+      background:#ffffff;
+      border:1px solid #dcdfe6;
+      border-radius:4px;
+      width:170px;
+      height:30px;
+    }
+  }
+  .searchitem {
+    margin-top: 20px;
+  }
+  .demo-form-inline {
+    margin-left: 20px;
+  }
+  .fontSize14{
+    font-size: 14px;
+    color: #4a525e;
+  }
+  .fontSize12{
+    font-family:PingFangSC-Regular;
+    font-size: 12px;
+    color: #333333;
+  }
+  .fontSizeTitle12{
+    font-family:PingFangSC-Regular;
+    font-size:12px;
+    color:#7e828c;
+  }
+  .searchButtonW12{
+    font-size: 12px;
+    color: #ffffff;
+    background:#016ad5;
+    border-radius:4px;
+    width:80px;
+    height:32px;
+    float: right;
+  }
+  .fontSizeBtB12{
+    font-size: 12px;
+    color:#666666;;
+    background:#f0f4f8;
+    border:1px solid #dfe6ed;
+    border-radius:4px;
+    width:77px;
+    height:32px;
+  }
+  .el-button {
+    line-height: 0.5;
+  }
+  .el-input__inner{
+    background:#ffffff;
+    border:1px solid #dcdfe6;
+    border-radius:4px;
+    width:198px;
+    height:30px;
+  }
+  .el-table{
+    font-family:PingFangSC-Semibold;
+    font-size:12px;
+    color:#909399;
+    letter-spacing:0.86px;
+    text-align:left;
+  }
+  .cell{
+    font-family:PingFangSC-Regular;
+    font-size:12px;
+    color:#606266;
+    letter-spacing:0.86px;
+    text-align:left;
+  }
+  .tableActionStyle{
+    font-family:PingFangSC-Medium;
+    font-size:12px;
+    color:#016ad5;
+    letter-spacing:0.86px;
+    text-align:left;
+  }
+  .el-dialog__title{
+    line-height: 24px;
+    font-size: 16px;
+    color: #333333;
+  }
+  .dialogButtonW {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    width: 59px;
+    height: 30px;
+    font-family: PingFangSC-Semibold;
+    font-size: 14px;
+    color: #606266;
+    letter-spacing: 0;
+    text-align: center;
+  }
+  .dialogButtonB{
+    background:#016ad5;
+    border-radius:4px;
+    width:60px;
+    height:32px;
+    font-family:PingFangSC-Semibold;
+    font-size:14px;
+    color:#ffffff;
+    letter-spacing:0;
+    text-align:center;
+  }
+  .paginationStyle{
+    text-align: right;
+    padding-top: 20px;
+    /deep/.el-pagination__total{
+      font-size: 12px;
+    };
+    /deep/.el-input__inner{
+      font-size: 12px;
+    };
+    /deep/.number{
+      font-size: 12px;
+    };
+    /deep/.el-pagination__jump{
+      font-size: 12px;
+    };
+  }
+</style>

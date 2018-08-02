@@ -1,0 +1,95 @@
+.wrapper{
+  background: #F2F2F2;
+  min-height: 100vh;
+}
+
+.wrapper .sidebar{
+  background-color: #fff;
+  border-left: 20px solid #F2F2F2;
+  min-height: 80vh ;
+}
+.sidebar > .sidebar-nav-list{
+  text-align: center;
+}
+.sidebar > .sidebar-nav-list > .sidebar-nav-item{
+  margin: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #aaa;
+  color: #aaa;
+  cursor: pointer;
+}
+.sidebar > .sidebar-nav-list > .sidebar-nav-item.active, .sidebar > .sidebar-nav-list >.sidebar-nav-item:hover, .sidebar > .sidebar-nav-list >.sidebar-nav-item:focus{
+  color: #108EE9;
+  border-color: #108EE9;
+}
+.wrapper .content{
+  min-height: 80vh;
+  background-color: #fff;
+  border-right: 20px solid #F2F2F2;
+}
+.content > .content-header{
+  background-color: #C9C9C9;
+  height: 60px;
+  line-height: 60px;
+}
+.content > .content-header > .content-nav-list{
+}
+.content > .content-header > .content-nav-list > .content-nav-item{
+  display: inline-block;
+  box-sizing: border-box;
+  height: 60px;
+  width: 100px;
+  font-size: 20px;
+  line-height: 60px;
+  text-align: center;
+  cursor: pointer;
+}
+.content > .content-header > .content-nav-list > .content-nav-item.active, .content > .content-header > .content-nav-list > .content-nav-item:hover, .content > .content-header > .content-nav-list > .content-nav-item:focus{
+  color: #108EE9;
+  border-bottom: 4px solid #108EE9;
+}
+.content > .content-search{
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid #dedede;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.content > .content-search label{
+  margin-left: 40px;
+}
+.content > .content-search label:first-child{
+  margin-left: 0;
+}
+.content .content-table{
+  padding: 10px;
+}
+.content .content-table .content-table-container {
+  width: 100%;
+}
+.content .content-table .content-table-container .content-table-header{
+  width: 100%;
+  background-color: #2EA5D9;
+  text-align: left;
+  color: #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.content .content-table .content-table-container .content-table-item{
+  margin-top: 20px;
+  padding: 10px 0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+.content .content-table .content-table-container .content-table-item span{
+}
+.content .content-table .content-table-container li span{
+  display: inline-block;
+  text-align: center;
+  height: 30px;
+  line-height: 30px;
+}

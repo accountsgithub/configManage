@@ -1,0 +1,313 @@
+
+/*修改tree样式*/
+.media .el-tree {
+	background: none;
+}
+.media .el-tree-node__content {
+	margin-left: 15px;
+	height: 50px;
+}
+.media .el-tree-node__content>.el-tree-node__expand-icon {
+	//display: none;
+	position: absolute;
+	right: 10px;
+}
+.media .el-tree-node__content:hover {
+	 background: none;
+}
+
+.media .el-tree-node:focus>.el-tree-node__content {
+	background: none;
+}
+
+.media .el-checkbox__inner {
+	border-radius: 2px;
+	background-color: #767676;
+	border:none;
+}
+.media .el-checkbox__inner::after {
+	left: 5px;
+	top: 2px;
+}
+
+/*dialog样式修改*/
+.media .el-dialog {
+	margin:0;
+	width: 100%;
+	background: none;
+}
+//.media .el-dialog-header {
+//	background: gray;
+//}
+
+/*tooltip样式修改*/
+.el-tooltip__popper.is-light {
+	background: #fff;
+	border:none;
+}
+
+.search-device input.el-input__inner {
+	outline: none;
+	border: none;
+}
+.search-device .el-input-group__append, .el-input-group__prepend {
+	padding: 0;
+	background: none;
+	border:none
+}
+.el-popper[x-placement^=bottom] {
+	top:-7px;
+}
+.suggestion-popper {
+	width: 240px !important;
+	left: 35px !important;
+	top: 200px !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.el-autocomplete-suggestion__wrap {
+	//border-radius: 0 !important;
+	background: none;
+	border: none!important;
+	padding-top: 0!important;
+	//width:236px;
+	margin-bottom: -18px !important;
+	margin-right: -18px !important;
+
+}
+.el-autocomplete-suggestion__list {
+	//background:rgba(11,48,112,0.95);
+	//box-shadow:0 0 2px 4px rgba(13,19,60,0.57), inset 0 0 8px 4px rgba(23,110,217,0.20);
+
+}
+.media input.el-input__inner {
+	min-width: 70px;
+	background: none;
+	height: 34px;
+  line-height: 34px;
+  color: #3ab5fe;
+}
+.el-autocomplete-suggestion li:hover {
+	background: rgba(9, 38, 148, 0.41);
+	color: #fff;
+}
+.el-autocomplete-suggestion li{
+	border-bottom: 1px solid #14407d;
+	height: 40px;
+	line-height: 40px;
+}
+.el-scrollbar {
+	background:rgba(11,48,112,0.95);
+	border:1px solid #2c60a7;
+	box-shadow:0 0 2px 4px rgba(13,19,60,0.57), inset 0 0 8px 4px rgba(23,110,217,0.20);
+}
+.el-autocomplete-suggestion {
+	border-radius: 0!important;
+}
+
+.el-tag {
+	height: 28px;
+}
+
+/*滚动条样式*/
+::-webkit-scrollbar {
+	height: 6px;
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+	background-color: #094aa5;
+	outline: 1px solid #333;
+}
+::-webkit-scrollbar {
+	height: 4px;
+	width: 4px;
+}
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+	background-color: #094aa5;
+	outline: 1px solid #708090;
+}
+
+.search-device .el-input__suffix {
+	top:10px;
+	height: 16px;
+}
+
+/*时间选择器样式修改*/
+.el-date-editor.el-input, .el-date-editor.el-input__inner {
+  width: 200px;
+  margin-right: 10px;
+  margin-top: 13px;
+  //border:1px solid #1b448f;
+  //border:
+}
+.el-date-editor .el-input__inner {
+  border:1px solid #1b448f!important;
+
+  //border:
+}
+.el-collapse-item__header {
+  height: 48px;
+  line-height: 48px;
+  color: #4574d2!important;
+  cursor: pointer;
+  border-bottom: none!important;
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-bottom-color .3s;
+  outline: 0;
+}
+.el-collapse {
+  border:none!important;
+}
+.el-carousel__mask, .el-cascader-menu, .el-cascader-menu__item.is-disabled:hover, .el-collapse-item__header, .el-collapse-item__wrap {
+  background-color: rgba(255, 255, 255, 0)!important;
+}
+.el-collapse-item__wrap {
+  border-bottom: none!important;
+}
+.el-collapse-item__content {
+   padding-bottom: 0!important;
+  box-shadow:inset 0 0 3px 0 rgba(0,0,0,0.50);
+}
+
+.el-collapse-item div[role='tab']{
+  border-bottom: 1px solid #0f3677;
+}
+/*日期选择器样式*/
+.el-picker-panel {
+  background: rgba(11,48,112,0.95);
+  border: 1px solid #2c60a7;
+  box-shadow: 0 0 2px 4px rgba(13,19,60,0.57), inset 0 0 8px 4px rgba(23,110,217,0.20);
+  border-radius: 4px;
+  line-height: 30px;
+  color: #3ab5fe;
+  margin: 5px 0;
+}
+
+.el-picker-panel .el-date-picker__time-header {
+  border-bottom: 1px solid #2c60a7;
+}
+.el-picker-panel .el-picker-panel__footer {
+  border-top: 1px solid #2c60a7;
+  background: none;
+}
+.el-popper .popper__arrow {
+ display: none;
+}
+.el-picker-panel .current {
+ background: none;
+  border: none;
+}
+.el-picker-panel__icon-btn {
+  color: #3ab5fe;
+}
+.el-date-picker__header-label {
+  color: #3ab5fe;
+}
+.el-date-table th {
+  color: #3ab5fe;
+}
+.el-date-table td.next-month, .el-date-table td.prev-month {
+  color:#126aae;
+}
+.el-month-table td .cell {
+  color: #3ab5fe;
+}
+.el-year-table td .cell {
+  color: #3ab5fe;
+}
+.el-picker-panel .el-input--small .el-input__inner {
+  background: none;
+  border: 1px solid #1b448f!important;
+  color: #3ab5fe;
+}
+.el-dialog-footer .el-input__icon {
+  line-height: 34px;
+}
+.el-dialog-footer .el-input__prefix, .el-input__suffix {
+  color:#126aae;
+}
+.el-time-panel {
+  background: rgba(11,48,112,0.95);
+  border: 1px solid #2c60a7;
+  //box-shadow: 0 0 2px 4px rgba(13,19,60,0.57), inset 0 0 8px 4px rgba(23,110,217,0.20);
+}
+.el-time-spinner__item {
+  color:#126aae;
+}
+.el-time-spinner__item.active:not(.disabled) {
+  color: #3ab5fe;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.el-time-spinner__item:hover:not(.disabled):not(.active) {
+  background: #3ab5fe;
+  color: #fff;
+}
+.el-time-panel__footer {
+  border-top: 1px solid #3ab5fe;
+}
+.el-time-panel__btn {
+
+  color: #FFF;
+}
+
+/*历史视频下载dialog样式修改*/
+.video-download-popper .el-dialog__header{
+  background: url("../../assets/images/media/pop_02_top_bg.png");
+  text-align: left;
+  font-size: 18px;
+  color: #138ce4;
+}
+.video-download-popper .el-dialog {
+  margin-top: 35vh!important;
+  margin-left: 35%;
+  width: 748px!important;
+}
+.video-download-popper .el-dialog__body {
+  background: url("../../assets/images/media/pop_02_main_bg.png");
+  height: 165px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.video-download-popper .el-dialog__footer {
+  background: url("../../assets/images/media/pop_02_bottom_bg.png");
+  height: 66px;
+}
+.video-download-popper .el-date-editor.el-input, .el-date-editor.el-input__inner {
+  //width: 185px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+/*设备详情dialog样式修改*/
+.device-detail-popper .el-dialog__header{
+  background: url("../../assets/images/media/pop_03_top_bg.png");
+  text-align: left;
+  font-size: 18px;
+  color: #138ce4;
+}
+.device-detail-popper .el-dialog {
+  margin-top: 35vh!important;
+  margin-left: 35%;
+  width: 619px!important;
+}
+.device-detail-popper .el-dialog__body {
+  background: url("../../assets/images/media/pop_03_main_bg.png");
+  height: 265px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.device-detail-popper .el-dialog__footer {
+  background: url("../../assets/images/media/pop_03_bottom_bg.png");
+  height: 66px;
+}
+
