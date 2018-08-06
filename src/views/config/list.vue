@@ -357,34 +357,39 @@
         this.$refs.upload.submit()
       },
       handleSuccess (file, fileList) {
+        console.log(file.status)
         if (file.status == '200') {
-          this.$message({
-            message: this.$t('message.success'),
-            type: 'success'
-          })
-          this.dialogExpoVisible = false
-          this.getConfigList()
-          this.getCurrentProFiles()
-          this.defaultUploadList = []
-        }else if(file.status == 1001 || file.status == 1002 || file.status == 1003){
+          if(file.code == 0){
+            this.$message({
+              message: this.$t('message.success'),
+              type: 'success'
+            })
+          }else {
+            this.$message({
+              message: this.$t('message.fail'),
+              type: 'fail'
+            })
+          }
+        }else if(file.status == 1001 || file.status == 1002 || file.status == 1003||file.status == 1005){
           this.$message({
             message: this.$t('message.fail'),
             type: 'fail'
           })
-          this.dialogExpoVisible = false
-          this.getConfigList()
-          this.getCurrentProFiles()
-          this.defaultUploadList = []
         } else if(file.status == 1004){
           this.$message({
             message: this.$t('message.duplicated_profile'),
             type: 'fail'
           })
-          this.dialogExpoVisible = false
-          this.getConfigList()
-          this.getCurrentProFiles()
-          this.defaultUploadList = []
+        }else{
+          this.$message({
+            message: this.$t('message.fail'),
+            type: 'fail'
+          })
         }
+        this.dialogExpoVisible = false
+        this.getConfigList()
+        this.getCurrentProFiles()
+        this.defaultUploadList = []
       },
       handleRemove (file, fileList) {
         console.log(file, fileList)
