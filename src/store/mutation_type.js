@@ -41,13 +41,6 @@ export const GETEXAMINEDAPPLY = 'getExaminedApply'
 export const GETADDPERSON = 'getAddPerson'
 // 人员列表
 export const GETPERSONLIST = 'getPersonList'
-
-// 统一项目人员列表
-export const GETPERSONSELECTLIST = 'getPersonSelectList'
-
-// 统一项目项目列表
-export const GETPPROJECTLIST = 'getpProjectList'
-
 // 修改人员信息
 export const GETEDITPERSON = 'getEditPerson'
 // 删除人员
@@ -60,22 +53,13 @@ export const GETPERSONISADMIN = 'getPersonIsAdmin'
 export const SETLANGUAGE = 'setLanguage'
 // 登录
 export const GETLOGIN = 'getLogin'
-
-// 登陆验证
-export const GETCHECKLOGIN = 'getCheckLogin'
-
 // 登出
 export const GETLOGINOUT = 'getLogOut'
-
-// 修改密码
-export const GETEDITPW = 'getEditPW'
-
 // 获取登录用户信息
 export const GETUSERNAME = 'getUserName'
 
 // 获取项目列表
 export const GETPROJECTSLIST = 'getProjectsList'
-
 // 获取配置列表
 export const GETCONFIGSLIST = 'getConfigsList'
 // 获取用户列表
@@ -121,29 +105,15 @@ export const GETDEPARTLIST = 'getDeptList'
 // 新增项目
 export const GETRADDPROJECTS = 'getRAddProjects'
 //  获取项目列表
-export const GETTHISRPROJECTLIST = 'getRThisProjectList'
-
 export const GETRPROJECTLIST = 'getRProjectList'
 // 编辑统一权限项目
 export const GETREDITPROJECTS = 'getREditProjects'
 
-// 获取角色显示列表
-export const GETRROLELIST = 'getRRoleList'
-
-// 获取角色显示下拉列表
-export const GETRROLESELECTLIST = 'getRSelectRoleList'
-
 // 获取角色列表
-export const GETRTHISROLELIST = 'getRThisRoleList'
-
-// 资源绑定树查询
-export const GETRESOURCEBUILDINGTREE = 'getResourceBuildingTree'
+export const GETRROLELIST = 'getRRoleList'
 
 // 角色新增
 export const GETRADDROLE = 'getRAddRole'
-
-// 角色名称唯一验证
-export const GETCLUMBDILIDATA = 'clumbDilidata'
 
 // 角色编辑
 export const GETREDITROLE = 'getREditRole'
@@ -151,14 +121,8 @@ export const GETREDITROLE = 'getREditRole'
 // 设置角色有效、无效
 export const GETSETROLEABLE = 'getSetRoleAble'
 
-// 批量设置角色有效、无效
-export const GETSETROLEABLEALL = 'getSetRoleAbleAll'
-
 // 获取用户列表
 export const GETRUSERLIST = 'getRUserList'
-
-// 密码重置
-export const GETRESTPW = 'getResetPW'
 
 // 用户新增
 export const GETRADDUSER = 'getRAddUser'
@@ -166,11 +130,8 @@ export const GETRADDUSER = 'getRAddUser'
 // 用户编辑
 export const GETREDITUSER = 'getREditUser'
 
-// 批量设置用户有效、无效
+// 设置用户有效、无效
 export const GETSETUSERABLE = 'getSetUserAble'
-
-// 设置用户有效/无效
-export const GETSETUSERABLEONCE = 'getSetUserAbleOnce'
 
 // 获取资源列表
 export const GETRESOURCELIST = 'getResourceList'
@@ -178,13 +139,8 @@ export const GETRESOURCELIST = 'getResourceList'
 // 添加资源
 export const GETRADDRESOURCE = 'getRAddResource'
 
-// 资源绑定
-export const GETRRESOURCEBUILD = 'getRResourceBuild'
 // 编辑资源
 export const GETREDITRESOURCE = 'getREditResource'
-
-// 设置资源有效、无效
-export const GETSETRESOURCEABLE = 'getSetResourceAble'
 
 // 添加部门
 export const GETRADDDEPART = 'getRAddDepart'
@@ -192,32 +148,14 @@ export const GETRADDDEPART = 'getRAddDepart'
 // 编辑部门
 export const GETREDITDEPART = 'getREditDepart'
 
-// 部门设置有效/无效
-export const GETSETDEPARTMENTABLE = 'getSetDepartAble'
-
 // 人员管理获取人员列表
 export const GETRPERSONLIST = 'getRPersonList'
-
-// 人员管理获取人员下拉列表
-export const GETRPERSONSELECTLIST = 'getRPersonSelectList'
 
 // 人员管理添加人员
 export const GETRADDPERSON = 'getRAddPerson'
 
-// 设置人员有效/无效
-export const GETSETPERSONABLE = 'getSetPersonAble'
-
 // 人员管理编辑人员
 export const GETREDITPERSON = 'getREditPerson'
-
-// 项目切换列表
-export const GETRBACLIST = 'getRBACList'
-
-// 获取当前用户权限
-export const GETROOTLIST = 'getRootList'
-
-// 下载
-export const GETRDOWNLOADFILE = 'getrDownloadFile'
 
 export const GETVERSION = 'getversion'
 

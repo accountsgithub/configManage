@@ -22,17 +22,6 @@ export default {
       })
     })
   },
-  // 统一项目下拉人员
-  getPersonSelectList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_PERSONLIST(params).then((res) => {
-        commit(types.GETPERSONLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   getEditPerson ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_EDITPERSON(params).then((res) => {

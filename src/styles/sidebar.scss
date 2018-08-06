@@ -91,7 +91,7 @@
   }
   .bigMenu.el-menu-item {
     &:hover {
-      background: url('../assets/images/menu-selected-02.png') no-repeat !important;
+      background: url('../assets/images/menu-selected-01.png') no-repeat !important;
     }
     &.is-active {
       background: url('../assets/images/menu-selected-02.png') no-repeat !important;
@@ -107,14 +107,11 @@
   //适配移动端
   .mobile {
     .main-container {
-      margin-left: 0;
+      margin-left: 0px;
     }
     .sidebar-container {
       transition: transform .28s;
       width: 180px !important;
-    }
-    .side-logo {
-      width: 0 !important;
     }
     &.hideSidebar {
       .sidebar-container {

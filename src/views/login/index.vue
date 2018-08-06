@@ -1,24 +1,20 @@
 <template>
   <div class="login-container">
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">统一权限管理平台</h3>
-      <h3 class="title2">PUBLIC APPLICATION MANAGEMENT PLATFORM</h3>
+      <h3 class="title">vue-element-admin</h3>
       <el-form-item prop="username">
-        <el-input class="textStyle" placeholder="请输入用户名" v-model="loginForm.username" autoComplete="off">
-          <i slot="prefix" class="icon iconfont icon-ic-name"></i>
+        <el-input placeholder="请输入用户名" v-model="loginForm.username" autoComplete="off">
+          <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input class="textStyle" name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="off" placeholder="请输入密码">
-          <i slot="prefix" class="icon iconfont icon-ic-lock"></i>
+        <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="off" placeholder="请输入密码">
+          <i slot="prefix" class="el-input__icon el-icon-date"></i>
           <i slot="suffix" class="show-pwd el-icon-view" @click="showPwd"></i>
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-checkbox>保存密码</el-checkbox>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" style="width:100%;background:#016ad5;border-radius:4px;height:50px;" :loading="loadingStatus" @click.native.prevent="handleLogin">{{logButtonLabel}}</el-button>
+        <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">Sign in</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -26,14 +22,14 @@
 
 <script>
 import { mapActions } from 'vuex'
-// import utils from '@/utils/util'
+import Cookies from 'js-cookie'
 export default {
   name: 'login',
   data () {
     return {
       loginForm: {
         username: 'admin',
-        password: 'NUR7kI26Bs6T9q10'// UbHJ7UHJAtPYJG2C
+        password: 'ClyVBPyu4r5jvMk3nicyo9r0K2TyU91ayln5SnS'
       },
       loginRules: {
         username: [
@@ -43,14 +39,13 @@ export default {
           { required: true, message: '密码不能为空', trigger: 'blur' }
         ]
       },
-      loadingStatus: false,
-      logButtonLabel: '登录',
+      loading: false,
       pwdType: 'password'
     }
   },
   methods: {
     ...mapActions([
-      'getCheckLogin', 'getLogin', 'getRootList'
+      'getLogin'
     ]),
     showPwd () {
       if (this.pwdType === 'password') {
@@ -62,42 +57,18 @@ export default {
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loadingStatus = true
-          this.logButtonLabel = '登录中'
-          localStorage.setItem('username', this.loginForm.username)
+          this.loading = true
           let params = Object.assign(this.loginForm)
-          this.getCheckLogin(params).then(res => {
+          this.getLogin(params).then(res => {
             if (res.data.code == '-1') {
               this.$message({
                 message: res.data.message
               })
             } else if (res.data.code == '0') {
-              this.getLogin(params).then(res => {
-                if (res.data.code == '-1') {
-                  this.$message({
-                    message: res.data.message
-                  })
-                } else if (res.data.code == '0') {
-                  this.getRootList().then(res => {
-                    if (res.data.code == 0) {
-                      // this.$router.push({path: '/view/department'})
-                      window.location.href = '/cloud-rbac/#/view/department'// ../rbac/department
-                    } else {
-                      this.$message({
-                        message: res.data.message
-                      })
-                    }
-                  })
-                } else if (res.data.code == '3002') {
-                  window.location.href = res.data.message
-                } else {
-                  this.handleLogin()
-                }
-              })
+              this.$router.push({ path: '/cloud-rbac/view/department' })
             }
-            this.loadingStatus = false
-            this.logButtonLabel = '登录'
           })
+          this.loading = false
           // this.$store.dispatch('Login', this.loginForm).then(() => {
           //   this.loading = false
           //   this.$router.push({ path: '/' })
@@ -106,8 +77,6 @@ export default {
           // })
         } else {
           console.log('error submit!!')
-          this.loadingStatus = false
-          this.logButtonLabel = '登录'
           return false
         }
       })
@@ -124,41 +93,31 @@ export default {
   .login-container {
     .el-input {
       display: inline-block;
-      height: 44px;
+      height: 47px;
       input {
         background: transparent;
+        border: 0;
         -webkit-appearance: none;
-        border: 1px solid #d8d8d8;
-        border-radius: 4px;
-        color: #000000;
-        height: 44px;
+        border-radius: 0;
+        color: $light_gray;
+        height: 47px;
         &:-webkit-autofill {
           -webkit-box-shadow: 0 0 0 1000px $bg inset !important;
           -webkit-text-fill-color: #fff !important;
         }
       }
     }
-  }
-  .title {
-    font-family:MFDianHei_Noncommercial-ExLight;
-    font-size:24px;
-    color:#333333;
-    margin: 0 auto 0 auto;
-    text-align: center;
-    font-weight: 500;
-  }
-  .title2 {
-    font-size:12px;
-    -webkit-transform:scale(0.9);
-    color:#aaaaaa;
-    margin: 8px auto 40px auto;
-    text-align: center;
-    font-weight: 500;
+    .el-form-item {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      color: #454545;
+    }
   }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  $bg:#081C3E;
+  $bg:#2d3a4b;
   $dark_gray:#889aa4;
   $light_gray:#eee;
 
@@ -168,16 +127,16 @@ export default {
     width: 100%;
     background-color: $bg;
     .login-form {
-      position: relative;
+      position: absolute;
       left: 0;
       right: 0;
-      width: 25%;
-      margin-left: 55%;
-      margin-top: 12%;
+      width: 520px;
+      padding: 35px 35px 15px 35px;
+      margin: 120px auto;
     }
     .tips {
       font-size: 14px;
-      color: #000000;
+      color: #fff;
       margin-bottom: 10px;
       span {
         &:first-of-type {
@@ -197,8 +156,15 @@ export default {
     }
     .title-container {
       position: relative;
+      .title {
+        font-size: 26px;
+        color: $light_gray;
+        margin: 0 auto 40px auto;
+        text-align: center;
+        font-weight: bold;
+      }
       .set-language {
-        color: #000000;
+        color: #fff;
         position: absolute;
         top: 5px;
         right: 0;
@@ -218,10 +184,5 @@ export default {
       right: 35px;
       bottom: 28px;
     }
-    background-image: url("../../assets/images/login-box-01.png");
-    background-repeat: no-repeat;
-    background-size: 70% 90%;
-    background-position-x: center;
-    background-position-y: center;
   }
 </style>

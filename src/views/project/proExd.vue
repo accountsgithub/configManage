@@ -16,7 +16,7 @@
         <el-button type="primary" :disabled="isDisable" icon="el-icon-upload" @click="getExaminedApplyClick(1)" class="fontSizeBtB12">一键审批</el-button>
       </el-form-item>
       <el-form-item class="searchitemB">
-        <el-button type="primary" @click="getProExaList" icon="el-icon-search" class="fontSizeBtW12">搜索</el-button>
+        <el-button type="primary" @click="getProList" icon="el-icon-search" class="fontSizeBtW12">搜索</el-button>
       </el-form-item>
     </el-form>
     </div>
@@ -100,7 +100,7 @@
                   type: 'success',
                   message: '添加成功!'
                 })
-                this.getProExaList()
+                this.getProList()
                 this.dialogAddVisible = false
               })
             } else if (name === 'ruleEditForm') {
@@ -110,7 +110,7 @@
                   type: 'success',
                   message: '修改成功!'
                 })
-                this.getProExaList()
+                this.getProList()
                 this.dialogEditVisible = false
               })
             }
@@ -121,7 +121,7 @@
         })
       },
       onSubmit () {
-        this.getProExaList()
+        this.getProList()
       },
       handleEdit (index, row, type) {
         let params = Object.assign(row, {type: type})
@@ -139,18 +139,18 @@
             type: 'success',
             message: '删除成功!'
           })
-          this.getProExaList()
+          this.getProList()
         })
       },
       sizeChange (val) {
         this.formProjectModelData.pageSize = val
-        this.getProExaList()
+        this.getProList()
       },
       currentChange (val) {
         this.formProjectModelData.pageNo = val
-        this.getProExaList()
+        this.getProList()
       },
-      getProExaList () {
+      getProList () {
         let params = Object.assign(this.formProjectModelData, this.formInline)
         this.getExaminedList(params)
       },
@@ -199,7 +199,7 @@
             type: 'success',
             message: '提交成功!'
           })
-          this.getProExaList()
+          this.getProList()
         })
       }
     },
@@ -221,7 +221,7 @@
       this.getPersonIsAdmin().then(res => {
         this.isAdmin = res.data.result.admin
         this.isOwn = res.data.result.personId
-        this.getProExaList()
+        this.getProList()
         this.getPersonList()
       })
     }

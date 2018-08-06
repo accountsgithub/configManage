@@ -72,17 +72,6 @@ export default {
       })
     })
   },
-  // 同一项目项目管理
-  getpProjectList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_PROJECTSLIST(params).then((res) => {
-        commit(types.GETPPROJECTLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   /* getRPersonList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_RPERSONLIST(params).then((res) => {

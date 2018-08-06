@@ -2,14 +2,14 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-    <!--<el-select v-model="lang" class="langSelectStyle">
+    <el-select v-model="lang" class="langSelectStyle">
       <el-option
         v-for="item in options"
         :key="item.value"
         :label="item.label"
         :value="item.value">
       </el-option>
-    </el-select>-->
+    </el-select>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <i><div class="userSign"></div></i>
@@ -25,38 +25,15 @@
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <img src="../../../assets/images/pic-head.png" class="userSign" />
-        <span>{{username}}</span>
         <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <el-dropdown-item divided>
-          <span @click="updataPassword" style="display:block;">{{$t('common.modifyPassword')}}</span>
-        </el-dropdown-item>
-        <el-dropdown-item divided>
           <span @click="logout" style="display:block;">{{$t('common.logout')}}</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <el-dialog
-      title="修改密码"
-      :visible.sync="dialogVisible"
-      width="60%">
-      <el-form :model="pwEditForm" :rules="PWEditFormRules" ref="pwEditForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="旧密码" prop="oldPassword">
-          <el-input type="password" v-model="pwEditForm.oldPassword" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="新密码" prop="password">
-          <el-input type="password" v-model="pwEditForm.password" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="newPassword">
-          <el-input type="password" v-model="pwEditForm.newPassword" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitForm('pwEditForm')" class="fontSizeBtW12">提交</el-button>
-      </span>
-    </el-dialog>
   </el-menu>
 </template>
 
@@ -64,39 +41,13 @@
 import { mapGetters, mapActions } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-// import utils from '@/utils/util'
+import Cookies from 'js-cookie'
 import local from '@/lang'
 const viewName = 'i18nView'
 
 export default {
   data () {
-    var validatepw = (rule, value, callback) => {
-      if (value != this.pwEditForm.password && value != '') {
-        callback(new Error('密码不一致'))
-      } else if (value === '') {
-        callback(new Error('确认密码不能为空'))
-      } else {
-        callback()
-      }
-    }
     return {
-      dialogVisible: false,
-      pwEditForm: {
-        newPassword: '',
-        oldPassword: '',
-        password: ''
-      },
-      PWEditFormRules: {
-        password: [
-          { required: true, message: '新密码不可为空', trigger: 'blur' }
-        ],
-        oldPassword: [
-          { required: true, message: '旧密码不能为空', trigger: 'blur' }
-        ],
-        newPassword: [
-          { required: true, validator: validatepw, trigger: 'blur' }
-        ]
-      },
       options: [
         {
           label: '中文',
@@ -118,9 +69,6 @@ export default {
       'sidebar',
       'avatar'
     ]),
-    username () {
-      return localStorage.username
-    },
     lang: {
       get () {
         return this.$store.state.language
@@ -139,37 +87,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      'ToggleSideBar', 'LogOut', 'getLogOut', 'getEditPW'
+      'ToggleSideBar', 'LogOut', 'getLogOut'
     ]),
     toggleSideBar () {
       this.ToggleSideBar()
-    },
-    updataPassword () {
-      this.dialogVisible = true
-    },
-    submitForm (name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          let params = Object.assign(this.pwEditForm)
-          this.getEditPW(params).then(res => {
-            this.$message({
-              type: 'success',
-              message: this.$t('message.edit_success')
-            })
-            this.dialogVisible = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     },
     logout () {
       this.getLogOut().then(res => {
         if (res.data.code === '0') {
           location.reload()
           // this.$router.push({ path: '/login' })
-          window.location.href = './login.html'
         }
       })
       // this.$router.push('/login')
@@ -223,7 +150,7 @@ export default {
         display: inline-block;
         cursor: pointer;
         width: 32px;
-        margin-top: 16px;
+        margin-top: 22px;
         height: 32px;
         transition: .38s;
         transform-origin: 50% 50%;

@@ -36,18 +36,6 @@ export default {
       })
     })
   },
-  // 获取资源绑定树
-  getResourceBuildingTree ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RESOURCEBUILDINGTREE(params).then((res) => {
-        commit(types.GETRESOURCEBUILDINGTREE, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-
   // 统一权限编辑部门
   getREditDepart ({state, commit}, params) {
     return new Promise((resolve, reject) => {
@@ -59,28 +47,7 @@ export default {
       })
     })
   },
-  // 资源绑定
-  getRResourceBuild ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RRESOURCEBUILD(params).then((res) => {
-        commit(types.GETRRESOURCEBUILD, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   // 统一权限项目管理
-  getRThisProjectList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RTHISPROJECTLIST(params).then((res) => {
-        commit(types.GETTHISRPROJECTLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   getRProjectList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_RPROJECTLIST(params).then((res) => {
@@ -91,18 +58,6 @@ export default {
       })
     })
   },
-  // 部门设置有效/无效
-  getSetDepartAble ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_SETDEPARTMENTABLE(params).then((res) => {
-        commit(types.GETSETDEPARTMENTABLE, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 统一权限项目编辑
   getREditProjects ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_REDITPROJECTS(params).then((res) => {
@@ -113,55 +68,11 @@ export default {
       })
     })
   },
-  // 统一权限项目新增
-  getRAddProjects ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RADDPROJECTS(params).then((res) => {
-        commit(types.GETRADDPROJECTS, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   // 角色管理
-  getRThisRoleList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RTHISROLELIST(params).then((res) => {
-        commit(types.GETRTHISROLELIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 角色显示下拉列表
-  getRSelectRoleList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RROLESELECTLIST(params).then((res) => {
-        commit(types.GETRROLESELECTLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 角色显示列表
   getRRoleList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_RROLELIST(params).then((res) => {
         commit(types.GETRROLELIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 角色唯一验证
-  clumbDilidata ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_CLUMBDILIDATA(params).then((res) => {
-        commit(types.GETCLUMBDILIDATA, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
@@ -198,33 +109,11 @@ export default {
       })
     })
   },
-  // 统一权限批量有效/无效
-  getSetRoleAbleAll ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_SETROLEABLEALL(params).then((res) => {
-        commit(types.GETSETROLEABLEALL, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   // 用户管理
   getRUserList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_RUSERLIST(params).then((res) => {
         commit(types.GETRUSERLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 密码重置
-  getResetPW  ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RESTPW(params).then((res) => {
-        commit(types.GETRESTPW, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
@@ -251,22 +140,10 @@ export default {
       })
     })
   },
-  // 批量设置用户有效/无效
   getSetUserAble ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_SETUSERABLE(params).then((res) => {
         commit(types.GETSETUSERABLE, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 设置用户有效无效
-  getSetUserAbleOnce ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_SETUSERABLEONCE(params).then((res) => {
-        commit(types.GETSETUSERABLEONCE, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
@@ -306,44 +183,11 @@ export default {
       })
     })
   },
-  // 设置资源有效/无效
-  getSetResourceAble ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_SETRESOURCEABLE(params).then((res) => {
-        commit(types.GETSETRESOURCEABLE, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 统一权限获取人员下拉列表
-  getRPersonSelectList ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_RPERSONLIST(params).then((res) => {
-        commit(types.GETRPERSONSELECTLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
   // 统一权限获取人员列表
   getRPersonList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_RPERSONLIST(params).then((res) => {
         commit(types.GETRPERSONLIST, res)
-        resolve(res)
-      }).catch((thrown) => {
-        reject(thrown)
-      })
-    })
-  },
-  // 设置人员有效/无效
-  getSetPersonAble ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      return getDate.GET_SETPERSONABLE(params).then((res) => {
-        commit(types.GETSETPERSONABLE, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
@@ -370,12 +214,6 @@ export default {
       }).catch((thrown) => {
         reject(thrown)
       })
-    })
-  },
-  // 下载
-  getrDownloadFile ({state, commit}, params) {
-    return new Promise((resolve, reject) => {
-      commit(types.GETRDOWNLOADFILE, getDate.GET_RDOWNLOADFILE(params))
     })
   }
 }

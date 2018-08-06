@@ -18,7 +18,7 @@
     </div>
     <el-row :span="24" class="content">
       <div class="content-table table-top">
-        <el-table :data="index_pProjectList" border>
+        <el-table :data="index_projectList" border>
           <el-table-column type="selection" min-width="35"></el-table-column>
           <el-table-column label="项目名称" min-width="180" align="center"  prop="name"></el-table-column>
           <el-table-column label="项目标识" min-width="180" align="center" prop="mark"></el-table-column>
@@ -162,16 +162,6 @@
           callback()
         }
       }
-      var validataProjectMark = (rule, value, callback) => {
-        let myreg = /^[a-z][a-z0-9_-]{3,31}$/
-        if (!myreg.test(value) && value != '') {
-          callback(new Error('项目标识名称不能为空, 4-32位，以英文字母开头，只能包含小写英文字母、数字、下划线、中划线'))
-        } else if (value === '') {
-          callback(new Error('项目标识名称不能为空'))
-        } else {
-          callback()
-        }
-      }
       return {
         dialogAddVisible: false,
         dialogEditVisible: false,
@@ -191,7 +181,7 @@
         },
         addFormRules: {
           mark: [
-            { required: true, validator: validataProjectMark, trigger: 'blur' }
+            { required: true, message: '项目标识不能为空', trigger: 'blur' }
           ],
           name: [
             { required: true, message: '项目名不能为空', trigger: 'blur' }
@@ -241,7 +231,7 @@
     },
     methods: {
       ...mapActions([
-        'getpProjectList', 'getAddProjects', 'getEditProjects', 'getDelProjects', 'getPersonSelectList', 'getExaminedApply'
+        'getProjectsList', 'getAddProjects', 'getEditProjects', 'getDelProjects', 'getPersonList', 'getExaminedApply'
       ]),
       timestampToTimeClick (val) {
         if (val) {
@@ -340,7 +330,7 @@
       },
       getProList () {
         let params = Object.assign(this.formProjectModelData, this.formInline)
-        this.getpProjectList(params)
+        this.getProjectsList(params)
       },
       getExaminedApplyClick (scope) {
         console.log(scope)
@@ -361,14 +351,14 @@
     computed: {
       ...mapState({
         formProjectModelData: (index) => index.project.formProjectModelData,
-        index_pProjectList: (index) => index.project.index_pProjectList,
+        index_projectList: (index) => index.project.index_projectList,
         personList: (person) => person.project.index_ProsonList
       })
     },
     mounted () {
       let params = Object.assign({paging: false})
       this.getProList()
-      this.getPersonSelectList(params)
+      this.getPersonList(params)
     }
   }
 </script>

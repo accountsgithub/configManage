@@ -18,7 +18,7 @@ axios.interceptors.request.use(config => {
   return Promise.reject(err)
 })
 axios.interceptors.response.use(response => {
-  if (response.data.status == '200' || response.config.baseURL === '/cloud-rbac') {
+  if (response.data.status == '200') {
     store.state.project.fullscreenLoading = false
   } else {
     Message.error(response.data.message)
@@ -44,14 +44,6 @@ export default {
   GET_LOGINOUT (params) {
     return api.fetch('get', `${base}/oauth2/logout`, params)
   },
-  // 修改密码
-  GET_EDITPW (params) {
-    return api.fetch('put', `${base}/user/password`, params)
-  },
-  // 登陆验证
-  GET_CHECKLOGIN (params) {
-    return api.fetch('post', `${base}/auth/checkLogin`, params)
-  },
   // 统一项目
   GET_ADDPROJECTS (params) {
     return api.fetch('post', `${base}/admin/projects`, params)
@@ -63,9 +55,11 @@ export default {
     return api.fetch('put', `${base}/admin/projects/batch`, params)
   },
   GET_PROJECTSLIST (params) {
+    console.log(params)
     return api.fetch('get', `${base}/admin/projects`, params)
   },
   GET_PPRESONLIST (params) {
+    console.log(params)
     return api.fetch('get', `${base}/projectPerson`, params)
   },
   GET_UNIQUE (params) {
@@ -163,38 +157,15 @@ export default {
   },
 
   // 统一权限
-  // 资源绑定
-  GET_RRESOURCEBUILD (params) {
-    return api.fetch('put', `${base}/resource_setting/batch`, params)
-  },
   GET_RPROJECTLIST (params) {
-    return api.fetch('get', `${base}/client`, params)
-  },
-  GET_RTHISPROJECTLIST (params) {
     return api.fetch('get', `${base}/client`, params)
   },
   GET_REDITPROJECTS (params) {
     return api.fetch('put', `${base}/client/` + params.id, params)
   },
-  // 统一权限项目新增
-  GET_RADDPROJECTS (params) {
-    return api.fetch('post', `${base}/client`, params)
-  },
   // 统一权限角色管理
-  // 角色显示列表
-  GET_RTHISROLELIST (params) {
-    return api.fetch('get', `${base}/role`, params)
-  },
   GET_RROLELIST (params) {
     return api.fetch('get', `${base}/role`, params)
-  },
-  // 统一权限角色下拉列表
-  GET_RROLESELECTLIST (params) {
-    return api.fetch('get', `${base}/role`, params)
-  },
-  // 角色名称唯一性验证
-  GET_CLUMBDILIDATA (params) {
-    return api.fetch('get', `${base}/role/checkSignUnique/` + params.clumb, params)
   },
   // 统一权限新增角色
   GET_RADDROLE (params) {
@@ -206,10 +177,6 @@ export default {
   },
   // 统一权限设置有效、无效
   GET_SETROLEABLE (params) {
-    return api.fetch('post', `${base}/role/` + params.id + `/command`, params)
-  },
-  // 统一权限设置批量有效、无效
-  GET_SETROLEABLEALL (params) {
     return api.fetch('post', `${base}/role/command`, params)
   },
   // 统一权限用户管理
@@ -220,10 +187,6 @@ export default {
   GET_RADDUSER (params) {
     return api.fetch('post', `${base}/user`, params)
   },
-  // 密码重置
-  GET_RESTPW (params) {
-    return api.fetch('put', `${base}/user/password/` + params.id + `/reset`)
-  },
   // 统一权限编辑用户
   GET_REDITUSER (params) {
     return api.fetch('post', `${base}/user` + params.id, params)
@@ -232,10 +195,6 @@ export default {
   GET_SETUSERABLE (params) {
     return api.fetch('post', `${base}/user/command`, params)
   },
-  // 统一权限设置部门有效、无效
-  GET_SETUSERABLEONCE (params) {
-    return api.fetch('post', `${base}/user/` + params.id + `/command`, params)
-  },
   // 统一权限获取资源列表
   GET_RESOURCELIST (params) {
     'use strict'
@@ -243,65 +202,46 @@ export default {
   },
   // 统一权限添加资源
   GET_RADDRESOURCE (params) {
+    'use strict'
     return api.fetch('post', `${base}/resource`, params)
   },
   // 统一权限编辑资源
   GET_REDITRESOURCE (params) {
-    return api.fetch('put', `${base}/resource/` + params.id, params)
-  },
-  // 设置资源有效/无效
-  GET_SETRESOURCEABLE (params) {
-    return api.fetch('post', `${base}/resource/` + params.id + `/command`, params)
+    'use strict'
+    return api.fetch('post', `${base}/resource` + params.id, params)
   },
   // 统一权限添加部门
   GET_RADDDEPART (params) {
+    'use strict'
     return api.fetch('post', `${base}/department`, params)
   },
   // 统一权限编部门
   GET_REDITDEPART (params) {
-    return api.fetch('patch', `${base}/department/` + params.id, params)
+    'use strict'
+    return api.fetch('put', `${base}/department` + params.id, params)
   },
   // 管理单位树
   GET_TREEDEPARTLIST (params) {
-    return api.fetch('get', `${base}/department/tree`, params)
-  },
-  GET_RESOURCEBUILDINGTREE (params) {
-    return api.fetch('get', `${base}/resource_setting/tree/checked`, params)
+    'use strict'
+    return api.fetch('get', `${base}/department`, params)
   },
   // 统一权限获取部门列表
   GET_DEPARTLIST (params) {
+    'use strict'
     return api.fetch('get', `${base}/department`, params)
-  },
-  // 统一权限设置部门有效、无效
-  GET_SETDEPARTMENTABLE (params) {
-    return api.fetch('post', `${base}/department/` + params.id + `/command`, params)
   },
   // 统一权限获取人员列表
   GET_RPERSONLIST (params) {
     return api.fetch('get', `${base}/person`, params)
   },
-  // 设置人员有效无效
-  GET_SETPERSONABLE (params) {
-    return api.fetch('post', `${base}/person/` + params.id + `/command`, params)
-  },
   // 统一权限添加人员
   GET_RADDPERSON (params) {
+    'use strict'
     return api.fetch('post', `${base}/person`, params)
   },
   // 统一权限编辑人员
   GET_REDITPERSON (params) {
-    return api.fetch('put', `${base}/person/` + params.id, params)
-  },
-  // 切换项目
-  GET_RBACLIST (params) {
-    return api.fetch('get', `${base}/client/userClient/` + params.username)
-  },
-  // 当前用户权限
-  GET_ROOTLIST () {
-    return api.fetch('get', `${base}/auth/resourceSigns`)
-  },
-  // 下载模板
-  GET_RDOWNLOADFILE (params) {
-    return '/download/template/' + params.filename
+    'use strict'
+    return api.fetch('put', `${base}/person` + params.id, params)
   }
 }

@@ -7,11 +7,7 @@ const state = {
     opened: !+Cookies.get('sidebarStatus'),
     withoutAnimation: false
   },
-  device: 'desktop',
-  // 功能列表
-  index_showList: [],
-  index_rProjectSelectList: [],
-  index_rootList: []
+  device: 'desktop'
 }
 
 export default{

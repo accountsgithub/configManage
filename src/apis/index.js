@@ -10,8 +10,6 @@ export default {
         resolve(axios.post(url, data))
       } else if (method === 'put') {
         resolve(axios.put(url, data))
-      } else if (method === 'patch') {
-        resolve(axios.patch(url, data))
       } else if (method === 'delete') {
         resolve(axios.delete(url, data))
       }

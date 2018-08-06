@@ -2,20 +2,20 @@
   <el-row class="main">
     <div class="content-search">
     <el-form :inline="true" :model="rProFormInline" ref="rProFormInline" class="text-left form-top searchFormStyle">
-      <el-form-item label="项目名称" prop="f_like_name" class="searchitemTF">
-        <el-input v-model="rProFormInline.f_like_name" placeholder="请输入项目名称"></el-input>
+      <el-form-item label="项目名称" prop="name" class="searchitemTF">
+        <el-input v-model="rProFormInline.name" placeholder="请输入项目名称"></el-input>
       </el-form-item>
-      <el-form-item label="最近编辑人" prop="f_like_updaterName" class="searchitemT">
-        <el-input v-model="rProFormInline.f_like_updaterName" placeholder="请输入最近编辑人"></el-input>
+      <el-form-item label="最近编辑人" prop="updater_id" class="searchitemT">
+        <el-input v-model="rProFormInline.updater_id" placeholder="请输入最近编辑人"></el-input>
       </el-form-item>
-      <el-form-item label="创建人" prop="f_like_creatorName" class="searchitemT">
-        <el-input v-model="rProFormInline.f_like_creatorName" placeholder="请输入资源名称"></el-input>
-      </el-form-item>
-      <el-form-item class="searchitemB">
-        <el-button type="primary" v-if="index_rootList.indexOf('AUTH_CLIENT_QUERY')>-1" @click="resetFormLine('rProFormInline')" icon="el-icon-refresh" class="fontSizeBtB12">重置</el-button>
+      <el-form-item label="资源名称" prop="creator_id" class="searchitemT">
+        <el-input v-model="rProFormInline.creator_id" placeholder="请输入资源名称"></el-input>
       </el-form-item>
       <el-form-item class="searchitemB">
-        <el-button type="primary" v-if="index_rootList.indexOf('AUTH_CLIENT_QUERY')>-1" @click="getRProListFirst" icon="el-icon-search" class="fontSizeBtW12">搜索</el-button>
+        <el-button type="primary" @click="resetFormLine('rProFormInline')" icon="el-icon-refresh" class="fontSizeBtW12">重置</el-button>
+      </el-form-item>
+      <el-form-item class="searchitemB">
+        <el-button type="primary" @click="getRProList" icon="el-icon-search" class="fontSizeBtW12">搜索</el-button>
       </el-form-item>
     </el-form>
     </div>
@@ -23,9 +23,9 @@
       <div class="content-table">
         <div class="tableInfo">
           <span>项目管理列表</span>
-          <el-button type="primary" v-if="index_rootList.indexOf('AUTH_CLIENT_ADD')>-1" @click="createrProject('resourceAddForm')" class="tableButtonStyleW icon iconfont icon-ic-new" style="margin-right: 20px;margin-top: -5px"> 新增项目</el-button>
         </div>
-        <el-table :data="index_rThisProjectList" :stripe="true">
+        <el-table :data="index_rProjectList" border>
+          <el-table-column label="项目ID" min-width="10%" align="center"  prop="id"></el-table-column>
           <el-table-column label="项目名称" min-width="10%" align="center" prop="name"></el-table-column>
           <el-table-column label="项目标识" min-width="10%" align="center" prop="sign"></el-table-column>
           <el-table-column label="回调URL" min-width="20%" align="center" prop="redirectUri"></el-table-column>
@@ -38,7 +38,7 @@
           </el-table-column>
           <el-table-column label="相关操作" min-width="10%" align="center">
             <template slot-scope="scope">
-              <a class="tableActionStyle" v-if="index_rootList.indexOf('AUTH_CLIENT_UPDATE')>-1" @click="handleEdit(scope.$index,scope.row)">编辑</a>
+              <a class="tableActionStyle" @click="handleEdit(scope.$index,scope.row)">编辑</a>
             </template>
           </el-table-column>
         </el-table>
@@ -46,76 +46,18 @@
       </div>
     </el-row>
     <el-dialog
-      title="新增项目" @close="closeThisDialog('projectAddForm')" class="dialogStyle"
-      :visible.sync="dialogAddVisible"
-      width="50%">
-      <el-form :model="projectAddForm" :rules="projectEditFormRules" ref="projectAddForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="项目名称" prop="name">
-          <el-select v-model="projectAddForm.name" placeholder="请选择" @change="setSign">
-            <el-option v-for="item in index_rProjectSelectList"
-                       :key="item.name"
-                       :value="item.name"
-                       :label="item.name">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="项目标识" prop="sign">
-          <el-input maxlength="50" v-model="projectAddForm.sign" disabled="true" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="回调URL" prop="redirectUri">
-          <el-input maxlength="200" v-model="projectAddForm.redirectUri" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="项目密钥" prop="secret">
-          <el-input maxlength="100" v-model="projectAddForm.secret" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="授权类型" prop="supportGrantTypes">
-          <el-select v-model="projectAddForm.supportGrantTypes" filterable placeholder="请选择" style="width:100%">
-            <el-option
-              v-for="item in optionsGrantTypes"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="授权范围" prop="defaultGrantScope">
-          <el-select v-model="projectAddForm.defaultGrantScope" filterable placeholder="请选择" style="width:100%">
-            <el-option
-              v-for="item in optionsScope"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitRProForm('projectAddForm')" class="dialogButtonB">提交</el-button>
-          <el-button @click="resetForm('projectAddForm')" class="dialogButtonW">重置</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="修改项目" @close="closeThisDialog('projectEditForm')" class="dialogStyle"
+      title="修改项目"
       :visible.sync="dialogEditVisible"
-      width="50%">
+      width="40%">
       <el-form :model="projectEditForm" :rules="projectEditFormRules" ref="projectEditForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="项目名称" prop="name">
-          <el-select v-model="projectEditForm.name" placeholder="请选择" @change="setEditSign">
-            <el-option v-for="item in index_rProjectSelectList"
-                       :key="item.name"
-                       :value="item.name"
-                       :label="item.name">
-            </el-option>
-          </el-select>
+          <el-input v-model="projectEditForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="项目标识" prop="sign">
-          <el-input maxlength="50" v-model="projectEditForm.sign" disabled="true" auto-complete="off"></el-input>
+          <el-input v-model="projectEditForm.sign" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="回调URL" prop="redirectUri">
-          <el-input maxlength="200" v-model="projectEditForm.redirectUri" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="项目密钥" prop="secret">
-          <el-input maxlength="100" v-model="projectEditForm.secret" auto-complete="off"></el-input>
+        <el-form-item label="跳转URL" prop="redirectUri">
+          <el-input v-model="projectEditForm.redirectUri" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="授权类型" prop="supportGrantTypes">
           <el-select v-model="projectEditForm.supportGrantTypes" filterable placeholder="请选择" style="width:100%">
@@ -140,7 +82,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitRProForm('projectEditForm')" class="dialogButtonB">提交</el-button>
-        <el-button @click="closeDialog" class="dialogButtonW">取消</el-button>
+          <el-button @click="resetForm('projectEditForm')" class="dialogButtonW">重置</el-button>
       </span>
     </el-dialog>
   </el-row>
@@ -151,15 +93,12 @@
   import utils from '@/utils/util'
   export default {
     name: 'project',
+
     computed: {
       ...mapState({
         rProFormModelData: (index) => index.rbac.rProFormModelData,
-        index_rThisProjectList: (index) => index.rbac.index_rThisProjectList,
-        index_rProjectSelectList: (index) => index.app.index_rProjectSelectList
+        index_rProjectList: (index) => index.rbac.index_rProjectList
       }),
-      index_rootList () {
-        return JSON.parse(localStorage.rootList)
-      },
       isDisabled () {
         if (this.selectCount > 0) {
           return true
@@ -168,18 +107,14 @@
         }
       }
     },
-    mounted () {
-      if (this.index_rootList.indexOf('AUTH_CLIENT_QUERY') > -1) {
-        this.getRProListFirst()
-      }
-      this.getrProject()
-    },
     data () {
       return {
         rProFormInline: {
-          f_like_name: '',
-          f_like_updaterName: '',
-          f_like_creatorName: '',
+          name: '',
+          updater_id: '',
+          creator_id: '',
+          pageSize: 10,
+          pageNo: 1,
           paging: true
         },
         ids: [],
@@ -219,27 +154,13 @@
           value: 'client_credentials'
         }],
         isDisable: true,
-        dialogAddVisible: false,
         dialogEditVisible: false,
-        projectAddForm: {
-          id: '', // 项目id
-          name: '', // 项目名称
-          creatorName: '', // 创建人
-          redirectUri: '', // 回调URL
-          updateTime: '', //  最近编辑时间
-          secret: '', // 密钥
-          sign: '', // 项目标识
-          updaterName: '', // 最近编辑人
-          defaultGrantScope: '', //  授权范围
-          supportGrantTypes: ''//  授权类型
-        },
         projectEditForm: {
           id: '', // 项目id
           name: '', // 项目名称
           creatorName: '', // 创建人
           redirectUri: '', // 回调URL
           updateTime: '', //  最近编辑时间
-          secret: '',
           sign: '', // 项目标识
           updaterName: '', // 最近编辑人
           defaultGrantScope: '', //  授权范围
@@ -247,7 +168,7 @@
         },
         projectEditFormRules: {
           name: [
-            { required: true, message: '项目名称不能为空', trigger: 'change' }
+            { required: true, message: '项目名称不能为空', trigger: 'blur' }
           ],
           sign: [
             { required: true, message: '项目标识不能为空', trigger: 'blur' }
@@ -256,57 +177,22 @@
             { required: true, message: '回调URL不能为空', trigger: 'blur' }
           ],
           supportGrantTypes: [
-            { required: true, message: '授权类型不能为空', trigger: 'change' }
+            { required: true, message: '授权类型不能为空', trigger: 'blur' }
           ],
           defaultGrantScope: [
-            { required: true, message: '授权范围不能为空', trigger: 'change' }
-          ],
-          secret: [
-            { required: true, message: '项目密钥不能为空', trigger: 'blur' }
+            { required: true, message: '授权范围不能为空', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
       ...mapActions([
-        'getRThisProjectList', 'getREditProjects', 'getRAddProjects', 'getRBACList'
+        'getRProjectList', 'getREditProjects'
       ]),
-      closeThisDialog (name) {
-        this.$refs[name].resetFields()
-      },
-      setSign (node) {
-        let tempList = this.index_rProjectSelectList
-        for (let i = 0; i < tempList.length; i++) {
-          if (tempList[i].name == node) {
-            this.projectAddForm.sign = tempList[i].sign
-            break
-          }
-        }
-      },
-      setEditSign (node) {
-        let tempList = this.index_rProjectSelectList
-        for (let i = 0; i < tempList.length; i++) {
-          if (tempList[i].name == node) {
-            this.projectEditForm.sign = tempList[i].sign
-            break
-          }
-        }
-      },
-      getrProject () {
-        let params = Object.assign({username: localStorage.username})
-        this.getRBACList(params)
-      },
-      createrProject () {
-        this.dialogAddVisible = true
-      },
-      closeDialog () {
-        this.dialogEditVisible = false
-      },
       handleEdit (index, row) {
         this.projectEditForm.creatorName = row.creatorName
         this.projectEditForm.name = row.name
         this.projectEditForm.id = row.id
-        this.projectEditForm.secret = row.secret
         this.projectEditForm.redirectUri = row.redirectUri
         this.projectEditForm.defaultGrantScope = row.defaultGrantScope
         this.projectEditForm.supportGrantTypes = row.supportGrantTypes
@@ -323,13 +209,11 @@
       resetFormLine (name) {
         this.$refs[name].resetFields()
       },
-      getRProListFirst () {
-        this.rProFormModelData.pageNo = 0
-        this.getRProList()
-      },
       getRProList () {
-        let params = Object.assign(this.rProFormModelData, this.rProFormInline)
-        this.getRThisProjectList(params)
+        this.rProFormInline.pageSize = this.rProFormModelData.pageSize
+        this.rProFormInline.pageNo = this.rProFormModelData.pageNo
+        let params = Object.assign(this.rProFormInline)
+        this.getRProjectList(params)
       },
       resetForm (name) {
         this.$refs[name].resetFields()
@@ -337,41 +221,16 @@
       submitRProForm (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            if (name == 'projectAddForm') {
-              let params = Object.assign(this.projectAddForm)
-              this.getRAddProjects(params).then(res => {
-                if (res.data.code == '0') {
-                  this.$message({
-                    type: 'success',
-                    message: '新增成功!'
-                  })
-                  this.getRProList()
-                  this.dialogAddVisible = false
-                } else if (res.data.code == '-1') {
-                  this.$message({
-                    type: 'error',
-                    message: res.data.message
-                  })
-                }
+            let params = Object.assign(this.projectEditForm)
+            // console.log(params)
+            this.getREditProjects(params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '修改成功!'
               })
-            } else {
-              let params = Object.assign(this.projectEditForm)
-              this.getREditProjects(params).then(res => {
-                if (res.data.code == '0') {
-                  this.$message({
-                    type: 'success',
-                    message: '修改成功!'
-                  })
-                  this.getRProList()
-                  this.dialogEditVisible = false
-                } else if (res.data.code == '-1') {
-                  this.$message({
-                    type: 'error',
-                    message: res.data.message
-                  })
-                }
-              })
-            }
+              this.getRProList()
+              this.dialogEditVisible = false
+            })
           } else {
             console.log('error submit!!')
             return false
@@ -383,7 +242,7 @@
         this.getRProList()
       },
       currentChange (val) {
-        this.rProFormModelData.pageNo = val - 1
+        this.rProFormModelData.pageNo = val
         this.getRProList()
       }
     }
@@ -441,12 +300,12 @@
     margin-left: 10px;
   }
   .el-button {
-    padding: 0;
+    line-height: 0.5;
   }
   .el-table{
-    font-family:PingFangSC-Regular;
+    font-family:PingFangSC-Semibold;
     font-size:12px;
-    color:#606266;
+    color:#909399;
     letter-spacing:0.86px;
     text-align:left;
   }
@@ -496,14 +355,6 @@
       font-size: 12px;
     };
   }
-  // 弹出框标题样式
-  /deep/.el-dialog__title{
-    font-weight: bolder;
-    font-size: 16px;
-    color:#333333;
-    font-family:PingFangSC-Medium;
-  }
-  // 弹出框样式
   .form-top{
     margin-top: 0;
     margin-right: 22px;
@@ -545,41 +396,5 @@
     letter-spacing:0;
     text-align:left;
     height: 50px;
-  }
-  .tableButtonStyleW{
-    font-family:PingFangSC-Semibold;
-    font-size:12px;
-    color:#666666;
-    background:#f9fbfd;
-    border:1px solid #e7e9f0;
-    border-radius:4px;
-    width:90px;
-    height:32px;
-    float: right;
-    margin-left: 10px;
-  }
-  // 分页
-  .el-pagination {
-    color: #575a5f;
-    font-weight: 500;
-  }
-  .dialogStyle{}
-  //弹出框样式
-  .dialogStyle {
-    /deep/.el-input__inner {
-      background:#ffffff;
-      border:1px solid #dcdfe6;
-      border-radius:4px;
-      height:30px;
-      font-size: 12px;
-    };
-    // 弹出框调节器样式
-    /deep/.el-input-number__increase{
-      top:5px;
-      line-height:14px
-    };
-    /deep/.el-input-number__decrease{
-      bottom:4px
-    }
   }
 </style>

@@ -75,100 +75,55 @@ export const constantRouterMap = [
     }]
   },
   // 统一权限
-  {
-    path: '/view',
+  /* {
+    path: '/cloud-rbac/view',
     component: resolve => require(['@/views/layout/Layout'], resolve),
-    redirect: '/department',
-    name: 'department',
+    redirect: '',
+    name: '',
+    meta: { title: '权限中心', icon: 'edit' },
     children: [
       {
         path: 'department',
         name: '部门管理',
         component: resolve => require(['@/views/rbac/departList'], resolve),
-        meta: { title: '部门管理', icon: 'department' }
-      }
-    ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
+        meta: { title: '部门管理' }
+      },
       {
         path: 'person',
         name: '人员管理',
         component: resolve => require(['@/views/rbac/personList'], resolve),
-        meta: { title: '人员管理', icon: 'members' }
-      }
-    ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    redirect: '/user',
-    name: 'user',
-    children: [
+        meta: { title: '人员管理' }
+      },
       {
         path: 'user',
         name: '用户管理',
         component: resolve => require(['@/views/rbac/userList'], resolve),
-        meta: { title: '用户管理', icon: 'user' }
-      }
-    ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
+        meta: { title: '用户管理' }
+      },
       {
         path: 'role',
         name: '角色管理',
         component: resolve => require(['@/views/rbac/roleList'], resolve),
-        meta: { title: '角色管理', icon: 'permissions' }
-      }
-    ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
+        meta: { title: '角色管理' }
+      },
       {
         path: 'resource',
         name: '资源管理',
         component: resolve => require(['@/views/rbac/resourceList'], resolve),
-        meta: { title: '资源管理', icon: 'resources' }
-      }
-    ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
+        meta: { title: '资源管理' }
+      },
       {
         path: 'client',
         name: '项目管理',
         component: resolve => require(['@/views/rbac/projectList'], resolve),
-        meta: { title: '项目管理', icon: 'project' }
+        meta: { title: '项目管理' }
       }
     ]
-  },
-  {
-    path: '/view',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    redirect: '/resourceBuilding',
-    name: 'resourceBuilding',
-    hidden: true,
-    children: [{
-      path: 'resourceBuilding/:id',
-      name: 'resourceBuilding',
-      component: resolve => require(['@/views/rbac/resourceBuilding'], resolve),
-      meta: { title: '资源绑定', icon: 'edit' }
-    }]
-  },
+  }, */
   { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
-  // mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
