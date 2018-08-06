@@ -118,7 +118,7 @@
             { required: true, message: this.$t('message.file_name'), trigger: 'blur' }
           ],
           profileType: [
-            { required: true, message: this.$t('message.profileType'), trigger: 'blur' }
+            { required: true, message: this.$t('message.profileType'), trigger: 'change' }
           ],
           path: [
             { required: true, message: this.$t('message.path'), trigger: 'blur' }
@@ -131,7 +131,7 @@
             {required: true, message: this.$t('message.file_name'), trigger: 'blur'}
           ],
           profileType: [
-            {required: true, message: this.$t('message.profileType'), trigger: 'blur'}
+            {required: true, message: this.$t('message.profileType'), trigger: 'change'}
           ],
           path: [
             {required: true, message: this.$t('message.path'), trigger: 'blur'}
