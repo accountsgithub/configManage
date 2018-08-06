@@ -106,11 +106,11 @@
     <!--添加配置-->
     <el-dialog
       :title="$t('list.add_config')"
-      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddForm')"
+      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddForm')" @open="openAddForm"
       width="60%">
       <el-form :model="ruleAddForm" :rules="addFormRules" ref="ruleAddForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="Key" prop="configKey" class="fontSize12">
-          <el-input v-model="ruleAddForm.configKey" auto-complete="off" maxlength="4096"></el-input>
+          <el-input v-model="ruleAddForm.configKey" auto-complete="off" maxlength="253"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
           <el-input type="textarea" v-model="ruleAddForm.configValue" rows="5" maxlength="4096"></el-input>
@@ -139,7 +139,7 @@
       width="60%">
       <el-form :model="ruleEditForm" :rules="editFormRules" ref="ruleEditForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="Key" prop="configKey">
-          <el-input v-model="ruleEditForm.configKey"  auto-complete="off" maxlength="4096"></el-input>
+          <el-input v-model="ruleEditForm.configKey"  auto-complete="off" maxlength="253"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
           <el-input type="textarea" v-model="ruleEditForm.configValue"  rows="5" maxlength="4096"></el-input>
@@ -554,12 +554,9 @@
           }
         })
       },
-      // openResetForm (name) {
-      //   if (this.$refs[name]) {
-      //     this.$refs[name].resetFields()
-      //   }
-      //   this.ruleAddForm.profileId = this.filesID
-      // },
+      openAddForm () {
+        this.ruleAddForm.profileId = this.filesID
+      },
       resetForm (name) {
         if (this.$refs[name]) {
           this.$refs[name].resetFields()
