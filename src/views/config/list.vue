@@ -41,7 +41,7 @@
       <!--添加tags-->
       <el-row class="configRow">
         <el-col :span="6" :class="{disStyle:disTypeValue}"><span class="fontSizeTitle12">{{$t('list.project_type')}}: </span><span class="fontSize12">{{tabCheckType}}</span></el-col>
-        <el-col :span="6" :class="{disStyle:disPathValue}" class="overListPathWidth"><span class="fontSizeTitle12">{{$t('list.project_path')}}: </span><span class="c">{{tabCheckPath}}</span></el-col>
+        <el-col :span="6" :class="{disStyle:disPathValue}" class="overListPathWidth"><span class="fontSizeTitle12">{{$t('list.project_path')}}: </span><span class="fontSize12">{{tabCheckPath}}</span></el-col>
         <el-button class="float-right fontSizeBtB12" :class="{disStyle:!tablaDivDefault}" icon="el-icon-edit" type="primary" @click="onConfigEdit">{{$t('list.text_edit')}}</el-button>
         <el-button class="float-right fontSizeBtB12" style="width: 97px" :class="{disStyle:!tablaDivDefault}" icon="el-icon-delete" type="primary" @click="delConfig">{{$t('list.delete_config')}}</el-button>
       </el-row>
@@ -72,7 +72,7 @@
           </el-form>
           <el-row class="line"></el-row>
           <el-table :data="index_configList" style="width: 100%" border >
-            <el-table-column type="selection" min-width="10"></el-table-column>
+            <!--<el-table-column type="selection" min-width="10"></el-table-column>-->
             <el-table-column label="Key" min-width="180" align="center" class="fontBlod fontSizeBtB12">
               <template slot-scope="scope">
                 <span style="margin-left: 10px" class="overKeyWidth">{{ scope.row.configKey }}</span>
@@ -106,7 +106,7 @@
     <!--添加配置-->
     <el-dialog
       :title="$t('list.add_config')"
-      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddForm')" @open="openResetForm('ruleAddForm')"
+      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddForm')"
       width="60%">
       <el-form :model="ruleAddForm" :rules="addFormRules" ref="ruleAddForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="Key" prop="configKey" class="fontSize12">
@@ -554,12 +554,12 @@
           }
         })
       },
-      openResetForm (name) {
-        if (this.$refs[name]) {
-          this.$refs[name].resetFields()
-        }
-        this.ruleAddForm.profileId = this.filesID
-      },
+      // openResetForm (name) {
+      //   if (this.$refs[name]) {
+      //     this.$refs[name].resetFields()
+      //   }
+      //   this.ruleAddForm.profileId = this.filesID
+      // },
       resetForm (name) {
         if (this.$refs[name]) {
           this.$refs[name].resetFields()

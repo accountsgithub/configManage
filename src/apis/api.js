@@ -3,6 +3,7 @@ import api from './index'
 import store from '../store'
 import router from '../router'
 import {Message} from 'element-ui'
+import config from "../store/modules/config/index";
 /**
  *
  * @type {{}}
@@ -10,19 +11,19 @@ import {Message} from 'element-ui'
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charest=utf-8'
 axios.interceptors.request.use(config => {
-  store.state.project.fullscreenLoading = true
+  store.state.config.fullscreenLoading = true
   return config
 }, err => {
-  store.state.project.fullscreenLoading = false
+  store.state.config.fullscreenLoading = false
   Message.error('服务器错误，请重试')
   return Promise.reject(err)
 })
 axios.interceptors.response.use(response => {
   if (response.data.status == '200') {
-    store.state.project.fullscreenLoading = false
+    store.state.config.fullscreenLoading = false
   } else {
     Message.error(response.data.message)
-    store.state.project.fullscreenLoading = false
+    store.state.config.fullscreenLoading = false
     if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1001' && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004') {
       router.push({path: '/login'})
     }
@@ -30,7 +31,7 @@ axios.interceptors.response.use(response => {
   }
   return response
 }, err => {
-  store.state.project.fullscreenLoading = false
+  store.state.config.fullscreenLoading = false
   Message.error('服务器错误，请重试')
   return Promise.reject(err)
 })

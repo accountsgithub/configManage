@@ -6,7 +6,7 @@
     <!--添加版本号弹框-->
     <el-dialog
       :title="$t('tags.add_version')"
-      :visible.sync="dialogAddVersionVisible" @close="resetForm('ruleAddVersionFormTag')" @open="openResetForm('ruleAddVersionFormTag')"
+      :visible.sync="dialogAddVersionVisible" @close="resetForm('ruleAddVersionFormTag')"
       width="60%">
       <el-form :model="ruleAddVersionFormTag" :rules="addVersionRulesTag" ref="ruleAddVersionFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.select_version')" prop="version">
@@ -25,7 +25,7 @@
     <!--添加文件弹框-->
     <el-dialog
       :title="$t('tags.add_file')"
-      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddFormTag')" @open="openResetForm('ruleAddFormTag')"
+      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddFormTag')"
       width="60%">
       <el-form :model="ruleAddFormTag" :rules="addFormRulesTag" ref="ruleAddFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.file_name')" prop="name">
