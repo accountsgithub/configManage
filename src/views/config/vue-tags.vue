@@ -53,7 +53,7 @@
     <!--修改文件弹框-->
     <el-dialog
       :title="$t('tags.edit_file')"
-      :visible.sync="dialogEditVisible" @close="resetForm('ruleEditFormTag')"
+      :visible.sync="dialogEditVisible" @close="resetForm('ruleEditFormTag')"  @open="openResetForm('ruleEditFormTag')"
       width="60%">
       <el-form :model="ruleEditFormTag" :rules="editFormRulesTag" ref="ruleEditFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.file_name')" prop="name">
@@ -85,7 +85,7 @@
   import {mapActions} from 'vuex'
   export default {
     name: 'vue-tags',
-    props: ['source', 'chooseVersion'],
+    props: ['source', 'chooseVersion', 'fileName'],
     computed: {
 
       dis_source () {
@@ -93,6 +93,9 @@
       },
       dis_chooseVersion () {
         return this.chooseVersion
+      },
+      dis_fileName () {
+        return this.fileName
       },
       disEditFilePath () {
         if (this.ruleEditFormTag.profileType === 'bootstrap') {
@@ -211,18 +214,16 @@
       ]),
       resetForm (name) {
         this.$refs[name].resetFields()
+        this.ruleEditFormTag.name = this.dis_fileName
+      },
+      openResetForm (name) {
+        this.ruleEditFormTag.name = this.dis_fileName
+        if (this.$refs[name]) {
+          this.$refs[name].resetFields()
+        }
       },
       reflash(){
         this.dialogEditVisible = false
-        // console.log("1321313")
-        // console.log(this.ruleEditFormTag)
-        // console.log("1321313")
-        // console.log(this.ruleEditProfileFormTag)
-        // this.item
-        // this.$emit('getSelectVersion')
-        // console.log("HDKFGKFHKJFHKFHKFHKJHFKFHKFHKJF")
-        // console.log(this.itemaa.id)
-        // this.tagsClick(this.itemaa ,this.nums)
       },
       submitForm (name) {
         this.ruleAddFormTag.version = this.dis_chooseVersion

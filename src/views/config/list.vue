@@ -36,7 +36,7 @@
         <!--表单-->
       <!--添加tags-->
       <el-row style="margin-left: 10px">
-        <vue-tages ref="vueTags" :source.sync="list_files" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
+        <vue-tages ref="vueTags" :source.sync="list_files" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
       </el-row>
       <!--添加tags-->
       <el-row class="configRow">
@@ -222,6 +222,7 @@
         tabCheckPath: '',
         textConfigValue: '',
         filesID: '',
+        fileName:'',
         saveButton: false,
         disTextDiv: false,
         disPathValue: true,
@@ -295,12 +296,9 @@
         this.saveButton = true
       },
       textSave () {
-        console.log("ruleTextAddForm_cc_config_id:"+this.ruleTextAddForm.id)
-        console.log("**************************************************")
         this.disTextEdit = true
         this.saveButton = false
         if (this.ruleTextAddForm.id != '') {
-          console.log("updateconfig")
           let params = Object.assign(this.ruleTextAddForm)
           this.geteditConfig(params).then(res => {
             this.$message({
@@ -309,7 +307,6 @@
             })
           })
         } else {
-          console.log("addconfig")
           this.ruleTextAddForm.profileId = this.filesID
           this.ruleTextAddForm.version = this.ActiveVersion.version
           let params = Object.assign(this.ruleTextAddForm)
@@ -570,6 +567,7 @@
           this.tablaDivDefault = true
           this.disTypeValue = false
           this.filesID = data.id
+          this.fileName = data.name
           this.tabCheckType = data.profileType
           this.tabCheckPath = data.path
           if (data.profileType === 'text') {
