@@ -10,6 +10,7 @@ export default {
     search: 'search',
     deal: 'deal',
     add: 'add',
+    addVersion: 'addversion',
     show: 'show',
     help: 'help',
     admin: 'admin',
@@ -89,6 +90,8 @@ export default {
     fail: 'upload failed',
     file_name: 'filename cannot be empty',
     profileType: 'type cannot be empty',
-    path: 'path cannot be empty'
+    path: 'path cannot be empty',
+    version: 'version cannot be empty',
+    duplicated_profile:'duplicated profile'
   }
 }

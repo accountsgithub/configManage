@@ -21,7 +21,7 @@
               </el-option>
             </el-select>
           </el-col>
-          <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.add')}}</el-button>
+          <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
           <!--<el-col :span="4"><span class="fontSizeTitle12">{{$t('list.version')}}: </span><span class="fontSize12">{{ActiveVersion.version}}</span></el-col>-->
         </el-row>
       </div>
@@ -29,19 +29,19 @@
     <div class="content-table">
     <el-row class="titleLeft" style="padding-right: 22px;">
       <span class="fontBlod fontSize14">{{title}}</span>
-      <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
+      <el-button class="float-right fontSizeBtW12 addProfileButton" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
       <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPush">{{$t('list.push')}}</el-button>
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
     </el-row>
         <!--表单-->
       <!--添加tags-->
       <el-row style="margin-left: 10px">
-        <vue-tages ref="vueTags" :source.sync="list_files" :chooseVersion.sync="ActiveVersion.version" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
+        <vue-tages ref="vueTags" :source.sync="list_files" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
       </el-row>
       <!--添加tags-->
       <el-row class="configRow">
         <el-col :span="6" :class="{disStyle:disTypeValue}"><span class="fontSizeTitle12">{{$t('list.project_type')}}: </span><span class="fontSize12">{{tabCheckType}}</span></el-col>
-        <el-col :span="6" :class="{disStyle:disPathValue}"><span class="fontSizeTitle12">{{$t('list.project_path')}}: </span><span class="c">{{tabCheckPath}}</span></el-col>
+        <el-col :span="6" :class="{disStyle:disPathValue}" class="overListPathWidth"><span class="fontSizeTitle12">{{$t('list.project_path')}}: </span><span class="c">{{tabCheckPath}}</span></el-col>
         <el-button class="float-right fontSizeBtB12" :class="{disStyle:!tablaDivDefault}" icon="el-icon-edit" type="primary" @click="onConfigEdit">{{$t('list.text_edit')}}</el-button>
         <el-button class="float-right fontSizeBtB12" style="width: 97px" :class="{disStyle:!tablaDivDefault}" icon="el-icon-delete" type="primary" @click="delConfig">{{$t('list.delete_config')}}</el-button>
       </el-row>
@@ -51,7 +51,7 @@
           <el-input class="textDivStyle" :disabled="disTextEdit"
                     type="textarea"
                     :autosize="{ minRows: 10, maxRows: 10}"
-                    v-model="ruleTextAddForm.configValue" auto-complete="off">
+                    v-model="ruleTextAddForm.configValue" auto-complete="off"  maxlength="4096">
           </el-input>
           <el-button class="float-right buttonStyle fontSizeBtB12" :class="{disStyle:saveButton}" icon="el-icon-edit" type="primary" @click="textEdit" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
           <el-button class="float-right buttonStyle fontSizeBtW12" :class="{disStyle:!saveButton}" icon="el-icon-upload" type="primary" @click="textSave" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
@@ -59,9 +59,9 @@
       </div>
         <div :class="[{disStyle:disTextDiv},{disStyle:!tablaDivDefault}]">
           <el-form :inline="true" :model="formInline" class="text-right form-top">
-            <span class="fontSize12" style="float: left;margin-top: 10px;font-weight: bold">{{this.ConfigData.name}}{{$t('list.listName')}}</span>
+            <span class="fontSize12 overListNameWidth" style="float: left;margin-top: 10px;font-weight: bold">{{this.ConfigData.name}}{{$t('list.listName')}}</span>
             <el-form-item prop="f_like_configKey">
-              <el-input v-model="formInline.f_like_configKey" :placeholder="configSearch"></el-input>
+              <el-input v-model="formInline.f_like_configKey" :placeholder="configSearch"  maxlength="4096"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="buttonConfigList" icon="el-icon-search" class="fontSizeBtB12">{{$t('common.search')}}</el-button>
@@ -75,7 +75,7 @@
             <el-table-column type="selection" min-width="10"></el-table-column>
             <el-table-column label="Key" min-width="180" align="center" class="fontBlod fontSizeBtB12">
               <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.configKey }}</span>
+                <span style="margin-left: 10px" class="overKeyWidth">{{ scope.row.configKey }}</span>
               </template>
             </el-table-column>
             <el-table-column label="Value" min-width="180" align="center">
@@ -90,7 +90,7 @@
             </el-table-column>
             <el-table-column :label="$t('list.remarks')" min-width="180" align="center">
               <template slot-scope="scope">
-                {{scope.row.remark}}
+                <span class="overRemarkWidth">{{scope.row.remark}}</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('common.deal')"  min-width="200" align="center">
@@ -100,7 +100,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination class="paginationStyle" v-if="formModelData.total != 0" @size-change="sizeChange" @current-change="currentChange" :page-size="formModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formModelData.total"></el-pagination>
+          <el-pagination class="paginationStyle" v-if="formModelData.total != 0" :current-page="formModelData.pageNo + 1" @size-change="sizeChange" @current-change="currentChange" :page-size="formModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formModelData.total"></el-pagination>
         </div>
     </div>
     <!--添加配置-->
@@ -110,10 +110,10 @@
       width="60%">
       <el-form :model="ruleAddForm" :rules="addFormRules" ref="ruleAddForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="Key" prop="configKey" class="fontSize12">
-          <el-input v-model="ruleAddForm.configKey" auto-complete="off"></el-input>
+          <el-input v-model="ruleAddForm.configKey" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
-          <el-input type="textarea" v-model="ruleAddForm.configValue" rows="5"></el-input>
+          <el-input type="textarea" v-model="ruleAddForm.configValue" rows="5" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('common.file')" prop="profileId">
           <el-select v-model="ruleAddForm.profileId" :disabled=true>
@@ -123,7 +123,7 @@
         <el-form-item :label="$t('list.remarks')" prop="remark">
           <el-input type="textarea"
                     v-model="ruleAddForm.remark"
-                    :autosize="{ minRows: 4, maxRows: 4}">
+                    :autosize="{ minRows: 4, maxRows: 4}" maxlength="4096">
           </el-input>
         </el-form-item>
       </el-form>
@@ -139,10 +139,10 @@
       width="60%">
       <el-form :model="ruleEditForm" :rules="editFormRules" ref="ruleEditForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="Key" prop="configKey">
-          <el-input v-model="ruleEditForm.configKey"  auto-complete="off"></el-input>
+          <el-input v-model="ruleEditForm.configKey"  auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
-          <el-input type="textarea" v-model="ruleEditForm.configValue"  rows="5"></el-input>
+          <el-input type="textarea" v-model="ruleEditForm.configValue"  rows="5" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('common.file')" prop="profileId">
           <el-select v-model="ruleEditForm.profileId" :disabled=true>
@@ -152,7 +152,7 @@
         <el-form-item :label="$t('list.remarks')" prop="remark">
           <el-input type="textarea"
                     v-model="ruleEditForm.remark"
-                    :autosize="{ minRows: 4, maxRows: 4}">
+                    :autosize="{ minRows: 4, maxRows: 4}" maxlength="4096">
           </el-input>
         </el-form-item>
       </el-form>
@@ -164,13 +164,13 @@
     <!--导入配置-->
     <el-dialog
       :title="$t('list.expo_config')"
-      :visible.sync="dialogExpoVisible"
+      :visible.sync="dialogExpoVisible" @close="dialogExpoClose"
       :before-close="beforeClose"
       width="60%">
       <el-upload
         class="upload-demo"
         ref="upload"
-        :action='currenturl'
+        :action='url'
         :data="expofiledata"
         :default-file-list="defaultUploadList"
         :on-preview="handlePreview"
@@ -230,7 +230,7 @@
         tablaDivDefault: false,
         textValue: '',
         defaultUploadList: [],
-        currenturl: this.g_Config.BASE_URL + '/files/config_file_import',
+        url: this.g_Config.BASE_URL + '/files/config_file_import',
         dialogExpoVisible: false,
         fileList: [],
         projectName: '',
@@ -259,7 +259,8 @@
           configValue: '',
           groupId: '',
           profileId: '',
-          remark: ''
+          remark: '',
+          version:''
         },
         ruleAddForm: {
           projectId: this.$route.params.mark,
@@ -267,7 +268,8 @@
           configValue: '',
           groupId: '',
           profileId: '',
-          remark: ''
+          remark: '',
+          version:''
         },
         ruleEditForm: {
           projectId: this.$route.params.mark,
@@ -275,7 +277,8 @@
           configValue: '',
           groupId: '',
           profileId: '',
-          remark: ''
+          remark: '',
+          version:''
         },
         ruleVeriosn: {
           projectId: this.$route.params.mark,
@@ -292,9 +295,12 @@
         this.saveButton = true
       },
       textSave () {
+        console.log("ruleTextAddForm_cc_config_id:"+this.ruleTextAddForm.id)
+        console.log("**************************************************")
         this.disTextEdit = true
         this.saveButton = false
         if (this.ruleTextAddForm.id != '') {
+          console.log("updateconfig")
           let params = Object.assign(this.ruleTextAddForm)
           this.geteditConfig(params).then(res => {
             this.$message({
@@ -303,7 +309,9 @@
             })
           })
         } else {
+          console.log("addconfig")
           this.ruleTextAddForm.profileId = this.filesID
+          this.ruleTextAddForm.version = this.ActiveVersion.version
           let params = Object.assign(this.ruleTextAddForm)
           this.getAddConfig(params).then(res => {
             this.$message({
@@ -311,6 +319,7 @@
               message: this.$t('message.add_success')
             })
           })
+          this.getTextConfigList()
         }
       },
       onexceed (files, fileList) {
@@ -320,6 +329,8 @@
         })
       },
       getCurrentProFiles () {
+        this.disPathValue = true
+        this.disTypeValue = true
         this.profiledata.f_eq_version = this.ActiveVersion.version
         let params = Object.assign(this.profiledata)
         this.getprofiles(params)
@@ -329,14 +340,17 @@
       },
       getSelectVersion () {
         this.getCurrentProFiles()
+        this.disTextDiv = false
         this.tablaDivDefault = false
-        this.disPathValue = true
-        this.disTypeValue = true
+        // this.disPathValue = true
+        // this.disTypeValue = true
         this.expofiledata.version = this.getCurrentVersion()
+        this.getpublish()
       },
       dialogExpoClose () {
         this.dialogExpoVisible = false
         this.defaultUploadList = []
+        this.fileList = []
       },
       beforeClose (done) {
         this.defaultUploadList = []
@@ -350,6 +364,24 @@
           this.$message({
             message: this.$t('message.success'),
             type: 'success'
+          })
+          this.dialogExpoVisible = false
+          this.getConfigList()
+          this.getCurrentProFiles()
+          this.defaultUploadList = []
+        }else if(file.status == 1001 || file.status == 1002 || file.status == 1003){
+          this.$message({
+            message: this.$t('message.fail'),
+            type: 'fail'
+          })
+          this.dialogExpoVisible = false
+          this.getConfigList()
+          this.getCurrentProFiles()
+          this.defaultUploadList = []
+        } else if(file.status == 1004){
+          this.$message({
+            message: this.$t('message.duplicated_profile'),
+            type: 'fail'
           })
           this.dialogExpoVisible = false
           this.getConfigList()
@@ -452,6 +484,7 @@
         // 修改数据赋值
         this.ruleEditForm = Object.assign(this.ruleEditForm, row)
         this.ruleEditForm.groupId = parseInt(row.groupId)
+        this.ruleEditForm.version = this.ActiveVersion.version
         this.dialogEditVisible = true
       },
       handleDelete (index, row) {
@@ -484,6 +517,8 @@
         this.getConfigList()
       },
       submitForm (name) {
+        this.ruleAddForm.version = this.ActiveVersion.version
+        this.ruleEditForm.version = this.ActiveVersion.version
         this.$refs[name].validate((valid) => {
           if (valid) {
             if (name === 'ruleAddForm') {
@@ -567,6 +602,7 @@
           let params = Object.assign(this.ConfigData)
           this.getdelprofiles(params).then(res => {
             this.onchangetag()
+            this.disTextDiv = false
             this.$message({
               type: 'success',
               message: this.$t('message.delete_success')
@@ -575,6 +611,9 @@
         })
       },
       onchangetag () {
+        this.disTextDiv = false
+        this.disTypeValue = true
+        this.disPathValue = true
         this.tablaDivDefault = false
         this.tabCheckType = ''
         this.tabCheckPath = ''
@@ -590,6 +629,7 @@
       },
       getpublish () {
         let para = Object.assign({projectId: this.$route.params.mark})
+        para.version = this.getCurrentVersion()
         this.getpublishtime(para).then(res => {
           this.updateTime = res.data.result
         })
@@ -621,7 +661,7 @@
       addFormRules () {
         return {
           configKey: [
-            {required: true, validator: this.checkConfigKey, trigger: 'blur'}
+            {required: true, message: this.$t('message.checkConfigKey'), trigger: 'blur'}
           ],
           configValue:
             [
@@ -654,7 +694,12 @@
       this.getGroups()
       let params2 = Object.assign(this.ruleVeriosn)
       this.getversion(params2)
-      this.getActiveVersion(params2)
+      // this.getActiveVersion(params2)
+      this.getactiveversion(params2).then(res => {
+        this.ActiveVersion.version = res.data.result
+        this.expofiledata.version = this.ActiveVersion.version
+        this.getCurrentProFiles()
+      })
       this.getProjectsShow(params).then(res => {
         this.projectName = res.data.result.name
         this.creatorName = res.data.result.creatorName
@@ -663,7 +708,6 @@
         this.expofiledata.version = this.ActiveVersion.version
         this.getpublish()
         this.getConfigList()
-        this.getCurrentProFiles()
       })
     },
     components: {
@@ -868,6 +912,37 @@
     }
   }
   .selectStyle {
-    margin-top: -13px;
+    margin-top: -15px;
+    width: 50%;
+  }
+  .addVersionButton {
+    margin-left: -30px;
+    margin-top: -10px;
+    width: 100px;
+  }
+  .addProfileButton {
+      width: 100px;
+    }
+  .overListNameWidth {
+    max-width: 75%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .overListPathWidth {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .overKeyWidth {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .overRemarkWidth {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 </style>

@@ -6,6 +6,7 @@ export default {
     state.language = language
     Cookies.set('language', language)
   },
+  [types.GETLOGINOUT] () {},
   [types.GETCONFIGSLIST] (state, res) {
     state.index_projectList = res.data.result.data
     state.formConfigModelData.pageNo = res.data.result.pageNo

@@ -5,6 +5,16 @@ export default {
   setLanguage ({ commit }, language) {
     commit(types.SETLANGUAGE, language)
   },
+  getLogOut ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_LOGINOUT(params).then((res) => {
+        commit(types.GETLOGINOUT, res)
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
+  },
   getConfigsList ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_PROJECTLIST(params).then((res) => {

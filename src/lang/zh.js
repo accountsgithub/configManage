@@ -9,7 +9,8 @@ export default {
     title: 'KEDACOM微服务',
     search: '搜索',
     deal: '操作',
-    add: '添加',
+    add: '添加文件',
+    addVersion:'添加版本',
     show: '查看',
     help: '帮助',
     admin: '管理员',
@@ -23,8 +24,7 @@ export default {
     prompt: '提示',
     create_now: '保存',
     modify_now: '保存',
-    logout: '退出',
-    modifyPassword: '修改密码'
+    logout: '退出'
   },
   index: {
     product_name: '项目名称',
@@ -74,7 +74,8 @@ export default {
     creator_name: '请输入创建人',
     toggle_group: '请选择分组',
     keyword: '请输入关键词',
-    value: 'value不能为空',
+    checkConfigKey: '键不能为空',
+    value: '值不能为空',
     file: '请选择文件夹',
     lang: '请选择语言',
     list_config_content: '只能上传properties/yaml /yml 文件，且不超过10MB',
@@ -90,6 +91,8 @@ export default {
     fail: '上传失败',
     file_name: '文件名不能为空',
     profileType: '类型不能为空',
-    path: '路径不能为空'
+    path: '路径不能为空',
+    version: '版本号不能为空',
+    duplicated_profile:'重复的配置文件'
   }
 }

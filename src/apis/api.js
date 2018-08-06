@@ -23,7 +23,7 @@ axios.interceptors.response.use(response => {
   } else {
     Message.error(response.data.message)
     store.state.project.fullscreenLoading = false
-    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400') {
+    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1001' && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004') {
       router.push({path: '/login'})
     }
     return Promise.reject(response)
@@ -42,7 +42,7 @@ export default {
     return api.fetch('post', `${base}/auth/login`, params)
   },
   GET_LOGINOUT (params) {
-    return api.fetch('get', `${base}/auth/logout`, params)
+    return api.fetch('get', `${base}/oauth2/logout`, params)
   },
   // 修改密码
   GET_EDITPW (params) {
@@ -143,7 +143,15 @@ export default {
     return api.fetch('get', `${base}/profiles`, params)
   },
   GET_PUBLISHTIME (params) {
-    return api.fetch('get', `${base}/profiles/publishTime/` + params.projectId)
+    return api.fetch('get', `${base}/profiles/publishTime/` + params.projectId + `/` + params.version)
+  },
+  // 统一配置查询版本号
+  GET_VERSION (params) {
+    return api.fetch('get', `${base}/version/findVersion/` + params.projectId)
+  },
+  // 统一配置查询正在使用版本号
+  GET_ACTIVEVERSION (params) {
+    return api.fetch('get', `${base}/version/findActiveVersion/` + params.projectId)
   },
   GET_USERNAME () {
     return api.fetch('get', `${base}/auth/me`)
@@ -194,7 +202,7 @@ export default {
   },
   // 统一权限编辑角色
   GET_REDITROLE (params) {
-    return api.fetch('put', `${base}/role/` + params.id, params)
+    return api.fetch('post', `${base}/role` + params.id, params)
   },
   // 统一权限设置有效、无效
   GET_SETROLEABLE (params) {
@@ -218,9 +226,9 @@ export default {
   },
   // 统一权限编辑用户
   GET_REDITUSER (params) {
-    return api.fetch('put', `${base}/user/` + params.id, params)
+    return api.fetch('post', `${base}/user` + params.id, params)
   },
-  // 统一权限批量设置用户有效、无效
+  // 统一权限设置用户有效、无效
   GET_SETUSERABLE (params) {
     return api.fetch('post', `${base}/user/command`, params)
   },

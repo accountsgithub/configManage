@@ -1,6 +1,14 @@
 import * as types from '../../../../mutation_type'
+import utils from '@/utils/util'
 
 export default {
+  [types.GETLOGIN] (state, res) {
+    state.username = res.data.result.username
+    utils.setCookie('name', res.data.result.username)
+  },
+  [types.GETLOGINOUT] (state, res) {
+    utils.delCookie('name')
+  },
   // 统一权限项目管理
   [types.GETDEPTLIST] (state, res) {
     if (res.data && res.data.result) {

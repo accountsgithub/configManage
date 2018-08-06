@@ -116,7 +116,7 @@ export default {
       let matched = this.$route.matched.filter(item => item.name)
       const first = matched[0]
       if (first && first.name !== 'dashboard') {
-        matched = [{path: '/', meta: { title: 'homePage' }}].concat(matched)
+        matched = [{path: '/homePage', meta: { title: 'homePage' }}].concat(matched)
       }
       // let pathTemp = location.href
       this.levelList = matched

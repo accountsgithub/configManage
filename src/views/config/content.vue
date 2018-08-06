@@ -35,7 +35,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination v-if="formConfigModelData.total != 0" @size-change="sizeChange" @current-change="currentChange" :page-size="formConfigModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formConfigModelData.total" class="paginationStyle"></el-pagination>
+          <el-pagination v-if="formConfigModelData.total != 0" :current-page="formConfigModelData.pageNo + 1" @size-change="sizeChange" @current-change="currentChange" :page-size="formConfigModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formConfigModelData.total" class="paginationStyle"></el-pagination>
         </div>
       </el-row>
   </el-row>

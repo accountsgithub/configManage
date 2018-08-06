@@ -167,6 +167,7 @@ export default {
     logout () {
       this.getLogOut().then(res => {
         if (res.data.code === '0') {
+          location.reload()
           // this.$router.push({ path: '/login' })
           window.location.href = './login.html'
         }
@@ -190,6 +191,7 @@ export default {
     height: 72px;
     float: left;
     padding-left: 21px;
+
   }
   .screenfull {
     position: absolute;

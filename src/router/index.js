@@ -18,40 +18,38 @@ export const constantRouterMap = [
   {
     path: '/',
     component: resolve => require(['@/views/layout/Layout'], resolve),
-    redirect: '/department',
-    name: 'department',
+    redirect: '/homePage',
+    name: 'homePage',
     hidden: true,
     children: [{
-      path: '/department',
-      component: resolve => require(['@/views/rbac/departList'], resolve)
+      path: '/homePage',
+      component: resolve => require(['@/views/config/content'], resolve)
     }]
   },
-  /* {
-    path: '/project',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
-      {
-        path: '',
-        name: '项目展示',
-        component: resolve => require(['@/views/project/project'], resolve),
-        meta: { title: '项目展示', icon: 'search' }
-      }
-    ]
-  },
-  {
-    path: '/proExd',
-    component: resolve => require(['@/views/layout/Layout'], resolve),
-    children: [
-      {
-        path: '',
-        name: '项目审批',
-        component: resolve => require(['@/views/project/proExd'], resolve),
-        meta: { title: '项目审批', icon: 'permissions' }
-      }
-    ]
-  }, */
+  // // 统一项目
+  // {
+  //   path: '/project',
+  //   component: resolve => require(['@/views/project/project'], resolve),
+  //   redirect: '/project',
+  //   name: '统一项目',
+  //   meta: { title: '统一项目', icon: 'home' },
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: '项目展示',
+  //       component: resolve => require(['@/views/project/project'], resolve),
+  //       meta: { title: '项目展示', icon: 'edit' }
+  //     },
+  //     {
+  //       path: 'proExd',
+  //       name: '项目审批',
+  //       component: resolve => require(['@/views/project/proExd'], resolve),
+  //       meta: { title: '项目审批', icon: 'edit' }
+  //     }
+  //   ]
+  // },
   // 统一配置
-  /* {
+  {
     path: '/config',
     component: resolve => require(['@/views/layout/Layout'], resolve),
     children: [
@@ -75,7 +73,7 @@ export const constantRouterMap = [
       component: resolve => require(['@/views/config/list.vue'], resolve),
       meta: { title: 'listPage', icon: 'edit' }
     }]
-  }, */
+  },
   // 统一权限
   {
     path: '/view',

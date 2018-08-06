@@ -2,7 +2,7 @@ import actions from './actions/actions'
 import mutations from './mutations/mutation'
 
 const state = {
-  index_pProjectList: [],
+  index_projectList: [],
   index_ProsonList: [],
   formProjectModelData: {
     pageNo: 1,

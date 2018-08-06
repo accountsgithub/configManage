@@ -6,14 +6,14 @@
     <!--添加版本号弹框-->
     <el-dialog
       :title="$t('tags.add_version')"
-      :visible.sync="dialogAddVersionVisible"
+      :visible.sync="dialogAddVersionVisible" @close="resetForm('ruleAddVersionFormTag')" @open="openResetForm('ruleAddVersionFormTag')"
       width="60%">
-      <el-form :model="ruleAddVersionFormTag" :rules="addFormRulesTag" ref="ruleAddVersionFormTag" label-width="100px" class="demo-ruleForm">
+      <el-form :model="ruleAddVersionFormTag" :rules="addVersionRulesTag" ref="ruleAddVersionFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.select_version')" prop="version">
-          <el-input v-model="ruleAddVersionFormTag.version" auto-complete="off"></el-input>
+          <el-input v-model="ruleAddVersionFormTag.version" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('tags.remark')" prop="remark">
-          <el-input v-model="ruleAddVersionFormTag.remark" auto-complete="off"></el-input>
+          <el-input v-model="ruleAddVersionFormTag.remark" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -25,11 +25,11 @@
     <!--添加文件弹框-->
     <el-dialog
       :title="$t('tags.add_file')"
-      :visible.sync="dialogAddVisible"
+      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddFormTag')" @open="openResetForm('ruleAddFormTag')"
       width="60%">
       <el-form :model="ruleAddFormTag" :rules="addFormRulesTag" ref="ruleAddFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.file_name')" prop="name">
-          <el-input v-model="ruleAddFormTag.name" auto-complete="off"></el-input>
+          <el-input v-model="ruleAddFormTag.name" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('tags.file_type')" prop="profileType">
           <el-select v-model="ruleAddFormTag.profileType" :placeholder="$t('tags.select_type')">
@@ -42,7 +42,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :class="{disStyle:disAddFilePath}" :label="$t('tags.file_path')" prop="path">
-          <el-input v-model="ruleAddFormTag.path" auto-complete="off"></el-input>
+          <el-input v-model="ruleAddFormTag.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -53,11 +53,11 @@
     <!--修改文件弹框-->
     <el-dialog
       :title="$t('tags.edit_file')"
-      :visible.sync="dialogEditVisible"
+      :visible.sync="dialogEditVisible" @close="resetForm('ruleEditFormTag')"
       width="60%">
       <el-form :model="ruleEditFormTag" :rules="editFormRulesTag" ref="ruleEditFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.file_name')" prop="name">
-          <el-input v-model="ruleEditFormTag.name" auto-complete="off"></el-input>
+          <el-input v-model="ruleEditFormTag.name" auto-complete="off"  maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('tags.file_type')" prop="profileType">
           <el-select v-model="ruleEditFormTag.profileType" :placeholder="$t('tags.select_type')">
@@ -70,12 +70,12 @@
           </el-select>
         </el-form-item>
         <el-form-item :class="{disStyle:disEditFilePath}" :label="$t('tags.file_path')" prop="path">
-          <el-input v-model="ruleEditFormTag.path" auto-complete="off"></el-input>
+          <el-input v-model="ruleEditFormTag.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button class="dialogButtonB" type="primary" @click="submitForm('ruleEditFormTag')">{{$t('common.modify')}}</el-button>
-          <el-button class="dialogButtonW" @click="dialogEditVisible=false">{{$t('common.cancel')}}</el-button>
+          <el-button class="dialogButtonW" @click="reflash">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -87,6 +87,7 @@
     name: 'vue-tags',
     props: ['source', 'chooseVersion'],
     computed: {
+
       dis_source () {
         return this.source
       },
@@ -134,13 +135,24 @@
           ],
           path: [
             {required: true, message: this.$t('message.path'), trigger: 'blur'}
-          ]
+          ],
         }
       }
     },
     data () {
+      var validateMark = (rule, value, callback) => {
+        let myreg1 = /^\d+(\.\d+)*/
+        if (!myreg1.test(value) && value != '') {
+          callback(new Error('请输入正确的版本号。(以数字开头，只能包含数字和" . ", 如 1 或 1.0 或 1.0.0 或 1.0.0.0 )'))
+        } else if (value === '') {
+          callback(new Error('版本号不能为空'))
+        } else {
+          callback()
+        }
+      }
       return {
         nums: null,
+        itemaa:{},
         ruleAddFormTag: {
           id: '',
           name: '',
@@ -174,6 +186,19 @@
           projectId: this.$route.params.mark,
           version: ''
         },
+        ruleEditProfileFormTag: {
+          id: '',
+          name: '',
+          profileType: '',
+          path: '',
+          projectId: this.$route.params.mark,
+          version: ''
+        },
+        addVersionRulesTag:{
+            version: [
+              { required: true, validator: validateMark, trigger: 'blur' }
+            ]
+        },
         dialogAddVersionVisible: false,
         dialogAddVisible: false,
         dialogEditVisible: false,
@@ -186,6 +211,18 @@
       ]),
       resetForm (name) {
         this.$refs[name].resetFields()
+      },
+      reflash(){
+        this.dialogEditVisible = false
+        // console.log("1321313")
+        // console.log(this.ruleEditFormTag)
+        // console.log("1321313")
+        // console.log(this.ruleEditProfileFormTag)
+        // this.item
+        // this.$emit('getSelectVersion')
+        // console.log("HDKFGKFHKJFHKFHKFHKJHFKFHKFHKJF")
+        // console.log(this.itemaa.id)
+        // this.tagsClick(this.itemaa ,this.nums)
       },
       submitForm (name) {
         this.ruleAddFormTag.version = this.dis_chooseVersion
@@ -337,6 +374,10 @@
       text-align: center;
       cursor: pointer;
     }
+    max-width: 15%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .tags-input {

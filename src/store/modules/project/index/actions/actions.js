@@ -12,6 +12,16 @@ export default {
   //     })
   //   })
   // },
+  getLoginOut ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_LOGINOUT(params).then((res) => {
+        commit(types.GETLOGINOUT, res)
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
+  },
   getAddProjects ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_ADDPROJECTS(params).then((res) => {
