@@ -96,7 +96,7 @@
       },
       disEditFilePath () {
         if (this.ruleEditFormTag.profileType === 'bootstrap') {
-          this.editFormRulesTag.path = []
+          // this.editFormRulesTag.path = []
           return true
         } else {
           this.editFormRulesTag.path.push({ required: true, message: this.$t('message.path'), trigger: 'blur' })
@@ -105,7 +105,7 @@
       },
       disAddFilePath () {
         if (this.ruleAddFormTag.profileType === 'bootstrap') {
-          this.addFormRulesTag.path = []
+          // this.addFormRulesTag.path = []
           return true
         } else {
           this.addFormRulesTag.path.push({ required: true, message: this.$t('message.path'), trigger: 'blur' })
@@ -134,7 +134,7 @@
             {required: true, message: this.$t('message.profileType'), trigger: 'change'}
           ],
           path: [
-            {required: true, message: this.$t('message.path'), trigger: 'blur'}
+            {required: true, message: this.$t('message.path'), trigger: 'change'}
           ],
         }
       }
@@ -228,6 +228,8 @@
         this.ruleAddFormTag.version = this.dis_chooseVersion
         this.ruleEditFormTag.version = this.dis_chooseVersion
         if (this.ruleEditFormTag.profileType === 'bootstrap' || this.ruleAddFormTag.profileType === 'bootstrap') {
+          this.editFormRulesTag.path = []
+          this.addFormRulesTag.path = []
           this.ruleEditFormTag.path = ''
           this.ruleAddFormTag.path = ''
         }
