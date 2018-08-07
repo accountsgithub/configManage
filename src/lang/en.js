@@ -92,6 +92,8 @@ export default {
     profileType: 'type cannot be empty',
     path: 'path cannot be empty',
     version: 'version cannot be empty',
-    duplicated_profile:'duplicated profile'
+    duplicated_profile:'duplicated profile',
+    NO_CONFIGS_TO_PUBLISH:'no configs to publish',
+    INVALID_CONFIG_FILE_KEY:'invalid profile'
   }
 }

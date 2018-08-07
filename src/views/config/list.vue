@@ -365,26 +365,18 @@
               type: 'success'
             })
           }else {
-            this.$message({
-              message: this.$t('message.fail'),
-              type: 'fail'
-            })
+            this.$message.error(this.$t('message.fail'))
           }
-        }else if(file.status == 1001 || file.status == 1002 || file.status == 1003||file.status == 1005){
-          this.$message({
-            message: this.$t('message.fail'),
-            type: 'fail'
-          })
-        } else if(file.status == 1004){
-          this.$message({
-            message: this.$t('message.duplicated_profile'),
-            type: 'fail'
-          })
+        }else if(file.status == 1001 || file.status == 1002){
+          this.$message.error(this.$t('message.fail'))
+        }else if(file.status == 1004){
+          this.$message.error(this.$t('message.duplicated_profile'))
+        }else if(file.status == 1005){
+          this.$message.error(this.$t('message.NO_CONFIGS_TO_PUBLISH'))
+        }else if(file.status == 1003){
+          this.$message.error(this.$t('message.INVALID_CONFIG_FILE_KEY'))
         }else{
-          this.$message({
-            message: this.$t('message.fail'),
-            type: 'fail'
-          })
+          this.$message.error(this.$t('message.fail'))
         }
         this.dialogExpoVisible = false
         this.getConfigList()

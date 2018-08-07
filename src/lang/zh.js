@@ -94,6 +94,8 @@ export default {
     profileType: '类型不能为空',
     path: '路径不能为空',
     version: '版本号不能为空',
-    duplicated_profile:'重复的配置文件'
+    duplicated_profile:'重复的配置文件',
+    NO_CONFIGS_TO_PUBLISH:'没有需要发布的配置',
+    INVALID_CONFIG_FILE_KEY:'无效的配置文件'
   }
 }
