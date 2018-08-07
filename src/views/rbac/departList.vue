@@ -1,157 +1,176 @@
 <template>
   <el-row class="main">
     <div class="divStyle_tree">
-      <tree></tree>
+      <el-input placeholder="部门管理" clearable v-model="filterText" class="treeInputStyle"></el-input>
+      <div class="wrapper treelist-style" ref="wrapper">
+        <el-tree class="filter-tree treeStyle" style="overflow: hidden;margin-top: 14px" :data="treeDData" @node-click="getList" @node-collapse="treeCollapse" @node-expand="treeExpand" :props="defaultProps" default-expand-all :filter-node-method="filterNode" ref="tree2"></el-tree>
+      </div>
     </div>
     <div class="divStyle_show">
       <div class="content-search">
         <el-form :inline="true" :model="formRDepartInline" class="text-left form-top">
           <el-form-item class="searchitemB">
-            <el-button type="primary" @click="exportForm()" class="fontSizeBtW12">导入</el-button>
+            <el-button v-if="index_rootList.indexOf('AUTH_DEPARTMENT_UPLOAD')>-1" type="primary" @click="exportForm()" class="tableButtonStyleW icon iconfont icon-ic-import"> 导入表格</el-button>
           </el-form-item>
           <el-form-item class="searchitemB">
-            <el-button type="primary" @click="rDeptAdd" class="fontSizeBtW12">新增</el-button>
+            <el-button v-if="index_rootList.indexOf('AUTH_DEPARTMENT_ADD')>-1" type="primary" @click="rDeptAdd" class="tableButtonStyleW icon iconfont icon-ic-new"> 新增部门</el-button>
           </el-form-item>
         </el-form>
       </div>
-    <el-row :span="24" class="content table-top">
-      <div class="content-table">
-        <div class="tableInfo">
-          <span>部门管理列表</span>
+      <el-row :span="24" class="content table-top">
+        <div class="content-table">
+          <div class="tableInfo">
+            <span>部门管理列表</span>
+          </div>
+          <el-table :data="index_departList" border :stripe="true">
+            <el-table-column label="部门编号" min-width="10%" align="center"  prop="code"></el-table-column>
+            <el-table-column label="部门名称" min-width="15%" align="center" prop="name"></el-table-column>
+            <el-table-column label="上级部门" min-width="15%" align="center" prop="parent.name"></el-table-column>
+            <el-table-column label="角色权限" min-width="15%" align="center" prop="roles">
+              <template slot-scope="scope">
+                {{convertRoles(scope.row.roles)}}
+              </template>
+            </el-table-column>
+            <el-table-column label="有效性" min-width="10%" align="center" prop="status">
+              <template slot-scope="scope">
+                <i v-if="scope.row.status == 0" style="color: red" class="el-icon-circle-close"></i>
+                <i v-else-if="scope.row.status == 1" style="color: green" class="el-icon-circle-check"></i>
+                {{convertStatus(scope.row.status)}}
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" min-width="15%" align="center">
+              <template slot-scope="scope">
+                <a class="tableActionStyle" v-if="index_rootList.indexOf('AUTH_DEPARTMENT_UPDATE')>-1" :disabled="isDisabledFun(scope.row)" @click="getEditClick(scope.row, scope.$index)">编辑</a>
+                <a class="tableActionStyle" :disabled="isDisabledFun(scope.row)" @click="setAbleClick('START', scope.row)" v-if="scope.row.status!='1'&&index_rootList.indexOf('AUTH_DEPARTMENT_COMMAND')>-1">设为有效</a>
+                <a class="tableActionStyle" :disabled="isDisabledFun(scope.row)" @click="setAbleClick('STOP', scope.row)" v-else-if="index_rootList.indexOf('AUTH_DEPARTMENT_COMMAND')>-1">设为无效</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination class="paginationStyle" v-if="rDeptFormModelData.total != 0" @size-change="sizeChange" @current-change="currentChange" :page-size="rDeptFormModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="rDeptFormModelData.total"></el-pagination>
         </div>
-        <el-table :data="index_departList" border >
-          <el-table-column label="部门编号" min-width="180" align="center"  prop="code"></el-table-column>
-          <el-table-column label="部门名称" min-width="180" align="center" prop="name"></el-table-column>
-          <el-table-column label="上级部门" min-width="180" align="center" prop="parent"></el-table-column>
-          <el-table-column label="角色权限" min-width="100" align="center" prop="roles.name"></el-table-column>
-          <el-table-column label="有效性" min-width="180" align="center" prop="status"></el-table-column>
-          <el-table-column label="操作" min-width="180" align="center">
-            <template slot-scope="scope">
-              <a class="tableActionStyle" :disabled="isDisabledFun(scope.row)" @click="getExaminedApplyClick(1, scope.row, scope.$index)">编辑</a>
-              <a class="tableActionStyle" :disabled="isDisabledFun(scope.row)" @click="setAbleClick('1', scope.row)" v-if="scope.row.status!='1'">设为有效</a>
-              <a class="tableActionStyle" :disabled="isDisabledFun(scope.row)" @click="setAbleClick('0', scope.row)" v-else>设为无效</a>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="paginationStyle" v-if="rDeptFormModelData.total != 0" @size-change="sizeChange" @current-change="currentChange" :page-size="rDeptFormModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="rDeptFormModelData.total"></el-pagination>
-      </div>
-    </el-row>
-    <!--新增-->
-    <el-dialog
-      title="新增部门"
-      :visible.sync="dialogAddVisible" @close="closeDialog('departAddForm')"
-      width="50%">
-      <el-form :model="departAddForm" :rules="deptFormRules" ref="departAddForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="单位编号" prop="code">
-          <el-input v-model="departAddForm.code" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="单位名称" prop="name">
-          <el-input v-model="departAddForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级单位" prop="departmentName">
-          <el-select v-model="departAddForm.departmentName" placeholder="请选择">
-            <el-option
-              v-for="item in index_departList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="roles">
-          <el-transfer
-            filterable
-            :filter-method="filterMethod"
-            filter-placeholder="可选角色列表"
-            v-model="departAddForm.roles"
-            :data="getRoleList">
-          </el-transfer>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input type="textarea"
-                    :autosize="{ minRows: 3, maxRows: 3}"
-                    v-model="departAddForm.remark"
-                    auto-complete="off">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+      </el-row>
+      <!--新增-->
+      <el-dialog
+        title="新增部门" class="dialogStyle"
+        :visible.sync="dialogAddVisible" @close="closeDialog('departAddForm')"
+        width="50%">
+        <el-scrollbar class="list1">
+          <el-form :model="departAddForm" :rules="deptFormRules" ref="departAddForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="单位编号" prop="code">
+              <el-input maxlength="50" v-model="departAddForm.code" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="单位名称" prop="name">
+              <el-input maxlength="50" v-model="departAddForm.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="上级单位" prop="parent.id">
+              <el-select v-model="departAddForm.parent.id" placeholder="请选择">
+                <el-option
+                  v-for="item in dialogDeptData"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="roles">
+              <el-transfer
+                filterable
+                :filter-method="filterMethod"
+                filter-placeholder="可选角色列表"
+                v-model="departAddForm.roles"
+                :data="getRoleList">
+              </el-transfer>
+            </el-form-item>
+            <el-form-item label="备注" prop="description">
+              <el-input type="textarea" maxlength="100"
+                        :autosize="{ minRows: 3, maxRows: 3}"
+                        v-model="departAddForm.description"
+                        auto-complete="off">
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </el-scrollbar>
+        <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm('departAddForm')" class="dialogButtonB">保存</el-button>
-          <el-button @click="resetUserForm('departAddForm')" class="dialogButtonW">重置</el-button>
+          <el-button @click="resetDepartForm('departAddForm')" class="dialogButtonW">重置</el-button>
       </span>
-    </el-dialog>
-    <!--编辑-->
-    <el-dialog
-      title="编辑部门"
-      :visible.sync="dialogEditVisible" @close="closeDialog('departEditForm')"
-      width="50%">
-      <el-form :model="departEditForm" :rules="deptFormRules" ref="departEditForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="单位编号" prop="code">
-          <el-input v-model="departEditForm.code" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="单位名称" prop="name">
-          <el-input v-model="departEditForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="所属单位" prop="departmentName">
-          <el-select v-model="departEditForm.departmentName" placeholder="请选择">
-            <el-option
-              v-for="item in index_departList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="roles">
-          <el-transfer
-            filterable
-            :filter-method="filterMethod"
-            filter-placeholder="可选角色列表"
-            v-model="departEditForm.roles"
-            :data="getRoleList">
-          </el-transfer>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input type="textarea"
-                    :autosize="{ minRows: 3, maxRows: 3}"
-                    v-model="departAddForm.remark"
-                    auto-complete="off">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <!--编辑-->
+      <el-dialog
+        title="编辑部门" class="dialogStyle"
+        :visible.sync="dialogEditVisible" @close="closeDialog('departEditForm')"
+        width="50%">
+        <el-scrollbar class="list1">
+          <el-form :model="departEditForm" :rules="deptFormRules" ref="departEditForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="单位编号" prop="code">
+              <el-input maxlength="50" v-model="departEditForm.code" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="单位名称" prop="name">
+              <el-input maxlength="50" v-model="departEditForm.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="所属单位" prop="parent.id">
+              <el-select v-model="departEditForm.parent.id" placeholder="请选择">
+                <el-option
+                  v-for="item in dialogDeptData"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="roles">
+              <el-transfer
+                filterable
+                :filter-method="filterMethod"
+                filter-placeholder="可选角色列表"
+                v-model="departEditForm.roles"
+                :data="getRoleList">
+              </el-transfer>
+            </el-form-item>
+            <el-form-item label="备注" prop="description">
+              <el-input type="textarea" maxlength="100"
+                        :autosize="{ minRows: 3, maxRows: 3}"
+                        v-model="departAddForm.description"
+                        auto-complete="off">
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </el-scrollbar>
+        <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm('departEditForm')" class="dialogButtonB">保存</el-button>
-          <el-button @click="resetUserForm('departEditForm')" class="dialogButtonW">重置</el-button>
+          <el-button @click="closethisDialog" class="dialogButtonW">取消</el-button>
       </span>
-    </el-dialog>
-    <!--导入-->
-    <el-dialog
-      title="导入"
-      :visible.sync="dialogExpoVisible"
-      :before-close="beforeClose"
-      width="60%">
-      <el-upload
-        class="upload-demo"
-        ref="upload"
-        :action='url'
-        :data="expofiledata"
-        :default-file-list="defaultUploadList"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :file-list="fileList"
-        :on-success="handleSuccess"
-        :limit="1"
-        :format="['properties','yaml','yml']"
-        :on-exceed="onexceed"
-        :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传Excel文件，且不超过10MB</div>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <!--导入-->
+      <el-dialog
+        title="导入"
+        :visible.sync="dialogExpoVisible"
+        :before-close="beforeClose"
+        width="60%">
+        <a id="download" :href="downloadPath" style="float: left;margin-right: 20px;color: #016ad5">部门导入模板.xlsx</a>
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          :action='url'
+          :data="expofiledata"
+          :default-file-list="defaultUploadList"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :file-list="fileList"
+          :on-error="handleError"
+          :on-success="handleSuccess"
+          :limit="1"
+          :format="['properties','yaml','yml']"
+          :on-exceed="onexceed"
+          :auto-upload="false">
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传Excel文件，且不超过10MB</div>
+        </el-upload>
+        <span slot="footer" class="dialog-footer">
           <el-button @click="dialogExpoClose" class="dialogButtonW">取消</el-button>
       </span>
-    </el-dialog>
+      </el-dialog>
     </div>
   </el-row>
 </template>
@@ -159,19 +178,30 @@
 <script>
   import utils from '@/utils/util'
   import {mapState, mapActions} from 'vuex'
-  import tree from '@/views/tree'
+  import BScroll from 'better-scroll'
   export default {
     name: 'project',
     data () {
       return {
         filterMethod (query, item) {
-          return item.id.indexOf(query) > -1
+          return item.label.indexOf(query) > -1
         },
+        filterText: '',
+        windowHeight: document.body.scrollHeight - 150,
         dialogAddVisible: false,
         dialogEditVisible: false,
         dialogExpoVisible: false,
-        // 导入begin
-        url: this.g_Config.BASE_URL + '/files/config_file_import',
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        },
+        searchFrom: {
+          f_eq_id: '',
+          f_eq_status: '',
+          f_like_name: ''
+        },
+        // 导入_开始
+        url: this.g_Config.BASE_URL + '/department/import',
         expofiledata: {
           projectId: ''
         },
@@ -186,8 +216,9 @@
           }, // 上级单位
           roles: [], // 角色列表
           name: '', // 部门名称
-          status: '', // 状态
-          sign: '' // 项目标识
+          status: '1', // 状态
+          sign: '', // 项目标识
+          description: ''
         },
         departEditForm: {
           id: '', // 部门id
@@ -198,13 +229,13 @@
           roles: [], // 角色列表
           name: '', // 部门名称
           status: '', // 状态
-          sign: '' // 项目标识
+          sign: '', // 项目标识
+          description: ''
         },
         formRDepartInline: {
-          f_eq_examinedState: '',
           paging: true,
           pageSize: 10,
-          pageNo: 1
+          pageNo: 0
         },
         deptFormRules: {
           code: [
@@ -232,10 +263,51 @@
         }]
       }
     },
+    watch: {
+      filterText (val) {
+        this.$refs.tree2.filter(val)
+      }
+    },
     methods: {
       ...mapActions([
-        'getDeptList', 'getRAddDepart', 'getREditDepart', 'getDelProjects', 'getPersonList', 'getExamined', 'getExaminedApply', 'getPersonIsAdmin'
+        'getTreeDeptList', 'getDeptList', 'getRAddDepart', 'getREditDepart', 'getDelProjects', 'getPersonList', 'getExamined', 'getExaminedApply', 'getPersonIsAdmin', 'getSetDepartAble', 'getRRoleList', 'getrDownloadFile', 'getRSelectRoleList'
       ]),
+      // 下载模板
+      downloadFile () {
+        let params = Object.assign({filename: 'department_import_zh.xlsx'})
+        this.getrDownloadFile(params)
+      },
+      closethisDialog () {
+        this.dialogEditVisible = false
+      },
+      // 树展开方法
+      treeExpand (data, node, value) {
+        /* var ops = document.querySelectorAll('.el-tree-node__content span')
+        for (let p of ops) {
+          if (p.className && p.className.indexOf('el-icon-caret-right') > -1 && p.className.indexOf('expanded') > -1) {
+            p.classList.remove('el-icon-caret-right')
+            p.classList.remove('expanded')
+            p.classList.add('el-icon-remove-outline')
+          } else if (p.className && p.className.indexOf('el-icon-caret-bottom') > -1 && p.className.indexOf('expanded') > -1) {
+            p.classList.remove('el-icon-caret-bottom')
+            p.classList.add('el-icon-circle-plus-outline')
+          }
+        } */
+      },
+      // 树收起方法
+      treeCollapse () {
+        /* var ops = document.querySelectorAll('.el-tree-node__content span')
+        for (let p of ops) {
+          if (p.className && p.className.indexOf('el-icon-caret-right') > -1 && p.className.indexOf('expanded') > -1) {
+            p.classList.remove('el-icon-caret-right')
+            p.classList.remove('expanded')
+            p.classList.add('el-icon-remove-outline')
+          } else if (p.className && p.className.indexOf('el-icon-caret-bottom') > -1 && p.className.indexOf('expanded') > -1) {
+            p.classList.remove('el-icon-caret-bottom')
+            p.classList.add('el-icon-circle-plus-outline')
+          }
+        } */
+      },
       timestampToTimeClick (val) {
         if (val) {
           return utils.timestampToTime(val)
@@ -243,6 +315,50 @@
           return '-----'
         }
       },
+      resetDepartForm (name) {
+        this.$refs[name].resetFields()
+      },
+      // 左侧单位树
+      getTreeDepartList () {
+        let params = Object.assign({paging: false})
+        this.getTreeDeptList(params)
+      },
+      filterNode (value, data) {
+        if (!value) return true
+        return data.name.indexOf(value) !== -1
+      },
+      chaneType (dataJson, idStr, pidStr, chindrenStr) {
+        let treeData = []
+        let hash = {}
+        let id = idStr
+        let pid = pidStr
+        let children = chindrenStr
+        let i = 0
+        let j = 0
+        let len = 0
+        if (dataJson) {
+          len = dataJson.length
+        }
+        for (; i < len; i++) {
+          dataJson[i].label = dataJson[i].name
+          if (dataJson[i].parent) {
+            dataJson[i].parentid = dataJson[i].parent.id
+          }
+          hash[dataJson[i][id]] = dataJson[i]
+        }
+        for (; j < len; j++) {
+          let aVal = dataJson[j]
+          let hashVP = hash[aVal[pid]]
+          if (hashVP) {
+            !hashVP[children] && (hashVP[children] = [])
+            hashVP[children].push(aVal)
+          } else {
+            treeData.push(aVal)
+          }
+        }
+        return treeData
+      },
+      // 左侧单位树 end
       closeDialog (name) {
         this.$refs[name].resetFields()
       },
@@ -270,24 +386,68 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             if (name === 'departAddForm') {
-              let params = Object.assign(this.departAddForm)
+              let newRoles = []
+              let newDepartAddForm = {}
+              for (let i = 0; i < this.departAddForm.roles.length; i++) {
+                newRoles.push({id: this.departAddForm.roles[i]})
+              }
+              newDepartAddForm.id = this.departAddForm.id // 部门id
+              newDepartAddForm.code = this.departAddForm.code // 单位编号
+              newDepartAddForm.parent = {id: this.departAddForm.parent.id}
+              newDepartAddForm.roles = newRoles // 角色列表
+              newDepartAddForm.name = this.departAddForm.name // 部门名称
+              newDepartAddForm.status = '1' // 状态
+              newDepartAddForm.sign = this.departAddForm.sign // 项目标识
+              newDepartAddForm.description = this.departAddForm.description
+              let params = Object.assign(newDepartAddForm)
               this.getRAddDepart(params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '添加成功!'
-                })
-                this.getDepartList()
-                this.dialogAddVisible = false
+                if (res.data.code == '0') {
+                  this.$message({
+                    type: 'success',
+                    message: '添加成功!'
+                  })
+                  this.getTreeDepartList()
+                  this.getDepartList()
+                  this.dialogAddVisible = false
+                } else if (res.data.code == '-1') {
+                  this.$message({
+                    type: 'error',
+                    message: res.data.message
+                  })
+                }
               })
             } else if (name === 'departEditForm') {
-              let params = Object.assign(this.departEditForm)
+              let newRoles = []
+              let newDepartAddForm = {}
+              for (let i = 0; i < this.departEditForm.roles.length; i++) {
+                newRoles.push({id: this.departEditForm.roles[i]})
+              }
+              newDepartAddForm.id = this.departEditForm.id // 部门id
+              newDepartAddForm.code = this.departEditForm.code // 单位编号
+              if (this.departEditForm.parent && this.departEditForm.parent.id != '') {
+                newDepartAddForm.parent = {id: this.departEditForm.parent.id}
+              }
+              newDepartAddForm.roles = newRoles // 角色列表
+              newDepartAddForm.name = this.departEditForm.name // 部门名称
+              newDepartAddForm.status = this.departEditForm.status // 状态
+              newDepartAddForm.sign = this.departEditForm.sign // 项目标识
+              newDepartAddForm.description = this.departEditForm.description
+              let params = Object.assign(newDepartAddForm)
               this.getREditDepart(params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '修改成功!'
-                })
-                this.getDepartList()
-                this.dialogEditVisible = false
+                if (res.data.code == '0') {
+                  this.$message({
+                    type: 'success',
+                    message: '修改成功!'
+                  })
+                  this.getTreeDepartList()
+                  this.getDepartList()
+                  this.dialogEditVisible = false
+                } else if (res.data.code == '-1') {
+                  this.$message({
+                    type: 'error',
+                    message: res.data.message
+                  })
+                }
               })
             }
           } else {
@@ -299,30 +459,29 @@
       handleEdit (index, row, type) {
         let params = Object.assign(row, {type: type})
         this.getExamined(params).then(res => {
-          console.log(res)
         })
       },
+      // 设为有效/无效
       setAbleClick (type, row) {
-        this.$confirm(type === '1' ? '是否确认将此角色设为有效?' : '是否确认将此角色设为无效?', type === '1' ? '确认设为有效？' : '确认设为无效？', {
+        this.$confirm(type === 'START' ? '是否确认将此部门设为有效?' : '是否确认将此部门设为无效?', type === 'START' ? '确认设为有效？' : '确认设为无效？', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           let params
           if (row) {
+            debugger
             let ids = []
             ids.push(row.id)
-            params = Object.assign(ids, {command: type})
-          } else {
-            params = Object.assign(this.ids, {command: type})
-          }
-          this.getSetUserAble(params).then(res => {
-            this.$message({
-              type: 'success',
-              message: '设置成功!'
+            params = Object.assign({id: ids}, {command: type})
+            this.getSetDepartAble(params).then(res => {
+              this.$message({
+                type: 'success',
+                message: '设置成功!'
+              })
+              this.getDepartList()
             })
-            this.getProList()
-          })
+          }
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -333,23 +492,51 @@
       // 导入begin
       beforeClose (done) {
         this.defaultUploadList = []
+        this.fileList = []
         done()
       },
       handlePreview (file) {
-        console.log(file)
+        console.log('file')
       },
       handleRemove (file, fileList) {
-        console.log(file, fileList)
+        console.log('file, fileList')
+      },
+      handleError (file, fileList) {
+        if (file.status != '200') {
+          this.$message({
+            message: '上传失败！',
+            type: 'error'
+          })
+          this.defaultUploadList = []
+          this.fileList = []
+          this.dialogExpoVisible = false
+        }
       },
       handleSuccess (file, fileList) {
-        if (file.status == '200') {
-          this.$message({
-            message: this.$t('message.success'),
-            type: 'success'
-          })
+        if (file.status == '200' && file.code != '-1') {
+          if (file.result.message.indexOf('成功0') > -1) {
+            this.$message({
+              message: file.result.message,
+              type: 'error'
+            })
+          } else {
+            this.$message({
+              message: file.result.message,
+              type: 'success'
+            })
+          }
           this.dialogExpoVisible = false
-          this.getConfigList()
+          this.getThisDepartList()
           this.defaultUploadList = []
+          this.fileList = []
+        } else {
+          this.$message({
+            message: '上传失败！',
+            type: 'error'
+          })
+          this.defaultUploadList = []
+          this.fileList = []
+          this.dialogExpoVisible = false
         }
       },
       onexceed (files, fileList) {
@@ -364,8 +551,43 @@
       dialogExpoClose () {
         this.dialogExpoVisible = false
         this.defaultUploadList = []
+        this.fileList = []
+      },
+      getList (node) {
+        if (this.index_rootList.indexOf('AUTH_DEPARTMENT_QUERY') > -1) {
+          this.searchFrom.f_eq_id = node.id
+          this.searchFrom.f_like_name = node.name
+          this.getThisDepartList()
+        }
+      },
+      // 角色类型转换
+      convertRoles (data) {
+        if (data) {
+          let backStr = ''
+          for (let i = 0; i < data.length; i++) {
+            backStr += data[i].name + ','
+          }
+          if (backStr.length > 0) {
+            return backStr.substring(0, backStr.length - 1)
+          } else {
+            return ''
+          }
+        }
+      },
+      convertStatus (data) {
+        if (data == '1') {
+          return '有效'
+        } else if (data == '0') {
+          return '无效'
+        } else {
+          return ''
+        }
       },
       // 导入end
+      autoGetRole () {
+        let params = Object.assign({paging: false})
+        this.getRSelectRoleList(params)
+      },
       handleDel (index, row) {
         let params = {
           id: []
@@ -384,73 +606,123 @@
         this.getDepartList()
       },
       currentChange (val) {
-        this.rDeptFormModelData.pageNo = val
+        this.rDeptFormModelData.pageNo = val - 1
         this.getDepartList()
       },
       rDeptAdd () {
         this.dialogAddVisible = true
       },
+      getThisDepartList () {
+        this.rDeptFormModelData.pageNo = 0
+        this.getDepartList()
+      },
       getDepartList () {
         this.formRDepartInline.pageSize = this.rDeptFormModelData.pageSize
         this.formRDepartInline.pageNo = this.rDeptFormModelData.pageNo
-        let params = Object.assign(this.formRDepartInline)
+        let params = Object.assign(this.formRDepartInline, this.searchFrom)
         this.getDeptList(params)
       },
       exportForm () {
         this.dialogExpoVisible = true
       },
-      getExaminedApplyClick (type, row, index) {
-        let params
-        if (row) {
-          let aa = []
-          aa.push(row.id)
-          params = Object.assign(aa, {type: type})
-        } else {
-          params = Object.assign(this.ids, {type: type})
+      changeTreeValue (treeValue, newArray = [], parentID = null) {
+        let newJson = {}
+        let i = 0
+        if (treeValue) {
+          for (; i < treeValue.length; i++) {
+            newJson.parentid = parentID
+            newJson.id = treeValue[i].id
+            newJson.name = treeValue[i].name
+            newJson.level = treeValue[i].level
+            newJson.path = treeValue[i].path
+            newJson.status = treeValue[i].status
+            newArray.push(newJson)
+            newJson = {}
+            if (treeValue[i].children) {
+              this.changeTreeValue(treeValue[i].children, newArray, treeValue[i].id)
+            }
+          }
         }
-        this.getExamined(params).then(res => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          })
-          this.getDepartList()
-        })
+        return newArray
+      },
+      getEditClick (row, index) {
+        this.departEditForm.id = row.id // 部门id
+        this.departEditForm.code = row.code // 单位编号
+        if (row.parent) {
+          this.departEditForm.parent.id = row.parent.id // 上级单位
+        }
+        let newRoles = []
+        for (let i = 0; i < row.roles.length; i++) {
+          newRoles.push(row.roles[i].id)
+        }
+        this.departEditForm.roles = newRoles // 角色列表
+        this.departEditForm.name = row.name // 部门名称
+        this.departEditForm.status = row.status // 状态
+        this.departEditForm.sign = row.sign // 项目标识
+        this.dialogEditVisible = true
       }
     },
-    components: {
-      tree
+    mounted () {
+      this.getTreeDepartList()
+      this.getThisDepartList()
+      this.autoGetRole()
+      this.downloadFile()
+      document.getElementsByClassName('divStyle_tree')[0].style.height = this.windowHeight + 'px'
+      document.getElementsByClassName('wrapper')[0].style.height = this.windowHeight + 'px'
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, {scrollY: true, scrollX: true, click: true})
+      })
     },
     computed: {
       ...mapState({
         rDeptFormModelData: (index) => index.rbac.rDeptFormModelData,
         index_departList: (index) => index.rbac.index_departList,
-        personList: (person) => person.rbac.personList
+        personList: (person) => person.rbac.personList,
+        index_treeDepartList: (index) => index.rbac.index_treeDepartList,
+        index_rRoleSelectList: (index) => index.rbac.index_rRoleSelectList,
+        downLoadHref: (index) => index.rbac.downLoadHref
       }),
+      downloadPath () {
+        return this.g_Config.BASE_URL + this.downLoadHref
+      },
+      index_rootList () {
+        return JSON.parse(localStorage.rootList)
+      },
+      treeDData () {
+        return this.index_treeDepartList
+      },
       getRoleList () {
         let arrayData = []
         let JsonRole = {}
-        let arrayRole = this.index_rRoleList
+        let arrayRole = this.index_rRoleSelectList
         for (let jsonData in arrayRole) {
-          console.log(arrayRole[jsonData].id)
-          JsonRole.id = arrayRole[jsonData].id
+          JsonRole.id = arrayRole[jsonData].id.toString()
           JsonRole.label = arrayRole[jsonData].name
           JsonRole.key = arrayRole[jsonData].id
           arrayData.push(JsonRole)
           JsonRole = {}
         }
         return arrayData
+      },
+      dialogDeptData () {
+        return this.changeTreeValue(this.index_treeDepartList)
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .divStyle_tree{
-    float: left;
-    width: 19%;
-    background: #ffffff;
-    margin-right:0.5%;
-    margin-top: 10px;
+  .tableButtonStyleW{
+    font-family:PingFangSC-Semibold;
+    font-size:12px;
+    color:#666666;
+    background:#f9fbfd;
+    border:1px solid #e7e9f0;
+    border-radius:4px;
+    width:90px;
+    height:32px;
+    float: right;
+    margin-left: 10px;
   }
   .divStyle_show{
     float: right;
@@ -505,12 +777,12 @@
     margin-left: 10px;
   }
   .el-button {
-    line-height: 0.5;
+    padding: 0;
   }
   .el-table{
-    font-family:PingFangSC-Semibold;
+    font-family:PingFangSC-Regular;
     font-size:12px;
-    color:#909399;
+    color:#606266;
     letter-spacing:0.86px;
     text-align:left;
   }
@@ -560,6 +832,14 @@
       font-size: 12px;
     };
   }
+  // 弹出框标题样式
+  /deep/.el-dialog__title{
+    font-weight: bolder;
+    font-size: 16px;
+    color:#333333;
+    font-family:PingFangSC-Medium;
+  }
+  //弹出框样式
   .form-top{
     margin-top: 0;
     margin-right: 22px;
@@ -588,6 +868,7 @@
     color:#016ad5;
     letter-spacing:0.86px;
     text-align:left;
+    margin-left: 10px;
   }
   .content-table{
     background: #ffffff;
@@ -601,5 +882,70 @@
     letter-spacing:0;
     text-align:left;
     height: 50px;
+  }
+  // 左侧树滚动条
+  .wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  /deep/.divStyle_tree .el-scrollbar__wrap{
+    overflow: hidden;
+  }
+  .list1 {
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  // 分页
+  .el-pagination {
+    color: #575a5f;
+    font-weight: 500;
+  }
+  .dialogStyle{}
+  //弹出框样式
+  .dialogStyle {
+    /deep/.el-input__inner {
+      background:#ffffff;
+      border:1px solid #dcdfe6;
+      border-radius:4px;
+      height:30px;
+      font-size: 12px;
+    };
+    // 弹出框调节器样式
+    /deep/.el-input-number__increase{
+      top:5px;
+      line-height:14px
+    };
+    /deep/.el-input-number__decrease{
+      bottom:4px
+    }
+  }
+  // 左侧树样式
+  .divStyle_tree{
+    float: left;
+    width: 19%;
+    background: #ffffff;
+    margin-right:0.5%;
+    margin-top: 10px;
+  }
+  // 树搜索框样式
+  .treeInputStyle {
+    margin-left: 10%;
+    margin-top: 14px;
+    width: 80%;
+  }
+  .treeInputStyle{
+    /deep/.el-input__inner {
+      border-radius:100px;
+      height: 32px;
+      font-family:PingFangSC-Regular;
+      font-size:12px;
+      color:#6c737d;
+    }
+  }
+  /deep/.el-tree-node__label {
+    font-family:PingFangSC-Regular;
+    font-size:12px;
+    color:#686f79;
   }
 </style>

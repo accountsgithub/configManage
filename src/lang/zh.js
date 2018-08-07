@@ -24,7 +24,8 @@ export default {
     prompt: '提示',
     create_now: '保存',
     modify_now: '保存',
-    logout: '退出'
+    logout: '退出',
+    modifyPassword: '修改密码'
   },
   index: {
     product_name: '项目名称',

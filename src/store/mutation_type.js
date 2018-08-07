@@ -55,6 +55,8 @@ export const SETLANGUAGE = 'setLanguage'
 export const GETLOGIN = 'getLogin'
 // 登出
 export const GETLOGINOUT = 'getLogOut'
+// 修改密码
+export const GETEDITPW = 'getEditPW'
 // 获取登录用户信息
 export const GETUSERNAME = 'getUserName'
 

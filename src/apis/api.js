@@ -24,7 +24,7 @@ axios.interceptors.response.use(response => {
   } else {
     Message.error(response.data.message)
     store.state.config.fullscreenLoading = false
-    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1001' && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004') {
+    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1001' && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004' && response.data.status != '1005') {
       router.push({path: '/login'})
     }
     return Promise.reject(response)
@@ -45,52 +45,56 @@ export default {
   GET_LOGINOUT (params) {
     return api.fetch('get', `${base}/oauth2/logout`, params)
   },
+  // 修改密码
+  GET_EDITPW (params) {
+    return api.fetch('put', `${base}/user/password`, params)
+  },
   // 统一项目
-  GET_ADDPROJECTS (params) {
-    return api.fetch('post', `${base}/admin/projects`, params)
-  },
-  GET_EDITPROJECTS (params) {
-    return api.fetch('put', `${base}/admin/projects/` + params.id, params)
-  },
-  GET_DELPROJECTS (params) {
-    return api.fetch('put', `${base}/admin/projects/batch`, params)
-  },
-  GET_PROJECTSLIST (params) {
-    console.log(params)
-    return api.fetch('get', `${base}/admin/projects`, params)
-  },
-  GET_PPRESONLIST (params) {
-    console.log(params)
-    return api.fetch('get', `${base}/projectPerson`, params)
-  },
-  GET_UNIQUE (params) {
-    return api.fetch('get', `${base}/admin/projects/unique/`, params)
-  },
-  GET_EXAMINEDLIST (params) {
-    return api.fetch('get', `${base}/admin/projects/examinedList`, params)
-  },
-  GET_EXAMINED (params) {
-    return api.fetch('put', `${base}/admin/projects/examined/` + params.type, params)
-  },
-  GET_EXAMINEDAPPLY (params) {
-    return api.fetch('put', `${base}/admin/projects/examined/apply`, params)
-  },
-  // 人员
-  GET_ADDPERSON (params) {
-    return api.fetch('post', `${base}/person`, params)
-  },
-  GET_PERSONLIST (params) {
-    return api.fetch('get', `${base}/projectPerson`, params)
-  },
-  GET_EDITPERSON (params) {
-    return api.fetch('put', `${base}/person`, params)
-  },
-  GET_DELPERSON (params) {
-    return api.fetch('delete', `${base}/person/` + params.id)
-  },
-  GET_PERSONISADMIN (params) {
-    return api.fetch('get', `${base}/admin/projects/personIsAdmin`)
-  },
+  // GET_ADDPROJECTS (params) {
+  //   return api.fetch('post', `${base}/admin/projects`, params)
+  // },
+  // GET_EDITPROJECTS (params) {
+  //   return api.fetch('put', `${base}/admin/projects/` + params.id, params)
+  // },
+  // GET_DELPROJECTS (params) {
+  //   return api.fetch('put', `${base}/admin/projects/batch`, params)
+  // },
+  // GET_PROJECTSLIST (params) {
+  //   console.log(params)
+  //   return api.fetch('get', `${base}/admin/projects`, params)
+  // },
+  // GET_PPRESONLIST (params) {
+  //   console.log(params)
+  //   return api.fetch('get', `${base}/projectPerson`, params)
+  // },
+  // GET_UNIQUE (params) {
+  //   return api.fetch('get', `${base}/admin/projects/unique/`, params)
+  // },
+  // GET_EXAMINEDLIST (params) {
+  //   return api.fetch('get', `${base}/admin/projects/examinedList`, params)
+  // },
+  // GET_EXAMINED (params) {
+  //   return api.fetch('put', `${base}/admin/projects/examined/` + params.type, params)
+  // },
+  // GET_EXAMINEDAPPLY (params) {
+  //   return api.fetch('put', `${base}/admin/projects/examined/apply`, params)
+  // },
+  // // 人员
+  // GET_ADDPERSON (params) {
+  //   return api.fetch('post', `${base}/person`, params)
+  // },
+  // GET_PERSONLIST (params) {
+  //   return api.fetch('get', `${base}/projectPerson`, params)
+  // },
+  // GET_EDITPERSON (params) {
+  //   return api.fetch('put', `${base}/person`, params)
+  // },
+  // GET_DELPERSON (params) {
+  //   return api.fetch('delete', `${base}/person/` + params.id)
+  // },
+  // GET_PERSONISADMIN (params) {
+  //   return api.fetch('get', `${base}/admin/projects/personIsAdmin`)
+  // },
   // 统一配置
   GET_PROJECTLIST (params) {
     return api.fetch('get', `${base}/projects`, params)

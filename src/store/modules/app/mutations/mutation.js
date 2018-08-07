@@ -18,5 +18,6 @@ export default {
   },
   [types.TOGGLEDEVICE] (state, device) {
     state.device = device
-  }
+  },
+  [types.GETEDITPW] (state, res) {},
 }
