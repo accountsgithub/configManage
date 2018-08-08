@@ -75,7 +75,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button class="dialogButtonB" type="primary" @click="submitForm('ruleEditFormTag')">{{$t('common.modify')}}</el-button>
-          <el-button class="dialogButtonW" @click="reflash">{{$t('common.cancel')}}</el-button>
+          <el-button class="dialogButtonW" @click="resetForm('ruleEditFormTag')">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -213,14 +213,9 @@
         'getaddprofiles', 'geteditprofiles', 'getprofilesexpo', 'getdelprofiles', 'getprofiles', 'getaddversions'
       ]),
       resetForm (name) {
-        this.$refs[name].resetFields()
-        this.ruleEditFormTag.name = this.dis_fileName
+        this.dialogEditVisible = false
       },
       openResetForm (name) {
-        this.ruleEditFormTag.name = this.dis_fileName
-        if (this.$refs[name]) {
-          this.$refs[name].resetFields()
-        }
       },
       reflash(){
         this.dialogEditVisible = false

@@ -559,6 +559,13 @@
       tagClick (data) {
         if (data) {
           this.ConfigData = data
+          this.ConfigData.name = data.name
+          this.ConfigData.profileType = data.profileType
+          this.ConfigData.id = data.id
+          this.ConfigData.path = data.path
+          this.ConfigData.projectId = data.projectId
+          this.ConfigData.version = data.version
+
           this.disTextEdit = true
           this.saveButton = false
           this.tablaDivDefault = true

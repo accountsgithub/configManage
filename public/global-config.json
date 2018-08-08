@@ -1,5 +1,5 @@
 {
   "status": "200",
-  "BASE_URL": "http://stage.ctsp.kedacom.com/cloud-rbac",
+  "BASE_URL": "http://localhost:8081",
   "AJAX_TIMEOUT": "20000"
 }

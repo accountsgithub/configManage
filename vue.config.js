@@ -6,7 +6,7 @@ module.exports = {
     // sub-path here. For example, if your app is deployed at
     // https://www.foobar.com/my-app/
     // then change this to '/my-app/'
-    baseUrl: '/cloud-rbac/', // cloud-rbac
+    baseUrl: '/',
 
     // where to output built files
     outputDir: 'dist',
@@ -60,30 +60,6 @@ module.exports = {
     // options for the PWA plugin.
     // see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
     pwa: {},
-    pages: {
-      index: {
-        // entry for the page
-        entry: 'src/main.js',
-        // the source template
-        template: 'public/index.html',
-        // output as dist/index.html
-        filename: 'index.html',
-        // when using title option,
-        // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-        title: '首页'
-      },
-      login: {
-        // entry for the page
-        entry: 'src/login.js',
-        // the source template
-        template: 'public/index.html',
-        // output as dist/index.html
-        filename: 'login.html',
-        // when using title option,
-        // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-        title: '登录'
-      },
-    },
 
     // configure webpack-dev-server behavior
     devServer: {
