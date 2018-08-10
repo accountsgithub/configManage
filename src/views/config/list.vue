@@ -30,7 +30,7 @@
     <el-row class="titleLeft" style="padding-right: 22px;">
       <span class="fontBlod fontSize14">{{title}}</span>
       <el-button class="float-right fontSizeBtW12 addProfileButton" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
-      <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPush">{{$t('list.push')}}</el-button>
+      <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPushClick">{{$t('list.push')}}</el-button>
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
     </el-row>
         <!--表单-->
@@ -161,6 +161,26 @@
         <el-button @click="dialogEditVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+
+    <!--秘钥验证弹窗-->
+    <el-dialog
+      :title="$t('list.validate_key')"
+      :visible.sync="dialogValidateKeyVisible" @close="resetKeyForm('ruleKeyForm')"
+      width="30%">
+      <el-form :model="ruleKeyForm" :rules="keyFormRules" ref="ruleKeyForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="唯一标识:" class="fontSize12">
+          <el-input v-model="ruleKeyForm.mark" auto-complete="off"  :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入秘钥:" class="fontSize12" prop="key">
+          <el-input v-model="ruleKeyForm.key" auto-complete="off" maxlength="253" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleShow('ruleKeyForm')" class="dialogButtonB">{{$t('common.ensure')}}</el-button>
+        <el-button @click="resetKeyForm('ruleKeyForm')" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
+      </span>
+    </el-dialog>
+
     <!--导入配置-->
     <el-dialog
       :title="$t('list.expo_config')"
@@ -239,9 +259,15 @@
         updateTime: '',
         dialogAddVisible: false,
         dialogEditVisible: false,
+        dialogValidateKeyVisible: false,
         expofiledata: {
           projectId: '',
           version: ''
+        },
+        ruleKeyForm: {
+          key: '',
+          mark: '',
+          confirm: ''
         },
         profiledata: {
           f_eq_projectId: this.$route.params.mark,
@@ -289,7 +315,7 @@
     },
     methods: {
       ...mapActions([
-        'getProjectsShow', 'getGroups', 'getProjectsConfigList', 'getAddConfig', 'getdelprofiles', 'getdelConfig', 'geteditConfig', 'getpushConfig', 'getprofiles', 'getpublishtime', 'getProjectsConfigShow', 'getversion', 'getactiveversion'
+        'getProjectsShow', 'getGroups', 'getProjectsConfigList', 'getAddConfig', 'getdelprofiles', 'getdelConfig', 'geteditConfig', 'getpushConfig', 'getprofiles', 'getpublishtime', 'getProjectsConfigShow', 'getversion', 'getactiveversion', 'getValidateKey'
       ]),
       textEdit () {
         this.disTextEdit = false
@@ -357,7 +383,6 @@
         this.$refs.upload.submit()
       },
       handleSuccess (file, fileList) {
-        console.log(file.status)
         if (file.status == '200') {
           if(file.code == 0){
             this.$message({
@@ -460,6 +485,34 @@
       onConfigEdit () {
         this.$refs['vueTags'].edit(this.ConfigData)
       },
+      onConfigPushClick() {
+        this.ruleKeyForm.mark = this.$route.params.mark
+        if(this.ruleKeyForm.confirm == 0 || this.ruleKeyForm.confirm == 1|| this.ruleKeyForm.confirm == 2|| this.ruleKeyForm.confirm == 3) {
+          this.dialogValidateKeyVisible = false
+          this.onConfigPush()
+        }else{
+          this.dialogValidateKeyVisible = true
+        }
+      },
+      handleShow (name) {
+        this.ruleKeyForm.mark = this.$route.params.mark
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.getValidateKey(this.ruleKeyForm).then(res => {
+              this.dialogValidateKeyVisible = false
+              if (res.data.result) {
+                this.onConfigPush()
+              }else{
+                // this.$router.push({path: '/404'})
+                this.$message.error(this.$t('message.badKey'))
+              }
+            })
+          } else {
+
+            return false
+          }
+        })
+      },
       onConfigPush () {
         let params = Object.assign({projectId: this.$route.params.mark})
         params.version = this.ActiveVersion.version
@@ -555,6 +608,11 @@
         if (this.$refs[name]) {
           this.$refs[name].resetFields()
         }
+      },
+      resetKeyForm (name) {
+        this.dialogValidateKeyVisible = false
+        this.ruleKeyForm.key = ''
+        this.resetForm(name)
       },
       tagClick (data) {
         if (data) {
@@ -672,6 +730,11 @@
             ]
         }
       },
+      keyFormRules () {
+        return {
+          key: [{required: true, message: this.$t('message.validateKey'), trigger: 'blur'}]
+        }
+      },
       editFormRules () {
         return {
           configKey: [
@@ -700,6 +763,7 @@
         this.getCurrentProFiles()
       })
       this.getProjectsShow(params).then(res => {
+        this.ruleKeyForm.confirm = res.data.result.confirm
         this.projectName = res.data.result.name
         this.creatorName = res.data.result.creatorName
         this.formInline.f_eq_projectId = res.data.result.mark

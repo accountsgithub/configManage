@@ -33,6 +33,7 @@ export default {
     creator_name: '创建人'
   },
   list: {
+    validate_key: '验证秘钥',
     push: '发布',
     expo_config: '导入配置',
     project_info: '项目信息',
@@ -76,6 +77,7 @@ export default {
     toggle_group: '请选择分组',
     keyword: '请输入关键词',
     checkConfigKey: '键不能为空',
+    validateKey: '秘钥不能为空',
     value: '值不能为空',
     file: '请选择文件夹',
     lang: '请选择语言',
@@ -86,6 +88,7 @@ export default {
     only_upload_file: '只能上传一个文件',
     success: '上传成功',
     push_success: '发布成功',
+    badKey: '错误秘钥',
     add_success: '添加成功',
     edit_success: '修改成功',
     delete_success: '删除成功',

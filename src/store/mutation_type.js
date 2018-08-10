@@ -64,6 +64,8 @@ export const GETUSERNAME = 'getUserName'
 export const GETPROJECTSLIST = 'getProjectsList'
 // 获取配置列表
 export const GETCONFIGSLIST = 'getConfigsList'
+//验证秘钥
+export const GETVALIADATEKEY = 'getValidateKey'
 // 获取用户列表
 export const GETPPRESONLIST = 'getPPersonList'
 // 获取项目详情

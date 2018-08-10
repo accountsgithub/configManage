@@ -31,14 +31,35 @@
             <el-table-column :label="$t('index.creator_name')" min-width="180" align="center" prop="creatorName"></el-table-column>
             <el-table-column :label="$t('common.deal')" min-width="200" align="center">
               <template slot-scope="scope">
-                <a class="tableActionStyle" @click="handleShow(scope.$index, scope.row)">{{$t('common.show')}}</a>
+                <a class="tableActionStyle" @click="dialogShow(scope.$index, scope.row)">{{$t('common.show')}}</a>
               </template>
             </el-table-column>
           </el-table>
           <el-pagination v-if="formConfigModelData.total != 0" :current-page="formConfigModelData.pageNo + 1" @size-change="sizeChange" @current-change="currentChange" :page-size="formConfigModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formConfigModelData.total" class="paginationStyle"></el-pagination>
         </div>
       </el-row>
+
+    <!--秘钥验证弹窗-->
+    <el-dialog
+      :title="$t('list.validate_key')"
+      :visible.sync="dialogValidateKeyVisible" @close="resetForm('ruleKeyForm')"
+      width="30%">
+      <el-form :model="ruleKeyForm" :rules="keyFormRules" ref="ruleKeyForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="唯一标识:" class="fontSize12">
+          <el-input v-model="ruleKeyForm.mark" auto-complete="off"  :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入秘钥:" class="fontSize12" prop="key">
+          <el-input v-model="ruleKeyForm.key" auto-complete="off" maxlength="253" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleShow('ruleKeyForm')" class="dialogButtonB">{{$t('common.ensure')}}</el-button>
+        <el-button @click="resetForm('ruleKeyForm')" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
+      </span>
+    </el-dialog>
+
   </el-row>
+
 </template>
 
 <script>
@@ -48,16 +69,23 @@
     data () {
       return {
         activeIndex: '1',
+        dialogValidateKeyVisible: false,
+        index_copy:{},
+        row_copy:{},
         formInline: {
           f_like_name: '',
           f_like_mark: '',
           f_like_creatorName: ''
+        },
+        ruleKeyForm: {
+          key: '',
+          mark: ''
         }
       }
     },
     methods: {
       ...mapActions([
-        'getConfigsList'
+        'getConfigsList', 'getValidateKey'
       ]),
       sizeChange (val) {
         this.formConfigModelData.pageSize = val
@@ -67,8 +95,37 @@
         this.formConfigModelData.pageNo = val
         this.getProList()
       },
-      handleShow (index, row) {
-        this.$router.push({name: 'list', params: {id: row.id, mark: row.mark}})
+      dialogShow (index, row) {
+        this.index_copy = index
+        this.row_copy = row
+        this.ruleKeyForm.mark = row.mark
+        if(row.confirm == 0 || row.confirm == 1 || row.confirm == 2 || row.confirm == 3){
+          this.dialogValidateKeyVisible = false
+          this.$router.push({name: 'list', params: {id: this.row_copy.id, mark: this.row_copy.mark}})
+        }else{
+          this.dialogValidateKeyVisible = true
+        }
+
+      },
+      handleShow (name) {
+        this.ruleKeyForm.mark = this.row_copy.mark
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.getValidateKey(this.ruleKeyForm).then(res => {
+              this.dialogValidateKeyVisible = false
+              if (res.data.result) {
+                this.dialogValidateKeyVisible = false
+                this.$router.push({name: 'list', params: {id: this.row_copy.id, mark: this.row_copy.mark}})
+              }else{
+                // this.$router.push({path: '/404'})
+                this.$message.error(this.$t('message.badKey'))
+              }
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       },
       getProList () {
         let params = Object.assign(this.formInline, this.formConfigModelData)
@@ -77,13 +134,33 @@
       buttonConfigList () {
         this.formConfigModelData.pageNo = 1
         this.getProList()
-      }
+      },
+      openAddForm () {
+        this.ruleKeyForm.key = ''
+        this.ruleKeyForm.mark = ''
+      },
+      resetForm (name) {
+        this.dialogValidateKeyVisible = false
+        this.ruleKeyForm.key = ''
+        this.ruleKeyForm.mark = ''
+        if (this.$refs[name]) {
+          this.$refs[name].resetFields()
+        }
+      },
     },
     computed: {
       ...mapState({
         formConfigModelData: (index) => index.config.formConfigModelData,
         index_projectList: (index) => index.config.index_projectList
-      })
+      }),
+
+      keyFormRules () {
+        return {
+          key: [{required: true, message: this.$t('message.validateKey'), trigger: 'blur'}]
+        }
+      }
+
+
     },
     mounted () {
       this.getProList()

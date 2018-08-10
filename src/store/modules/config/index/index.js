@@ -5,6 +5,7 @@ import mutations from './mutations/mutation'
 const state = {
   language: Cookies.get('language') || 'en',
   index_projectList: [],
+  code_result: '',
   formConfigModelData: {
     pageNo: 1,
     pageSize: 10,

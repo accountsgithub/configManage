@@ -14,6 +14,9 @@ export default {
     state.formConfigModelData.total = res.data.result.total
     state.formConfigModelData.totalPages = res.data.result.totalPages
   },
+  [types.GETVALIADATEKEY] (state, res) {
+    state.code_result = res.data.result
+  },
   [types.GETPROJECTSHOW] (state, res) {
     // state.index_goodsType = res.data.data
   },

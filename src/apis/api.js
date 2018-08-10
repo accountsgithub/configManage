@@ -99,6 +99,9 @@ export default {
   GET_PROJECTLIST (params) {
     return api.fetch('get', `${base}/projects`, params)
   },
+  GET_VALIADATEKEY (params) {
+    return api.fetch('get', `${base}/configs/auth/`+ params.mark + `/` + params.key)
+  },
   GET_PROJECTSHOW (params) {
     return api.fetch('get', `${base}/projects/` + params.id)
   },

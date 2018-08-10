@@ -32,6 +32,7 @@ export default {
     creator_name: 'founder'
   },
   list: {
+    validate_key: 'validate key',
     push: 'publish',
     expo_config: 'import',
     project_info: 'project information',
@@ -75,6 +76,7 @@ export default {
     toggle_group: 'please select group',
     keyword: 'please enter a keyword',
     value: 'value cannot be empty',
+    validateKey: 'key cannot be empty',
     file: 'please select folder',
     lang: 'please select the language',
     list_config_content: 'only properties/yaml /yml files can be uploaded with no more than 10MB',
@@ -84,6 +86,7 @@ export default {
     only_upload_file: 'only one file can be uploaded ',
     success: 'upload successful',
     push_success: 'launch successful',
+    badKey: 'code error',
     add_success: 'add success',
     edit_success: 'modified successfully',
     delete_success: 'delete successfully',

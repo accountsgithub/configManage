@@ -25,6 +25,16 @@ export default {
       })
     })
   },
+  getValidateKey ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_VALIADATEKEY(params).then((res) => {
+        commit(types.GETVALIADATEKEY, res)
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
+  },
   getProjectsShow ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_PROJECTSHOW(params).then((res) => {
