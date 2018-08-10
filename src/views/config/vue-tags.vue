@@ -53,14 +53,14 @@
     <!--修改文件弹框-->
     <el-dialog
       :title="$t('tags.edit_file')"
-      :visible.sync="dialogEditVisible" @close="resetForm('ruleEditFormTag')"  @open="openResetForm('ruleEditFormTag')"
+      :visible.sync="dialogEditVisible" @close="resetEditForm('copy_ruleEditFormTag')"  @open="openResetEditForm('ruleEditFormTag')"
       width="60%">
-      <el-form :model="ruleEditFormTag" :rules="editFormRulesTag" ref="ruleEditFormTag" label-width="100px" class="demo-ruleForm">
+      <el-form :model="copy_ruleEditFormTag" :rules="editFormRulesTag" ref="copy_ruleEditFormTag" label-width="100px" class="demo-ruleForm">
         <el-form-item :label="$t('tags.file_name')" prop="name">
-          <el-input v-model="ruleEditFormTag.name" auto-complete="off"  maxlength="4096"></el-input>
+          <el-input v-model="copy_ruleEditFormTag.name" auto-complete="off"  maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('tags.file_type')" prop="profileType">
-          <el-select v-model="ruleEditFormTag.profileType" :placeholder="$t('tags.select_type')">
+          <el-select v-model="copy_ruleEditFormTag.profileType" :placeholder="$t('tags.select_type')">
             <el-option
               v-for="item in profileTypeList"
               :key="item.id"
@@ -70,12 +70,12 @@
           </el-select>
         </el-form-item>
         <el-form-item :class="{disStyle:disEditFilePath}" :label="$t('tags.file_path')" prop="path">
-          <el-input v-model="ruleEditFormTag.path" auto-complete="off" maxlength="4096"></el-input>
+          <el-input v-model="copy_ruleEditFormTag.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button class="dialogButtonB" type="primary" @click="submitForm('ruleEditFormTag')">{{$t('common.modify')}}</el-button>
-          <el-button class="dialogButtonW" @click="resetForm('ruleEditFormTag')">{{$t('common.cancel')}}</el-button>
+          <el-button class="dialogButtonB" type="primary" @click="submitForm('copy_ruleEditFormTag')">{{$t('common.modify')}}</el-button>
+          <el-button class="dialogButtonW" @click="resetEditForm('copy_ruleEditFormTag')">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -85,11 +85,16 @@
   import {mapActions} from 'vuex'
   export default {
     name: 'vue-tags',
-    props: ['source', 'chooseVersion', 'fileName'],
+    props: ['source', 'chooseVersion', 'fileName', 'confirm'],
     computed: {
 
       dis_source () {
-        return this.source
+        console.log("tag"+this.confirm)
+        if(this.confirm == 0 || this.confirm == 1|| this.confirm == 2|| this.confirm == 3){
+          return this.source
+        }else{
+          return false
+        }
       },
       dis_chooseVersion () {
         return this.chooseVersion
@@ -98,7 +103,7 @@
         return this.fileName
       },
       disEditFilePath () {
-        if (this.ruleEditFormTag.profileType === 'bootstrap') {
+        if (this.copy_ruleEditFormTag.profileType === 'bootstrap') {
           // this.editFormRulesTag.path = []
           return true
         } else {
@@ -189,6 +194,15 @@
           projectId: this.$route.params.mark,
           version: ''
         },
+        copy_ruleEditFormTag: {
+          id: '',
+          name: '',
+          profileType: '',
+          path: '',
+          projectId: this.$route.params.mark,
+          version: '',
+          status: '1'
+        },
         ruleEditProfileFormTag: {
           id: '',
           name: '',
@@ -212,21 +226,34 @@
       ...mapActions([
         'getaddprofiles', 'geteditprofiles', 'getprofilesexpo', 'getdelprofiles', 'getprofiles', 'getaddversions'
       ]),
-      resetForm (name) {
+      resetEditForm (name) {
         this.dialogEditVisible = false
       },
+      openResetEditForm (name) {
+        this.copy_ruleEditFormTag.id = this.ruleEditFormTag.id
+        this.copy_ruleEditFormTag.name = this.ruleEditFormTag.name
+        this.copy_ruleEditFormTag.profileType = this.ruleEditFormTag.profileType
+        this.copy_ruleEditFormTag.path = this.ruleEditFormTag.path
+        this.copy_ruleEditFormTag.version = this.ruleEditFormTag.version
+      },
+      resetForm (name) {
+        this.$refs[name].resetFields()
+      },
       openResetForm (name) {
+        if (this.$refs[name]) {
+          this.$refs[name].resetFields()
+        }
       },
       reflash(){
         this.dialogEditVisible = false
       },
       submitForm (name) {
         this.ruleAddFormTag.version = this.dis_chooseVersion
-        this.ruleEditFormTag.version = this.dis_chooseVersion
-        if (this.ruleEditFormTag.profileType === 'bootstrap' || this.ruleAddFormTag.profileType === 'bootstrap') {
+        this.copy_ruleEditFormTag.version = this.dis_chooseVersion
+        if (this.copy_ruleEditFormTag.profileType === 'bootstrap' || this.ruleAddFormTag.profileType === 'bootstrap') {
           this.editFormRulesTag.path = []
           this.addFormRulesTag.path = []
-          this.ruleEditFormTag.path = ''
+          this.copy_ruleEditFormTag.path = ''
           this.ruleAddFormTag.path = ''
         }
         this.$refs[name].validate((valid) => {
@@ -242,8 +269,9 @@
                 this.dialogAddVisible = false
                 this.$emit('onChangeTagClick', res)
               })
-            } else if (name === 'ruleEditFormTag') {
-              let params = Object.assign(this.ruleEditFormTag)
+            } else if (name === 'copy_ruleEditFormTag') {
+              console.log(this.copy_ruleEditFormTag)
+              let params = Object.assign(this.copy_ruleEditFormTag)
               this.geteditprofiles(params).then(res => {
                 this.$message({
                   type: 'success',

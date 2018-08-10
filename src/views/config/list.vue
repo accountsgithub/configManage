@@ -36,7 +36,7 @@
         <!--表单-->
       <!--添加tags-->
       <el-row style="margin-left: 10px">
-        <vue-tages ref="vueTags" :source.sync="list_files" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
+        <vue-tages ref="vueTags" :source.sync="list_files" :confirm.sync="ruleKeyForm.confirm" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
       </el-row>
       <!--添加tags-->
       <el-row class="configRow">
