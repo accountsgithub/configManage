@@ -89,11 +89,14 @@
     computed: {
 
       dis_source () {
-        console.log("tag"+this.confirm)
-        if(this.confirm == 0 || this.confirm == 1|| this.confirm == 2|| this.confirm == 3){
+        // console.log("tag"+this.confirm)
+        // console.log("confirmKey:"+sessionStorage.getItem('confirmKey'))
+        // console.log("id:"+sessionStorage.getItem('id'))
+        // console.log("id2:"+this.$route.params.id)
+        if(sessionStorage.getItem('confirmKey') && sessionStorage.getItem('id')==this.$route.params.id){
           return this.source
         }else{
-          return false
+          return this.source
         }
       },
       dis_chooseVersion () {

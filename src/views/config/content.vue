@@ -96,6 +96,7 @@
         this.getProList()
       },
       dialogShow (index, row) {
+        sessionStorage.setItem('id', row.id)
         this.index_copy = index
         this.row_copy = row
         this.ruleKeyForm.mark = row.mark
@@ -113,6 +114,7 @@
           if (valid) {
             this.getValidateKey(this.ruleKeyForm).then(res => {
               this.dialogValidateKeyVisible = false
+              sessionStorage.setItem('confirmKey', res.data.result)
               if (res.data.result) {
                 this.dialogValidateKeyVisible = false
                 this.$router.push({name: 'list', params: {id: this.row_copy.id, mark: this.row_copy.mark}})
