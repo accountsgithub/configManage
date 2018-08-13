@@ -752,26 +752,32 @@
       }
     },
     mounted () {
-      let params = Object.assign({id: this.$route.params.id})
-      this.getGroups()
-      let params2 = Object.assign(this.ruleVeriosn)
-      this.getversion(params2)
-      // this.getActiveVersion(params2)
-      this.getactiveversion(params2).then(res => {
-        this.ActiveVersion.version = res.data.result
-        this.expofiledata.version = this.ActiveVersion.version
-        this.getCurrentProFiles()
-      })
-      this.getProjectsShow(params).then(res => {
-        this.ruleKeyForm.confirm = res.data.result.confirm
-        this.projectName = res.data.result.name
-        this.creatorName = res.data.result.creatorName
-        this.formInline.f_eq_projectId = res.data.result.mark
-        this.expofiledata.projectId = res.data.result.mark
-        this.expofiledata.version = this.ActiveVersion.version
-        this.getpublish()
-        this.getConfigList()
-      })
+      if(sessionStorage.getItem('id')==this.$route.params.id){
+        let params = Object.assign({id: this.$route.params.id})
+        this.getGroups()
+        let params2 = Object.assign(this.ruleVeriosn)
+        this.getversion(params2)
+        // this.getActiveVersion(params2)
+        this.getactiveversion(params2).then(res => {
+          this.ActiveVersion.version = res.data.result
+          this.expofiledata.version = this.ActiveVersion.version
+          this.getCurrentProFiles()
+        })
+        this.getProjectsShow(params).then(res => {
+          this.ruleKeyForm.confirm = res.data.result.confirm
+          this.projectName = res.data.result.name
+          this.creatorName = res.data.result.creatorName
+          this.formInline.f_eq_projectId = res.data.result.mark
+          this.expofiledata.projectId = res.data.result.mark
+          this.expofiledata.version = this.ActiveVersion.version
+          this.getpublish()
+          this.getConfigList()
+        })
+      }else{
+        this.$router.push({path: '/homePage'})
+      }
+      sessionStorage.clear('id')
+      sessionStorage.clear('confirmKey')
     },
     components: {
       ElButton,
