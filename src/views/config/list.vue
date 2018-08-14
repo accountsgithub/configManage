@@ -13,7 +13,6 @@
           <el-col :span="4"><span class="fontSizeTitle12">{{$t('index.unique_identification')}}: </span><span class="fontSize12">{{ruleAddForm.projectId}}</span></el-col>
           <el-col :span="4"><span class="fontSizeTitle12">{{$t('list.project_leader')}}: </span><span class="fontSize12">{{creatorName}}</span></el-col>
           <el-col :span="4"><span class="fontSizeTitle12">{{$t('list.puth_time')}}: </span><span class="fontSize12">{{ timestampToTimeFun(updateTime)}}</span></el-col>
-          <!--<el-col :span="4"><span class="fontSizeTitle12">{{$t('list.version')}}: </span><span class="fontSize12">{{selectVeriosn}}</span></el-col>-->
           <el-col :span="4">
             <span class="fontSizeTitle12">{{$t('list.version')}}:</span>
             <el-select v-model="ActiveVersion.version" class="selectStyle" @change="getSelectVersion" >
@@ -22,7 +21,6 @@
             </el-select>
           </el-col>
           <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
-          <!--<el-col :span="4"><span class="fontSizeTitle12">{{$t('list.version')}}: </span><span class="fontSize12">{{ActiveVersion.version}}</span></el-col>-->
         </el-row>
       </div>
     </div>
@@ -34,10 +32,12 @@
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
     </el-row>
         <!--表单-->
+
       <!--添加tags-->
       <el-row style="margin-left: 10px">
         <vue-tages ref="vueTags" :source.sync="list_files" :confirm.sync="ruleKeyForm.confirm" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
       </el-row>
+
       <!--添加tags-->
       <el-row class="configRow">
         <el-col :span="6" :class="{disStyle:disTypeValue}"><span class="fontSizeTitle12">{{$t('list.project_type')}}: </span><span class="fontSize12">{{tabCheckType}}</span></el-col>
@@ -72,7 +72,6 @@
           </el-form>
           <el-row class="line"></el-row>
           <el-table :data="index_configList" style="width: 100%" border >
-            <!--<el-table-column type="selection" min-width="10"></el-table-column>-->
             <el-table-column label="Key" min-width="180" align="center" class="fontBlod fontSizeBtB12">
               <template slot-scope="scope">
                 <span style="margin-left: 10px" class="overKeyWidth">{{ scope.row.configKey }}</span>
@@ -103,6 +102,7 @@
           <el-pagination class="paginationStyle" v-if="formModelData.total != 0" :current-page="formModelData.pageNo + 1" @size-change="sizeChange" @current-change="currentChange" :page-size="formModelData.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="formModelData.total"></el-pagination>
         </div>
     </div>
+
     <!--添加配置-->
     <el-dialog
       :title="$t('list.add_config')"
@@ -209,6 +209,7 @@
           <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+
   </section>
 </template>
 
@@ -220,19 +221,6 @@
   export default {
     name: 'indexList',
     data () {
-      // const checkConfigKey = (rule, value, callback) => {
-      //   let reg = /^[-._a-zA-Z0-9]+$/
-      //   if (!value) {
-      //     return callback(new Error(this.$t('message.keyword')))
-      //   }
-      //   setTimeout(() => {
-      //     if (value.match(reg) == null) {
-      //       callback(new Error(this.$t('message.legal_key')))
-      //     } else {
-      //       callback()
-      //     }
-      //   }, 1000)
-      // }
       return {
         ActiveVersion: {
           version: ''
@@ -549,10 +537,7 @@
             this.getConfigList()
           })
         }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // })
+
         })
       },
       sizeChange (val) {
@@ -623,7 +608,6 @@
           this.ConfigData.path = data.path
           this.ConfigData.projectId = data.projectId
           this.ConfigData.version = data.version
-
           this.disTextEdit = true
           this.saveButton = false
           this.tablaDivDefault = true
@@ -757,7 +741,6 @@
         this.getGroups()
         let params2 = Object.assign(this.ruleVeriosn)
         this.getversion(params2)
-        // this.getActiveVersion(params2)
         this.getactiveversion(params2).then(res => {
           this.ActiveVersion.version = res.data.result
           this.expofiledata.version = this.ActiveVersion.version

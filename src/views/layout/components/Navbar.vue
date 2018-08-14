@@ -10,18 +10,19 @@
         :value="item.value">
       </el-option>
     </el-select>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <i><div class="userSign"></div></i>
-        <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
-        <i class="el-icon-caret-bottom"></i>
-      </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">{{$t('common.logout')}}</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+    <!--<el-dropdown class="avatar-container" trigger="click">-->
+      <!--<div class="avatar-wrapper">-->
+        <!--<i><div class="userSign"></div></i>-->
+        <!--&lt;!&ndash;<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">&ndash;&gt;-->
+        <!--<i class="el-icon-caret-bottom"></i>-->
+      <!--</div>-->
+      <!--<el-dropdown-menu class="user-dropdown" slot="dropdown">-->
+        <!--<el-dropdown-item divided>-->
+          <!--<span @click="logout" style="display:block;">{{$t('common.logout')}}</span>-->
+        <!--</el-dropdown-item>-->
+      <!--</el-dropdown-menu>-->
+    <!--</el-dropdown>-->
+    <!---->
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper" style="display: flex;">
         <img src="../../../assets/images/pic-head.png" class="userSign" />

@@ -50,6 +50,7 @@
           <el-button class="dialogButtonW" @click="dialogAddVisible=false">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+
     <!--修改文件弹框-->
     <el-dialog
       :title="$t('tags.edit_file')"
@@ -78,6 +79,7 @@
           <el-button class="dialogButtonW" @click="resetEditForm('copy_ruleEditFormTag')">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+
   </div>
 </template>
 
@@ -87,26 +89,11 @@
     name: 'vue-tags',
     props: ['source', 'chooseVersion', 'fileName', 'confirm'],
     computed: {
-
-      // dis_source () {
-      //   console.log("tag"+this.confirm)
-      //   console.log("confirmKey:"+sessionStorage.getItem('confirmKey'))
-      //   console.log("id:"+sessionStorage.getItem('id'))
-      //   console.log("id2:"+this.$route.params.id)
-      //   if(sessionStorage.getItem('confirmKey') && sessionStorage.getItem('id')==this.$route.params.id){
-      //     return this.source
-      //   }else{
-      //     return false
-      //   }
-      // },
       dis_source () {
           return this.source
       },
       dis_chooseVersion () {
         return this.chooseVersion
-      },
-      dis_fileName () {
-        return this.fileName
       },
       disEditFilePath () {
         if (this.copy_ruleEditFormTag.profileType === 'bootstrap') {
@@ -119,7 +106,6 @@
       },
       disAddFilePath () {
         if (this.ruleAddFormTag.profileType === 'bootstrap') {
-          // this.addFormRulesTag.path = []
           return true
         } else {
           this.addFormRulesTag.path.push({ required: true, message: this.$t('message.path'), trigger: 'blur' })
@@ -249,9 +235,6 @@
         if (this.$refs[name]) {
           this.$refs[name].resetFields()
         }
-      },
-      reflash(){
-        this.dialogEditVisible = false
       },
       submitForm (name) {
         this.ruleAddFormTag.version = this.dis_chooseVersion
