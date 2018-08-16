@@ -234,10 +234,10 @@
       }
     }
     .langSelectStyle{
-      float: right;
-      margin-right: 100px;
+      position: absolute;
+      margin-left: 10px;
+      height:30px;
       width: 170px;
-      height: 30px;
     }
   }
   .el-dropdown-menu__item--divided{
