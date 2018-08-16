@@ -3,6 +3,7 @@ import getDate from '../../../../apis/api' // 接口
 // import Cookies from 'js-cookie' // cookie
 import { setToken, removeToken } from '@/utils/auth'
 
+
 export default {
   // 登录
   Login ({ commit }, userInfo) {
