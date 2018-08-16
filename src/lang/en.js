@@ -95,6 +95,7 @@ export default {
     profileType: 'type cannot be empty',
     path: 'path cannot be empty',
     version: 'version cannot be empty',
+    enterVersion: 'Please enter correct version . (beginning with numbers, only can contain numbers and "." such as 1 or 1 or 1.0.0 or 1.0.0.0).',
     duplicated_profile:'duplicated profile',
     NO_CONFIGS_TO_PUBLISH:'no configs to publish',
     INVALID_CONFIG_FILE_KEY:'invalid profile'

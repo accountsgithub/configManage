@@ -97,6 +97,7 @@ export default {
     profileType: '类型不能为空',
     path: '路径不能为空',
     version: '版本号不能为空',
+    enterVersion: '请输入正确的版本号。(以数字开头，只能包含数字和" . ", 如 1 或 1.0 或 1.0.0 或 1.0.0.0 )',
     duplicated_profile:'重复的配置文件',
     NO_CONFIGS_TO_PUBLISH:'没有需要发布的配置',
     INVALID_CONFIG_FILE_KEY:'无效的配置文件'

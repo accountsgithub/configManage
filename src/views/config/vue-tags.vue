@@ -143,9 +143,9 @@
       var validateMark = (rule, value, callback) => {
         let myreg1 = /^\d+(\.\d+)*/
         if (!myreg1.test(value) && value != '') {
-          callback(new Error('请输入正确的版本号。(以数字开头，只能包含数字和" . ", 如 1 或 1.0 或 1.0.0 或 1.0.0.0 )'))
+          callback(new Error(this.$t('message.enterVersion')))
         } else if (value === '') {
-          callback(new Error('版本号不能为空'))
+          callback(new Error(this.$t('message.version')))
         } else {
           callback()
         }
