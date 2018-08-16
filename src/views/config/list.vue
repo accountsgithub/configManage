@@ -517,10 +517,10 @@
       },
       handleEdit (index, row) {
         // 修改数据赋值
+        this.dialogEditVisible = true
         this.ruleEditForm = Object.assign(this.ruleEditForm, row)
         this.ruleEditForm.groupId = parseInt(row.groupId)
         this.ruleEditForm.version = this.ActiveVersion.version
-        this.dialogEditVisible = true
       },
       handleDelete (index, row) {
         this.$confirm(this.$t('message.delete_config_content'), this.$t('common.prompt'), {
