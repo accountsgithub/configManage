@@ -31,9 +31,9 @@
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <el-dropdown-item divided>
-          <span @click="updataPassword" style="display:block;">{{$t('common.modifyPassword')}}</span>
-        </el-dropdown-item>
+        <!--<el-dropdown-item divided>-->
+          <!--<span @click="updataPassword" style="display:block;">{{$t('common.modifyPassword')}}</span>-->
+        <!--</el-dropdown-item>-->
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">{{$t('common.logout')}}</span>
         </el-dropdown-item>
@@ -125,7 +125,7 @@
       },
       lang: {
         get () {
-          return this.$store.state.language
+          return this.$store.state.config.language
         },
         set (lang) {
           this.$i18n.locale = lang
