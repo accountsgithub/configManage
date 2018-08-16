@@ -21,10 +21,12 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
   if (response.data.status == '200') {
     store.state.config.fullscreenLoading = false
+  } else if (response.data.status == '1005' || response.data.status == '1001') {
+    store.state.config.fullscreenLoading = false
   } else {
     Message.error(response.data.message)
     store.state.config.fullscreenLoading = false
-    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1001' && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004' && response.data.status != '1005') {
+    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400'  && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004' && response.data.status != '1005') {
       router.push({path: '/login'})
     }
     return Promise.reject(response)

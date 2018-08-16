@@ -496,7 +496,6 @@
               }
             })
           } else {
-
             return false
           }
         })
@@ -505,10 +504,16 @@
         let params = Object.assign({projectId: this.$route.params.mark})
         params.version = this.ActiveVersion.version
         this.getpushConfig(params).then(res => {
-          this.$message({
-            message: this.$t('message.push_success'),
-            type: 'success'
-          })
+          if(res.data.status == 200 && res.data.code == 0){
+            this.$message({
+              message: this.$t('message.push_success'),
+              type: 'success'
+            })
+          }else{
+            if(res.data.status == 1005){
+              this.$message.error(this.$t('message.NO_CONFIGS_TO_PUBLISH'))
+            }
+          }
           this.getpublish()
         })
       },
@@ -569,10 +574,16 @@
             } else if (name === 'ruleEditForm') {
               let params = Object.assign(this.ruleEditForm)
               this.geteditConfig(params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: this.$t('message.edit_success')
-                })
+                if(res.data.status == 200 && res.data.code == 0){
+                  this.$message({
+                    type: 'success',
+                    message: this.$t('message.edit_success')
+                  })
+                }else{
+                  if(res.data.status == 1001){
+                    this.$message.error(this.$t('message.duplicated_profile'))
+                  }
+                }
                 this.getConfigList()
                 if (this.$refs[name]) {
                   this.$refs[name].resetFields()
