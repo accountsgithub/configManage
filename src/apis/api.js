@@ -42,10 +42,10 @@ let base = ''
 
 export default {
   GET_LOGIN (params) {
-    return api.fetch('post', `${base}/auth/login`, params)
+    return api.fetch('post', `${base}/user/login`, params)
   },
   GET_LOGINOUT (params) {
-    return api.fetch('get', `${base}/oauth2/logout`, params)
+    return api.fetch('get', `${base}/user/logout`, params)
   },
   // 修改密码
   GET_EDITPW (params) {
@@ -98,6 +98,9 @@ export default {
   //   return api.fetch('get', `${base}/admin/projects/personIsAdmin`)
   // },
   // 统一配置
+  POST_LOGIN (params) {
+    return api.fetch('post', `${base}/user/login`, params)
+  },
   GET_PROJECTLIST (params) {
     return api.fetch('get', `${base}/projects`, params)
   },

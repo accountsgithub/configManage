@@ -65,7 +65,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
-  // import utils from '@/utils/util'
+  import utils from '@/utils/util'
   import local from '@/lang'
   const viewName = 'i18nView'
 
@@ -121,7 +121,8 @@
       ]),
       username () {
         // return "adminadminadminadminadminadminadminadminadminadminadminadmin"
-        return localStorage.username
+        // return localStorage.username
+        return sessionStorage.getItem('username')
       },
       lang: {
         get () {
@@ -170,10 +171,14 @@
         })
       },
       logout () {
+        console.log('logout')
+        sessionStorage.clear('username')
         this.getLogOut().then(res => {
-          if (res.data.code === '0') {
-            // this.$router.push({ path: '/login' })
-            window.location.href = './login.html'
+          console.log('getLogOut')
+          debugger
+          if (res.data.code == 0 ) {
+            this.$router.push({ path: '/login' })
+            // window.location.href = './login.html'
           }
         })
         // this.$router.push('/login')

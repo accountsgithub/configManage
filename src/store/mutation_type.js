@@ -53,6 +53,8 @@ export const GETPERSONISADMIN = 'getPersonIsAdmin'
 export const SETLANGUAGE = 'setLanguage'
 // 登录
 export const GETLOGIN = 'getLogin'
+// 登录
+export const POSTLOGIN = 'getSelfLogin'
 // 登出
 export const GETLOGINOUT = 'getLogOut'
 // 修改密码

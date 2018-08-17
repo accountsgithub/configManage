@@ -11,6 +11,9 @@ export default {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
   },
+  [types.GETLOGINOUT] (state, res) {
+    state.layout_result = res.data.result
+  },
   [types.CLOSESIDEBAR] (state, withoutAnimation) {
     Cookies.set('sidebarStatus', 1)
     state.sidebar.opened = false

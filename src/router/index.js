@@ -6,8 +6,19 @@ Vue.use(Router)
 export const constantRouterMap = [
   // 登陆
   { path: '/login',
-    component: resolve => require(['@/views/login/index'], resolve),
+    component: resolve => require(['@/views/selfLogin/index'], resolve),
     hidden: true
+  },
+  // 登陆
+  {
+    path: '/homePage',
+    component: resolve => require(['@/views/layout/Layout'], resolve),
+    name: 'homePage',
+    hidden: true,
+    children: [{
+      path: '/homePage',
+      component: resolve => require(['@/views/config/content'], resolve)
+    }]
   },
   // 404
   { path: '/404',
@@ -18,12 +29,12 @@ export const constantRouterMap = [
   {
     path: '/',
     component: resolve => require(['@/views/layout/Layout'], resolve),
-    redirect: '/homePage',
-    name: 'homePage',
+    redirect: '/login',
+    name: 'login',
     hidden: true,
     children: [{
-      path: '/homePage',
-      component: resolve => require(['@/views/config/content'], resolve)
+      path: '/login',
+      component: resolve => require(['@/views/selfLogin/index'], resolve)
     }]
   },
   // // 统一项目

@@ -34,6 +34,17 @@ export default {
       })
     })
   },
+
+  // getLogin ({state, commit}, params) {
+  //     return new Promise((resolve, reject) => {
+  //       return getDate.GET_LOGIN(params).then((res) => {
+  //         commit(types.GETLOGIN, res)
+  //         resolve(res)
+  //       }).catch((thrown) => {
+  //         reject(thrown)
+  //       })
+  //     })
+  //   },
   // 登陆
   getLogin ({state, commit}, params) {
     return new Promise((resolve, reject) => {

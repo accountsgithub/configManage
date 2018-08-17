@@ -6,6 +6,7 @@ const state = {
   language: Cookies.get('language') || 'en',
   index_projectList: [],
   code_result: '',
+  layout_result: '',
   formConfigModelData: {
     pageNo: 1,
     pageSize: 10,

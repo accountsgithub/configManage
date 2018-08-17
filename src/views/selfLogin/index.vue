@@ -2,7 +2,7 @@
   <div class="login-background">
     <div class="login-form-background">
       <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-        <h3 class="title">统一权限管理平台</h3>
+        <h3 class="title">统一配置</h3>
         <h3 class="title2">PUBLIC APPLICATION MANAGEMENT PLATFORM</h3>
         <el-form-item prop="username">
           <el-input class="textStyle" placeholder="请输入用户名" v-model="loginForm.username" autoComplete="off">
@@ -10,7 +10,7 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input class="textStyle" name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="off" placeholder="请输入用密码">
+          <el-input class="textStyle" name="password" :type="pwdType" @keyup.enter.native="handleSelfLogin" v-model="loginForm.password" autoComplete="off" placeholder="请输入用密码">
             <i slot="prefix" class="icon iconfont icon-ic-lock" style="margin: 0 15px 15px 13px;font-size: 20px;"></i>
             <i slot="suffix" class="show-pwd el-icon-view" @click="showPwd" style="margin: 10px 15px 15px 15px;font-size: 20px"></i>
           </el-input>
@@ -22,7 +22,7 @@
           <el-button type="primary"
                      style="width:100%;background:#016ad5;border-radius:4px;height:50px;font-size: 16px"
                      :loading="loading"
-                     @click.native.prevent="handleLogin">登录
+                     @click.native.prevent="handleSelfLogin">登录
           </el-button>
         </el-form-item>
       </el-form>
@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getLogin'
+      'getLogin', 'getSelfLogin'
     ]),
     showPwd () {
       if (this.pwdType === 'password') {
@@ -69,12 +69,13 @@ export default {
     },
 
 
-    handleLogin() {
+    handleSelfLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          console.log(this.loginForm)
-          this.getLogin(this.loginForm)
-            .then(() => {
+          this.getSelfLogin(this.loginForm).then(res => {
+            console.log(res.data.code)
+            if(res.data.code == 0){
+              sessionStorage.setItem('username',this.loginForm.username)
               if (this.isSavePW) {
                 if (!getCookie('username')) {
                   setCookie('username', this.loginForm.username)
@@ -90,18 +91,17 @@ export default {
                 delCookie('username')
                 delCookie('PW')
               }
-
-              this.$router.push({ path: '/homePage' })
-            })
-            .catch(error => {
               this.$message({
-                type: 'error',
-                message: 'error'
+                message: '登录成功',
+                type: 'success'
               })
-            })
+              this.$router.push({ path: '/homePage' })
+            }else{
+              this.$message.error('用户名密码输入错误！')
+            }
+          })
         } else {
-          this.loadingStatus = false
-          this.logButtonLabel = this.$t('login.button_login')
+          this.loading = false
           return false
         }
       })

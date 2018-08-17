@@ -1,12 +1,15 @@
 import * as types from '../../../../mutation_type'
 import Cookies from 'js-cookie'
+import utils from '@/utils/util'
 
 export default {
   [types.SETLANGUAGE] (state, language) {
     state.language = language
     Cookies.set('language', language)
   },
-  [types.GETLOGINOUT] () {},
+  [types.POSTLOGIN] (state, res) {
+    state.username = res.data.result.username
+  },
   [types.GETCONFIGSLIST] (state, res) {
     state.index_projectList = res.data.result.data
     state.formConfigModelData.pageNo = res.data.result.pageNo

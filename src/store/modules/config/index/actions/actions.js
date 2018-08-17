@@ -5,10 +5,10 @@ export default {
   setLanguage ({ commit }, language) {
     commit(types.SETLANGUAGE, language)
   },
-  getLogOut ({state, commit}, params) {
+  getSelfLogin ({state, commit}, params) {
     return new Promise((resolve, reject) => {
-      return getDate.GET_LOGINOUT(params).then((res) => {
-        commit(types.GETLOGINOUT, res)
+      return getDate.POST_LOGIN(params).then((res) => {
+        commit(types.POSTLOGIN, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
