@@ -91,10 +91,10 @@ export default {
             if(res.data.code == 0){
               sessionStorage.setItem('username',this.loginForm.username)
               if (this.isSavePW) {
-                if (!getCookie('username')) {
+                if (!getCookie('username') || getCookie('username') != this.loginForm.username) {
                   setCookie('username', this.loginForm.username)
                 }
-                if (!getCookie('PW')) {
+                if (!getCookie('PW')|| getCookie('PW') != this.loginForm.password) {
                   setCookie('PW', this.loginForm.password)
                 }
                 if (!getCookie('isSavePW')) {
@@ -121,35 +121,6 @@ export default {
       })
     },
 
-
-
-    xx () {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          let params = Object.assign(this.loginForm)
-          this.getLogin(params).then(res => {
-            if (res.data.code == '-1') {
-              this.$message({
-                message: res.data.message
-              })
-            } else if (res.data.code == '0') {
-              this.$router.push({ path: '/homePage' })
-            }
-          })
-          this.loading = false
-          // this.$store.dispatch('Login', this.loginForm).then(() => {
-          //   this.loading = false
-          //   this.$router.push({ path: '/' })
-          // }).catch(() => {
-          //   this.loading = false
-          // })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    }
   }
 }
 </script>

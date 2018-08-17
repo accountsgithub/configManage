@@ -473,14 +473,19 @@
       onConfigEdit () {
         this.$refs['vueTags'].edit(this.ConfigData)
       },
+      // onConfigPushClick() {
+      //   this.ruleKeyForm.mark = this.$route.params.mark
+      //   if(this.ruleKeyForm.confirm == 0 || this.ruleKeyForm.confirm == 1|| this.ruleKeyForm.confirm == 2|| this.ruleKeyForm.confirm == 3) {
+      //     this.dialogValidateKeyVisible = false
+      //     this.onConfigPush()
+      //   }else{
+      //     this.dialogValidateKeyVisible = true
+      //   }
+      // },
       onConfigPushClick() {
         this.ruleKeyForm.mark = this.$route.params.mark
-        if(this.ruleKeyForm.confirm == 0 || this.ruleKeyForm.confirm == 1|| this.ruleKeyForm.confirm == 2|| this.ruleKeyForm.confirm == 3) {
           this.dialogValidateKeyVisible = false
           this.onConfigPush()
-        }else{
-          this.dialogValidateKeyVisible = true
-        }
       },
       handleShow (name) {
         this.ruleKeyForm.mark = this.$route.params.mark

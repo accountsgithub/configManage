@@ -100,12 +100,15 @@
         this.index_copy = index
         this.row_copy = row
         this.ruleKeyForm.mark = row.mark
-        if(row.confirm == 0 || row.confirm == 1 || row.confirm == 2 || row.confirm == 3){
+        // if(row.confirm == 0 || row.confirm == 1 || row.confirm == 2 || row.confirm == 3){
+        //   this.dialogValidateKeyVisible = false
+        //   this.$router.push({name: 'list', params: {id: this.row_copy.id, mark: this.row_copy.mark}})
+        // }else{
+        //   this.dialogValidateKeyVisible = true
+        // }
+
           this.dialogValidateKeyVisible = false
           this.$router.push({name: 'list', params: {id: this.row_copy.id, mark: this.row_copy.mark}})
-        }else{
-          this.dialogValidateKeyVisible = true
-        }
 
       },
       handleShow (name) {
