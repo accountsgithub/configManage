@@ -5,6 +5,17 @@ export default {
   setLanguage ({ commit }, language) {
     commit(types.SETLANGUAGE, language)
   },
+  // 是否登陆
+  isLogin ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_UNAUTHORIZED().then((res) => {
+        commit(types.ISLOGIN, res)
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
+  },
   getSelfLogin ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.POST_LOGIN(params).then((res) => {

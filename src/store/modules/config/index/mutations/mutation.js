@@ -10,6 +10,10 @@ export default {
   [types.POSTLOGIN] (state, res) {
     state.username = res.data.result.username
   },
+  // 判断是否登陆
+  [types.ISLOGIN] (state, res) {
+
+  },
   [types.GETCONFIGSLIST] (state, res) {
     state.index_projectList = res.data.result.data
     state.formConfigModelData.pageNo = res.data.result.pageNo

@@ -2,8 +2,8 @@
   <div class="login-background">
     <div class="login-form-background">
       <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-        <h3 class="title">统一配置</h3>
-        <h3 class="title2">PUBLIC APPLICATION MANAGEMENT PLATFORM</h3>
+        <h3 class="title">统一配置中心</h3>
+        <h3 class="title2">CLOUDCONFIG</h3>
         <el-form-item prop="username">
           <el-input class="textStyle" placeholder="请输入用户名" v-model="loginForm.username" autoComplete="off">
             <i slot="prefix" class="icon iconfont icon-ic-name" style="margin: 0 15px 15px 13px;font-size: 20px;"></i>
@@ -37,6 +37,11 @@ import {getCookie, setCookie, delCookie} from '@/utils/helps'
 
 export default {
   name: 'login',
+
+  created () {
+    this.thisIsLogin()
+  },
+
   data () {
     return {
       isSavePW: !!getCookie('isSavePW'),
@@ -58,8 +63,17 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getLogin', 'getSelfLogin'
+      'getLogin', 'getSelfLogin', 'isLogin'
     ]),
+
+    thisIsLogin () {
+      this.isLogin().then(res => {
+        if(res.data && res.data.code != '401') {
+          this.$router.push({path: '/homePage'})
+        }
+      })
+    },
+
     showPwd () {
       if (this.pwdType === 'password') {
         this.pwdType = ''

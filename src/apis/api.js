@@ -23,10 +23,12 @@ axios.interceptors.response.use(response => {
     store.state.config.fullscreenLoading = false
   } else if (response.data.status == '1005' || response.data.status == '1001') {
     store.state.config.fullscreenLoading = false
+  } else if (response.data.code == '401') {
+    router.push({path: '/login'})
   } else {
     Message.error(response.data.message)
     store.state.config.fullscreenLoading = false
-    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400'  && response.data.status != '1002'&& response.data.status != '1003'&& response.data.status != '1004' && response.data.status != '1005') {
+    if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1002' && response.data.status != '1003' && response.data.status != '1004' && response.data.status != '1005') {
       router.push({path: '/login'})
     }
     return Promise.reject(response)
@@ -100,6 +102,10 @@ export default {
   // 统一配置
   POST_LOGIN (params) {
     return api.fetch('post', `${base}/user/login`, params)
+  },
+  // 权限验证
+  GET_UNAUTHORIZED () {
+    return api.fetch('get', `${base}/auth/unauthorized`)
   },
   GET_PROJECTLIST (params) {
     return api.fetch('get', `${base}/projects`, params)

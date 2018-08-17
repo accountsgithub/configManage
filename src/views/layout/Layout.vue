@@ -40,7 +40,7 @@ export default {
       'CloseSideBar'
     ]),
     pushToIndex () {
-      this.$router.push('/')
+      this.$router.push('/homePage')
     },
     handleClickOutside () {
       this.CloseSideBar({ withoutAnimation: false })
