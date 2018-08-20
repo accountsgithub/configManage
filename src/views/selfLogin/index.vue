@@ -70,6 +70,8 @@ export default {
       this.isLogin().then(res => {
         if(res.data && res.data.code != '401') {
           this.$router.push({path: '/homePage'})
+        }else{
+          this.$router.push({path: '/login'})
         }
       })
     },
@@ -88,7 +90,7 @@ export default {
         if (valid) {
           this.getSelfLogin(this.loginForm).then(res => {
             console.log(res.data.code)
-            if(res.data.code == 0){
+            if(res.data.result == true){
               sessionStorage.setItem('username',this.loginForm.username)
               if (this.isSavePW) {
                 if (!getCookie('username') || getCookie('username') != this.loginForm.username) {

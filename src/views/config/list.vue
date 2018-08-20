@@ -30,6 +30,7 @@
       <el-button class="float-right fontSizeBtW12 addProfileButton" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
       <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPushClick">{{$t('list.push')}}</el-button>
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
+      <el-button class="float-right fontSizeBtB12" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
     </el-row>
         <!--表单-->
 
@@ -461,9 +462,13 @@
         this.formModelData.pageNo = 0
         this.getConfigList()
       },
-      expoFiles () {
+      expoFiles() {
         this.dialogExpoVisible = true
       },
+      exportFiles() {
+        window.open(``)
+      },
+
       onFilesClick () {
         this.$refs['vueTags'].add()
       },

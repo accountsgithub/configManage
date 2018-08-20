@@ -35,6 +35,7 @@ export default {
     validate_key: 'validate key',
     push: 'publish',
     expo_config: 'import',
+    export_config: 'export',
     project_info: 'project information',
     project_type: 'type',
     project_path: 'path',

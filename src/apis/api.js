@@ -19,12 +19,14 @@ axios.interceptors.request.use(config => {
   return Promise.reject(err)
 })
 axios.interceptors.response.use(response => {
+  if (response.data.code == '401') {
+    router.push({path: '/login'})
+  }
+
   if (response.data.status == '200') {
     store.state.config.fullscreenLoading = false
   } else if (response.data.status == '1005' || response.data.status == '1001') {
     store.state.config.fullscreenLoading = false
-  } else if (response.data.code == '401') {
-    router.push({path: '/login'})
   } else {
     Message.error(response.data.message)
     store.state.config.fullscreenLoading = false

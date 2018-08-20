@@ -36,6 +36,7 @@ export default {
     validate_key: '验证秘钥',
     push: '发布',
     expo_config: '导入配置',
+    export_config: '导出配置',
     project_info: '项目信息',
     project_type: '类型',
     project_path: '路径',
