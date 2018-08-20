@@ -3,7 +3,7 @@ import actions from './actions/actions'
 import mutations from './mutations/mutation'
 
 const state = {
-  language: Cookies.get('language') || 'en',
+  language: Cookies.get('language') || 'zh',
   index_projectList: [],
   code_result: '',
   layout_result: '',
