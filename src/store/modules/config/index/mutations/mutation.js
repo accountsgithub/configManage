@@ -66,6 +66,7 @@ export default {
   },
   [types.GETPROFILES] (state, res) {
     state.list_files = res.data.result.data
+    state.totalListFiles = res.data.result.total
   },
   [types.GETPUBLISHTIME] (state, res) {
     // state.list_groups = res.data.result.data

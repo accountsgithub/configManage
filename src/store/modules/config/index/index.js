@@ -35,6 +35,7 @@ const state = {
   index_configList: [],
   fullscreenLoading: true,
   list_files: [],
+  totalListFiles: 0,
   list_version: [],
   activeversion: ''
 }

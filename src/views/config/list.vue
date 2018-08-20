@@ -30,7 +30,7 @@
       <el-button class="float-right fontSizeBtW12 addProfileButton" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
       <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPushClick">{{$t('list.push')}}</el-button>
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
-      <el-button class="float-right fontSizeBtB12" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
+      <el-button class="float-right fontSizeBtB12" type="primary" @click="exportFiles" :class="{disStyle:disExportButton}">{{$t('list.export_config')}}</el-button>
     </el-row>
         <!--表单-->
 
@@ -236,6 +236,7 @@
         disTextDiv: false,
         disPathValue: true,
         disTypeValue: false,
+        disExportButton:false,
         disTextEdit: true,
         tablaDivDefault: false,
         textValue: '',
@@ -345,7 +346,14 @@
         this.disTypeValue = true
         this.profiledata.f_eq_version = this.ActiveVersion.version
         let params = Object.assign(this.profiledata)
-        this.getprofiles(params)
+        this.getprofiles(params).then(res => {
+         if(res.data.result.total == 0){
+           this.disExportButton = true
+         }else {
+           this.disExportButton = false
+         }
+        })
+
       },
       getCurrentVersion () {
         return this.ActiveVersion.version
@@ -466,7 +474,9 @@
         this.dialogExpoVisible = true
       },
       exportFiles() {
-        window.open(``)
+        this.$route.params.id
+        this.ActiveVersion.version
+        window.open(`${this.g_Config.BASE_URL}${API.DOWLAOD_PKG  }/${  type  }/${  id}`)
       },
 
       onFilesClick () {
