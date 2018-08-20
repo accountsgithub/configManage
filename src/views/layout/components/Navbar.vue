@@ -120,7 +120,6 @@
         'avatar'
       ]),
       username () {
-        // return "adminadminadminadminadminadminadminadminadminadminadminadmin"
         // return localStorage.username
         return localStorage.getItem('username')
       },
@@ -177,7 +176,7 @@
           debugger
           if (res.data.code == 0 ) {
             this.$router.push({ path: '/login' })
-            // window.location.href = './login.html'
+            // window.location.href = './login'
           }
         })
         // this.$router.push('/login')

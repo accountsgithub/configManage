@@ -133,6 +133,7 @@
         <el-button @click="dialogAddVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+
     <!--修改配置-->
     <el-dialog
       :title="$t('list.edit_config')"
