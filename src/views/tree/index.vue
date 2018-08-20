@@ -63,7 +63,6 @@ export default {
       'getTreeDeptList', 'getDeptList'
     ]),
     getTreeDepartList () {
-      console.log('fdsafdsafsafdsafdsafdsafds')
       let params = Object.assign({})
       this.getTreeDeptList(params)
     },

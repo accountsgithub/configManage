@@ -72,7 +72,6 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          console.log(this.loginForm)
           this.getLogin(this.loginForm)
             .then(() => {
               if (this.isSavePW) {

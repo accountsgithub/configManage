@@ -172,8 +172,6 @@
       logout () {
         localStorage.clear('username')
         this.getLogOut().then(res => {
-          console.log('getLogOut')
-          debugger
           if (res.data.code == 0 ) {
             this.$router.push({ path: '/login' })
             // window.location.href = './login'
