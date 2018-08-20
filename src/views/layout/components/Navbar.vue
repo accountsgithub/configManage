@@ -122,7 +122,7 @@
       username () {
         // return "adminadminadminadminadminadminadminadminadminadminadminadmin"
         // return localStorage.username
-        return sessionStorage.getItem('username')
+        return localStorage.getItem('username')
       },
       lang: {
         get () {
@@ -171,8 +171,7 @@
         })
       },
       logout () {
-        console.log('logout')
-        sessionStorage.clear('username')
+        localStorage.clear('username')
         this.getLogOut().then(res => {
           console.log('getLogOut')
           debugger

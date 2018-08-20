@@ -91,7 +91,7 @@ export default {
           this.getSelfLogin(this.loginForm).then(res => {
             console.log(res.data.code)
             if(res.data.result == true){
-              sessionStorage.setItem('username',this.loginForm.username)
+              localStorage.setItem('username',this.loginForm.username)
               if (this.isSavePW) {
                 if (!getCookie('username') || getCookie('username') != this.loginForm.username) {
                   setCookie('username', this.loginForm.username)
