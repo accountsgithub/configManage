@@ -119,7 +119,7 @@ export default {
     return api.fetch('get', `${base}/projects/` + params.id)
   },
   GET_PROJECTCONFIGLIST (params) {
-    return api.fetch('get', `${base}/configs`, params)
+    return api.fetch('get', `${base}/configs/list/`+ params.orderType, params)
   },
   GET_PROJECTCONFIGSHOW (params) {
     return api.fetch('get', `${base}/configs/` + params.id)

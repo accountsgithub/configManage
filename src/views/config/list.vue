@@ -72,8 +72,8 @@
             </el-form-item>
           </el-form>
           <el-row class="line"></el-row>
-          <el-table :data="index_configList" style="width: 100%" border >
-            <el-table-column label="Key" min-width="180" align="center" class="fontBlod fontSizeBtB12">
+          <el-table :data="index_configList" @sort-change="handleSortChange" style="width: 100%" border >
+            <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="center" class="fontBlod fontSizeBtB12">
               <template slot-scope="scope">
                 <span style="margin-left: 10px" class="overKeyWidth">{{ scope.row.configKey }}</span>
               </template>
@@ -83,7 +83,7 @@
                 <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('list.modify_time')" min-width="180" align="center">
+            <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
               <template slot-scope="scope">
                 <el-tag size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</el-tag>
               </template>
@@ -220,6 +220,7 @@
   import vueTages from './vue-tags.vue'
   import util from '../../utils/util.js'
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
+  import {ORDER_TYPE} from '@/constants'
   export default {
     name: 'indexList',
     data () {
@@ -268,7 +269,8 @@
           f_eq_projectId: '',
           f_eq_groupId: '0',
           f_like_configKey: '',
-          'f_eq_profile.id': ''
+          'f_eq_profile.id': '',
+          'orderType': 0
         },
         ruleTextAddForm: {
           id: '',
@@ -308,6 +310,23 @@
       ...mapActions([
         'getProjectsShow', 'getGroups', 'getProjectsConfigList', 'getAddConfig', 'getdelprofiles', 'getdelConfig', 'geteditConfig', 'getpushConfig', 'getprofiles', 'getpublishtime', 'getProjectsConfigShow', 'getversion', 'getactiveversion', 'getValidateKey'
       ]),
+      handleSortChange({prop, order}) {
+        if (prop === 'configKey') {
+          if (order === 'descending') {
+            this.formInline.orderType = 2
+          } else {
+            this.formInline.orderType = 1
+          }
+        }else if (prop === 'updateTime') {
+          if (order === 'descending') {
+            this.formInline.orderType = 4
+          } else {
+            this.formInline.orderType = 3
+          }
+        }
+        this.getConfigList()
+        // this.formInline.orderType = 0
+      },
       textEdit () {
         this.disTextEdit = false
         this.saveButton = true
@@ -328,10 +347,16 @@
           this.ruleTextAddForm.version = this.ActiveVersion.version
           let params = Object.assign(this.ruleTextAddForm)
           this.getAddConfig(params).then(res => {
-            this.$message({
-              type: 'success',
-              message: this.$t('message.add_success')
-            })
+            if(res.data.status == 200 && res.data.code == 0){
+              this.$message({
+                type: 'success',
+                message: this.$t('message.add_success')
+              })
+            }else{
+              if(res.data.status == 1001){
+                this.$message.error(this.$t('message.duplicated_profile'))
+              }
+            }
           })
           this.getTextConfigList()
         }
@@ -582,10 +607,16 @@
             if (name === 'ruleAddForm') {
               let params = Object.assign(this.ruleAddForm)
               this.getAddConfig(params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: this.$t('message.add_success')
-                })
+                if(res.data.status == 200 && res.data.code == 0){
+                  this.$message({
+                    type: 'success',
+                    message: this.$t('message.add_success')
+                  })
+                }else{
+                  if(res.data.status == 1001){
+                    this.$message.error(this.$t('message.duplicated_profile'))
+                  }
+                }
                 this.getConfigList()
                 if (this.$refs[name]) {
                   this.$refs[name].resetFields()
