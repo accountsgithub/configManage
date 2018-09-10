@@ -36,7 +36,8 @@
 
       <!--添加tags-->
       <el-row style="margin-left: 10px">
-        <vue-tages ref="vueTags" :source.sync="list_files" :confirm.sync="ruleKeyForm.confirm" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
+        <!--////-->
+        <vue-tages ref="vueTags" :initValue.sync ="initValue" :source.sync="list_files" :confirm.sync="ruleKeyForm.confirm" :fileName.sync="fileName" :chooseVersion.sync="ActiveVersion.version" @getSelectVersion="getSelectVersion" @ontagclick="tagClick" @onChangeTagClick="onchangetag" @onChangeVersionClick="onchangeversion"></vue-tages>
       </el-row>
 
       <!--添加tags-->
@@ -225,6 +226,7 @@
     name: 'indexList',
     data () {
       return {
+        initValue: '0', ////
         ActiveVersion: {
           version: ''
         },
@@ -376,6 +378,9 @@
          if(res.data.result.total == 0){
            this.disExportButton = true
          }else {
+           if (this.initValue == '0') { ////
+             this.tagClick(res.data.result.data[0], 0)
+           }
            this.disExportButton = false
          }
         })
@@ -663,6 +668,7 @@
         this.resetForm(name)
       },
       tagClick (data) {
+        this.initValue = '1' ////
         if (data) {
           this.ConfigData = data
           this.ConfigData.name = data.name

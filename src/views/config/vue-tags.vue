@@ -87,7 +87,7 @@
   import {mapActions} from 'vuex'
   export default {
     name: 'vue-tags',
-    props: ['source', 'chooseVersion', 'fileName', 'confirm'],
+    props: ['source', 'chooseVersion', 'fileName', 'confirm', 'initValue'],////
     computed: {
       dis_source () {
           return this.source
@@ -151,7 +151,7 @@
         }
       }
       return {
-        nums: null,
+        nums: this.initValue,////
         itemaa:{},
         ruleAddFormTag: {
           id: '',
