@@ -259,7 +259,6 @@
                 this.$emit('onChangeTagClick', res)
               })
             } else if (name === 'copy_ruleEditFormTag') {
-              console.log(this.copy_ruleEditFormTag)
               let params = Object.assign(this.copy_ruleEditFormTag)
               this.geteditprofiles(params).then(res => {
                 this.$message({

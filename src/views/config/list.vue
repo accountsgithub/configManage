@@ -21,6 +21,8 @@
             </el-select>
           </el-col>
           <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
+          <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="exportFiles">{{$t('list.export_config')}}</el-button>
+          <el-button class="float-right fontSizeBtB12" type="primary" @click="importFiles" :class="{disStyle:disExportButton}">{{$t('list.import_config')}}</el-button>
         </el-row>
       </div>
     </div>
@@ -30,7 +32,7 @@
       <el-button class="float-right fontSizeBtW12 addProfileButton" type="primary" icon="el-icon-plus" @click="onFilesClick">{{$t('common.add')}}</el-button>
       <el-button class="float-right fontSizeBtW12" type="primary" icon="el-icon-upload" @click="onConfigPushClick">{{$t('list.push')}}</el-button>
       <el-button class="float-right fontSizeBtB12" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
-      <el-button class="float-right fontSizeBtB12" type="primary" @click="exportFiles" :class="{disStyle:disExportButton}">{{$t('list.export_config')}}</el-button>
+
     </el-row>
         <!--表单-->
 
@@ -212,6 +214,34 @@
           <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
+    <!--迁入配置-->
+    <el-dialog
+      :title="$t('list.import_config')"
+      :visible.sync="dialogImportVisible" @close="dialogExpoClose"
+      :before-close="beforeClose"
+      width="60%">
+      <el-upload
+        class="upload-demo"
+        ref="upload2"
+        :action='url2'
+        :data="expofiledata"
+        :default-file-list="defaultUploadList"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList"
+        :on-success="handleSuccess"
+        :limit="1"
+        :format="['json']"
+        :on-exceed="onexceed"
+        :auto-upload="false">
+        <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
+        <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content_2')}}</div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
+      </span>
+    </el-dialog>
 
   </section>
 </template>
@@ -246,7 +276,9 @@
         textValue: '',
         defaultUploadList: [],
         url: this.g_Config.BASE_URL + '/files/config_file_import',
+        url2: this.g_Config.BASE_URL + '/configs/import',
         dialogExpoVisible: false,
+        dialogImportVisible: false,
         fileList: [],
         projectName: '',
         creatorName: '',
@@ -327,7 +359,6 @@
           }
         }
         this.getConfigList()
-        // this.formInline.orderType = 0
       },
       textEdit () {
         this.disTextEdit = false
@@ -370,6 +401,7 @@
         })
       },
       getCurrentProFiles () {
+        this.initValue = '0'
         this.disPathValue = true
         this.disTypeValue = true
         this.profiledata.f_eq_version = this.ActiveVersion.version
@@ -384,7 +416,6 @@
            this.disExportButton = false
          }
         })
-
       },
       getCurrentVersion () {
         return this.ActiveVersion.version
@@ -400,6 +431,7 @@
       },
       dialogExpoClose () {
         this.dialogExpoVisible = false
+        this.dialogImportVisible = false
         this.defaultUploadList = []
         this.fileList = []
       },
@@ -409,6 +441,9 @@
       },
       submitUpload () {
         this.$refs.upload.submit()
+      },
+      submitUpload2 () {
+        this.$refs.upload2.submit()
       },
       handleSuccess (file, fileList) {
         if (file.status == '200') {
@@ -432,9 +467,11 @@
           this.$message.error(this.$t('message.fail'))
         }
         this.dialogExpoVisible = false
+        this.dialogImportVisible = false
         this.getConfigList()
         this.getCurrentProFiles()
         this.defaultUploadList = []
+        this.fileList = []
       },
       handleRemove (file, fileList) {
         console.log(file, fileList)
@@ -504,10 +541,12 @@
       expoFiles() {
         this.dialogExpoVisible = true
       },
+      importFiles() {
+        this.dialogImportVisible = true
+      },
       exportFiles() {
-        this.$route.params.id
-        this.ActiveVersion.version
-        window.open(`${this.g_Config.BASE_URL}${API.DOWLAOD_PKG  }/${  type  }/${  id}`)
+        console.log(this.g_Config.BASE_URL+`/configs/export/${   this.ruleAddForm.projectId  }/${  this.ActiveVersion.version}`)
+        window.open(this.g_Config.BASE_URL+`/configs/export/${   this.ruleAddForm.projectId  }/${  this.ActiveVersion.version}`)
       },
 
       onFilesClick () {
@@ -804,32 +843,26 @@
         }
       }
     },
-    mounted () {
-      if(sessionStorage.getItem('id')==this.$route.params.id){
-        let params = Object.assign({id: this.$route.params.id})
-        this.getGroups()
-        let params2 = Object.assign(this.ruleVeriosn)
-        this.getversion(params2)
-        this.getactiveversion(params2).then(res => {
-          this.ActiveVersion.version = res.data.result
-          this.expofiledata.version = this.ActiveVersion.version
-          this.getCurrentProFiles()
-        })
-        this.getProjectsShow(params).then(res => {
-          this.ruleKeyForm.confirm = res.data.result.confirm
-          this.projectName = res.data.result.name
-          this.creatorName = res.data.result.creatorName
-          this.formInline.f_eq_projectId = res.data.result.mark
-          this.expofiledata.projectId = res.data.result.mark
-          this.expofiledata.version = this.ActiveVersion.version
-          this.getpublish()
-          this.getConfigList()
-        })
-      }else{
-        this.$router.push({path: '/homePage'})
-      }
-      sessionStorage.clear('id')
-      sessionStorage.clear('confirmKey')
+    mounted() {
+      let params = Object.assign({id: this.$route.params.id})
+      this.getGroups()
+      let params2 = Object.assign(this.ruleVeriosn)
+      this.getversion(params2)
+      this.getactiveversion(params2).then(res => {
+        this.ActiveVersion.version = res.data.result
+        this.expofiledata.version = this.ActiveVersion.version
+        this.getCurrentProFiles()
+      })
+      this.getProjectsShow(params).then(res => {
+        this.ruleKeyForm.confirm = res.data.result.confirm
+        this.projectName = res.data.result.name
+        this.creatorName = res.data.result.creatorName
+        this.formInline.f_eq_projectId = res.data.result.mark
+        this.expofiledata.projectId = res.data.result.mark
+        this.expofiledata.version = this.ActiveVersion.version
+        this.getpublish()
+        this.getConfigList()
+      })
     },
     components: {
       ElButton,
