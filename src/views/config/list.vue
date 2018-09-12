@@ -20,9 +20,9 @@
               </el-option>
             </el-select>
           </el-col>
-          <el-button class="float-right fontSizeBtB12" type="primary" @click="importFiles" :class="{disStyle:disExportButton}">{{$t('list.import_config')}}</el-button>
-          <el-button class="float-right fontSizeBtW12 addVersionButton" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
-          <el-button class="float-right fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
+          <el-button class="float-right fontSizeBtB12" style=" margin-left: 10px;margin-top: -10px;width: 80px;" type="primary" @click="importFiles">{{$t('list.import_config')}}</el-button>
+          <el-button class="float-right fontSizeBtW12" style=" margin-left: 0px;margin-top: -10px;width: 80px;" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
+          <el-button class="float-right fontSizeBtW12" style=" margin-left: 0px;margin-right: 180px;margin-top: -35px;width: 100px;" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
         </el-row>
       </div>
     </div>
@@ -1071,6 +1071,9 @@
   }
   .addVersionButton {
     padding: 0 5px 0 5px;
+    /*margin-left: -30px;*/
+    /*margin-top: -10px;*/
+    /*width: 100px;*/
   }
   .addProfileButton {
       width: 100px;
