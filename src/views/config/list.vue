@@ -20,9 +20,9 @@
               </el-option>
             </el-select>
           </el-col>
-          <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
-          <el-button class="float-left fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="exportFiles">{{$t('list.export_config')}}</el-button>
           <el-button class="float-right fontSizeBtB12" type="primary" @click="importFiles" :class="{disStyle:disExportButton}">{{$t('list.import_config')}}</el-button>
+          <el-button class="float-right fontSizeBtW12 addVersionButton" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
+          <el-button class="float-right fontSizeBtW12 addVersionButton" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
         </el-row>
       </div>
     </div>
@@ -917,7 +917,7 @@
   }
   .infoRow{
     width: 100%;
-    height: 67px;
+    min-height: 67px;
     padding: 22px;
     padding-left: 41px;
     padding-right: 22px;
@@ -1070,9 +1070,7 @@
     width: 50%;
   }
   .addVersionButton {
-    margin-left: -30px;
-    margin-top: -10px;
-    width: 100px;
+    padding: 0 5px 0 5px;
   }
   .addProfileButton {
       width: 100px;
