@@ -9,11 +9,11 @@
       <div class="lineStyle"></div>
       <div class="infoDiv fontSize12">
         <el-row class="infoRow">
-          <el-col :span="4"><span class="fontSizeTitle12">{{$t('list.project_info')}}: </span><span class="fontSize12">{{projectName}}</span></el-col>
-          <el-col :span="4"><span class="fontSizeTitle12">{{$t('index.unique_identification')}}: </span><span class="fontSize12">{{ruleAddForm.projectId}}</span></el-col>
-          <el-col :span="4"><span class="fontSizeTitle12">{{$t('list.project_leader')}}: </span><span class="fontSize12">{{creatorName}}</span></el-col>
-          <el-col :span="4"><span class="fontSizeTitle12">{{$t('list.puth_time')}}: </span><span class="fontSize12">{{ timestampToTimeFun(updateTime)}}</span></el-col>
-          <el-col :span="4">
+          <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.project_info')}}: </span><span class="fontSize12">{{projectName}}</span></el-col>
+          <el-col :span="3"><span class="fontSizeTitle12">{{$t('index.unique_identification')}}: </span><span class="fontSize12">{{ruleAddForm.projectId}}</span></el-col>
+          <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.project_leader')}}: </span><span class="fontSize12">{{creatorName}}</span></el-col>
+          <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.puth_time')}}: </span><span class="fontSize12">{{ timestampToTimeFun(updateTime)}}</span></el-col>
+          <el-col :span="3">
             <span class="fontSizeTitle12">{{$t('list.version')}}:</span>
             <el-select v-model="ActiveVersion.version" class="selectStyle" @change="getSelectVersion" >
               <el-option v-for="item in list_version" :key="item.id" :value="item.version" :label="item.version">
@@ -22,7 +22,7 @@
           </el-col>
           <el-button class="float-right fontSizeBtB12" style=" margin-left: 10px;margin-top: -10px;width: 80px;" type="primary" @click="importFiles">{{$t('list.import_config')}}</el-button>
           <el-button class="float-right fontSizeBtW12" style=" margin-left: 0px;margin-top: -10px;width: 80px;" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
-          <el-button class="float-right fontSizeBtW12" style=" margin-left: 0px;margin-right: 180px;margin-top: -35px;width: 100px;" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
+          <el-button class="float-right fontSizeBtW12" style=" margin-left: 0px;margin-right: 10px;margin-top: -10px;width: 100px;" type="primary" icon="el-icon-plus" @click="onVersionClick">{{$t('common.addVersion')}}</el-button>
         </el-row>
       </div>
     </div>
@@ -1067,7 +1067,7 @@
   }
   .selectStyle {
     margin-top: -15px;
-    width: 50%;
+    width: 60%;
   }
   .addVersionButton {
     padding: 0 5px 0 5px;
