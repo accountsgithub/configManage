@@ -24,7 +24,7 @@ export default {
 .hamburger {
   display: inline-block;
   cursor: pointer;
-  margin-top: 30px;
+  margin-top: 24px;
   width: 22px;
   height: 22px;
   background:url( '../../assets/images/menu-ss.png') no-repeat center top;

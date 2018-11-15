@@ -3,16 +3,16 @@
   .main-container {
     min-height: 100%;
     transition: margin-left .28s;
-    margin-left: 220px;
+    margin-left: 200px;
   }
   // 侧边栏
   .sidebar-container {
     transition: width 0.28s;
-    width: 220px !important;
+    width: 200px !important;
     height: 100%;
     position: fixed;
     font-size: 0px;
-    top: 72px;
+    top: 60px;
     bottom: 0;
     left: 0;
     z-index: 1001;
@@ -31,9 +31,19 @@
       display: none;
     }
     a {
-      display: inline-block;
-      width: 100%;
+      display: block;
       overflow: hidden;
+      padding: 2px 0 2px 8px;
+      border-bottom: 1px solid #182b4a;
+      li {
+        padding-left: 40px!important;
+      }
+      i {
+        font-size: 14px;
+      }
+      i.link_people {
+        font-size: 16px;
+      }
     }
     .svg-icon {
       margin-right: 16px;
@@ -41,10 +51,23 @@
     .el-menu {
       border: none;
       height: 100%;
+      padding-top: 5px;
       width: 100% !important;
+    }
+    .bigMenu {
+      height: 48px;
+      line-height: 48px;
     }
   }
   .hideSidebar {
+    .bigMenu.el-menu-item {
+      &:hover {
+        background: url('../assets/images/menu-selected-s.png') no-repeat !important;
+      }
+      &.is-active {
+        background: url('../assets/images/menu-selected-s.png') no-repeat !important;
+      }
+    }
     .sidebar-container {
       width: 60px !important;
     }
@@ -52,10 +75,10 @@
       margin-left: 60px;
     }
     .submenu-title-noDropdown {
-      padding-left: 18px !important;
+      padding-left: 10px !important;
       position: relative;
       .el-tooltip {
-        padding: 0 18px !important;
+        padding: 0 15px !important;
       }
     }
     .el-submenu {
@@ -94,7 +117,7 @@
       background: url('../assets/images/menu-selected-01.png') no-repeat !important;
     }
     &.is-active {
-      background: url('../assets/images/menu-selected-02.png') no-repeat !important;
+      background: url('../assets/images/menu-selected-01.png') no-repeat !important;
     }
   }
   .el-menu-item.is-active i {
@@ -107,11 +130,14 @@
   //适配移动端
   .mobile {
     .main-container {
-      margin-left: 0px;
+      margin-left: 0;
     }
     .sidebar-container {
       transition: transform .28s;
       width: 180px !important;
+    }
+    .side-logo {
+      width: 0 !important;
     }
     &.hideSidebar {
       .sidebar-container {

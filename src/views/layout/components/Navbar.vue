@@ -2,67 +2,51 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-  <el-select v-model="lang" class="langSelectStyle">
-      <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-    <!--<el-dropdown class="avatar-container" trigger="click">-->
-      <!--<div class="avatar-wrapper">-->
-        <!--<i><div class="userSign"></div></i>-->
-        <!--&lt;!&ndash;<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">&ndash;&gt;-->
-        <!--<i class="el-icon-caret-bottom"></i>-->
-      <!--</div>-->
-      <!--<el-dropdown-menu class="user-dropdown" slot="dropdown">-->
-        <!--<el-dropdown-item divided>-->
-          <!--<span @click="logout" style="display:block;">{{$t('common.logout')}}</span>-->
-        <!--</el-dropdown-item>-->
-      <!--</el-dropdown-menu>-->
-    <!--</el-dropdown>-->
-    <!---->
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper" style="display: flex;">
-        <img src="../../../assets/images/pic-head.png" class="userSign" />
-        <div style="margin-left: 5px;"><span>{{username}}</span></div>
-        <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
-        <i class="el-icon-caret-bottom"></i>
+    <div class="right-style">
+      <div class="langSelectStyle">
+        <lang-select :lang="lang" class="international right-menu-item"></lang-select>
       </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <!--<el-dropdown-item divided>-->
-          <!--<span @click="updataPassword" style="display:block;">{{$t('common.modifyPassword')}}</span>-->
-        <!--</el-dropdown-item>-->
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">{{$t('common.logout')}}</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-    <el-dialog
-      title="修改密码" @close="closeDialog"
-      :visible.sync="dialogVisible"
-      width="60%">
-      <el-form :model="pwEditForm" :rules="PWEditFormRules" ref="pwEditForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="旧密码" prop="oldPassword">
-          <el-input type="password" v-model="pwEditForm.oldPassword" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="新密码" prop="password">
-          <el-input type="password" v-model="pwEditForm.password" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="newPassword">
-          <el-input type="password" v-model="pwEditForm.newPassword" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
+      <div class="dropdown-style">
+        <el-dropdown class="avatar-container" trigger="click">
+          <div class="avatar-wrapper" style="display: flex;">
+            <img src="../../../assets/images/pic-head.png" class="userSign" />
+            <div style="margin-left: 5px;"><span>{{username}}</span></div>
+            <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
+            <i class="el-icon-caret-bottom"></i>
+          </div>
+          <el-dropdown-menu class="user-dropdown" slot="dropdown">
+            <el-dropdown-item divided>
+              <span @click="logout" style="display:block;text-align: center;">{{$t('common.logout')}}</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-dialog
+          title="修改密码" @close="closeDialog"
+          :visible.sync="dialogVisible"
+          width="60%">
+          <el-form :model="pwEditForm" :rules="PWEditFormRules" ref="pwEditForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="旧密码" prop="oldPassword">
+              <el-input type="password" v-model="pwEditForm.oldPassword" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="password">
+              <el-input type="password" v-model="pwEditForm.password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="newPassword">
+              <el-input type="password" v-model="pwEditForm.newPassword" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm('pwEditForm')" class="fontSizeBtW12">提交</el-button>
       </span>
-    </el-dialog>
+        </el-dialog>
+      </div>
+    </div>
   </el-menu>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
+  import LangSelect from '@/components/langSelect'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
   import utils from '@/utils/util'
@@ -111,6 +95,7 @@
       }
     },
     components: {
+      LangSelect,
       Breadcrumb,
       Hamburger
     },
@@ -188,12 +173,12 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .navbar {
-    height: 72px;
-    line-height: 72px;
+    height: 60px;
+    line-height: 60px;
     border-radius: 0px !important;
     .hamburger-container {
-      line-height: 72px;
-      height: 72px;
+      line-height: 60px;
+      height: 60px;
       float: left;
       padding-left: 21px;
     }
@@ -204,14 +189,15 @@
       color: red;
     }
     .avatar-container {
-      height: 72px;
+      height: 60px;
       display: inline-block;
-      position: absolute;
-      right: 35px;
+      /*position: absolute;*/
+      right: 10px;
       .avatar-wrapper {
         cursor: pointer;
-        margin-top: 5px;
         position: relative;
+        display: flex;
+        margin-right: 30px;
         .user-avatar {
           width: 40px;
           height: 40px;
@@ -220,27 +206,90 @@
         .el-icon-caret-bottom {
           position: absolute;
           right: -20px;
-          top: 30px;
+          top: 24px;
           font-size: 12px;
         }
         .userSign {
           display: inline-block;
           cursor: pointer;
           width: 32px;
-          margin-top: 16px;
+          margin-top: 10px;
           height: 32px;
           transition: .38s;
           transform-origin: 50% 50%;
         }
       }
     }
-    .langSelectStyle{
+    // 右侧样式
+    .right-style {
+      height: 60px;
+      width: auto;
+      display: inline-block;
+      flex-wrap:wrap;
+      justify-content:space-between;
       position: absolute;
-      margin-left: 10px;
-      height:30px;
-      width: 170px;
+      right: 0;
+    }
+    .dropdown-style {
+      position: relative;
+      display: inline-table;
+      top: 5px;
+    }
+    .langSelectStyle{
+      top: 0;
+      position: relative;
+      display: inline-table;
+      width: 83px;
+      right: 20px;
+      line-height: 60px;
+      /deep/.el-input {
+        background:#ffffff;
+        border:1px solid #dcdfe6;
+        border-radius:4px;
+        height:30px !important;
+        width: 83px;
+        font-size: 12px;
+      }
+      /deep/.el-input__inner{
+        background:#ffffff;
+        border:1px solid #dcdfe6;
+        border-radius:4px;
+        height:30px !important;
+        width: 83px;
+        font-size: 12px;
+      }
+      /deep/.el-input--suffix .el-input__inner{
+        height:30px !important;
+      }
     }
   }
+
+  // dropdown style begin
+  .user-dropdown{
+    margin-top: -12px;
+    width: 120px;
+    /deep/.el-dropdown-menu{
+      padding: 0;
+    }
+  }
+  /deep/.el-dropdown-menu__item--divided:before{
+    height: 0;
+    display: none;
+  }
+  /deep/.el-dropdown-menu__item{
+    font-family:PingFangSC-Medium;
+    font-size:12px;
+    color:#666666;
+    line-height: 40px;
+  }
+  .el-dropdown-menu__item--divided{
+    border-top:1px solid #ffffff;
+    margin-top: 0;
+  }
+  .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover{
+    color: #666666;
+  }
+  // dropdown style end
   .el-dropdown-menu__item--divided{
     border-top:1px solid #ffffff
   }

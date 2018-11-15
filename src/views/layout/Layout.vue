@@ -73,8 +73,8 @@ export default {
     top: 0;
     left: 0;
     bottom: 0;
-    height: 72px;
-    width: 220px !important;
+    height: 60px;
+    width: 200px !important;
     overflow: hidden;
     z-index: 1001;
     display: flex;

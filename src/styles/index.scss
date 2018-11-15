@@ -10,7 +10,9 @@ html {
 }
 
 html {
+
   body {
+    min-width: 1200px;
     height: 100%;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -22,10 +24,7 @@ html {
     font-weight: 700;
   }
 
-  html {
-    height: 100%;
-    box-sizing: border-box;
-  }
+
 
   #app{
     height: 100%;
@@ -48,7 +47,7 @@ html {
 
   div:focus{
     outline: none;
-  }
+   }
 
   a:focus,
   a:active {
@@ -84,4 +83,271 @@ html {
     padding: 10px;
   }
 
+  //滚动条样式
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color:#ffffff;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius:2em;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color:#a1abb5;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius:2em;
+  }
+
+  .tableInfo{
+    padding-left: 20px;
+    padding-top: 15px;
+    font-family:PingFangSC-Medium;
+    font-size:14px;
+    color:#686f79;
+    letter-spacing:0;
+    text-align:left;
+    height: 50px;
+    border-bottom:1px solid #edeff4;
+  }
+
+  .content-table {
+    .ctbale_main {
+      padding: 0 0 0 20px;
+      overflow-y: hidden!important;
+    }
+  }
+
+  // 列表按键样式
+  .tableLastButtonStyleW{
+    font-family:PingFangSC-Semibold;
+    font-size:12px;
+    color:#666666;
+    background:#f9fbfd;
+    border:1px solid #e7e9f0;
+    border-radius:4px;
+    padding: 0 10px 0 10px;
+    height:32px;
+    float: right;
+  }
+  .tableLastButtonStyleB{
+    font-family:PingFangSC-Semibold;
+    font-size:12px;
+    color: #ffffff;
+    background:$publicColor;
+    border:1px solid #e7e9f0;
+    border-radius:4px;
+    padding: 0 10px 0 10px;
+    height:32px;
+    float: right;
+  }
+
+  // 弹出框按键样式
+  .dialogButtonW {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    padding: 0 10px;
+    height:32px;
+    font-family: PingFangSC-Semibold;
+    font-size: 14px;
+    color: #606266;
+    letter-spacing: 0;
+    text-align: center;
+    /deep/.el-button{
+      background: #ffffff;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      padding: 0 10px;
+      height:32px;
+      font-family: PingFangSC-Semibold;
+      font-size: 14px;
+      color: #606266;
+    }
+  }
+  /deep/.dialogButtonB{
+    background:$publicColor;
+    border-radius:4px;
+    padding: 0 10px;
+    height:32px;
+    font-family:PingFangSC-Semibold;
+    font-size:14px;
+    color:#ffffff;
+    letter-spacing:0;
+    text-align:center;
+    &.el-button{
+      background:$publicColor;
+      border-radius:4px;
+      padding: 0 10px;
+      height:32px;
+      font-family:PingFangSC-Semibold;
+      font-size:14px;
+      color:#ffffff;
+    }
+
+    //弹出框按键点击样式
+    &.el-button--primary:hover {
+      background: $publicColor!important;
+    }
+    //弹出框按键点击样式
+    &.el-button--primary:focus {
+      background: $publicColor!important;
+    }
+  }
+
+  // 查询条件form首个输入框样式
+  .searchitemTF {
+    //margin-top: 24px;
+    margin-left: 20px;
+  }
+  // 查询条件form按键样式
+  .searchitemB {
+    margin-top: 21px;
+    margin-left: 10px;
+    float: right;
+  }
+
+  // 查询条件样式
+  .form-top{
+    margin-top: 0;
+    margin-right: 22px;
+    // 输入框垂直居中
+    /deep/ .el-form-item__content {
+      line-height: 72px;
+    }
+    /deep/.el-form-item__label {
+      font-family:PingFangSC-Regular;
+      font-size:12px;
+      color:#606266;
+      letter-spacing:0;
+      text-align:right;
+      font-weight: 500;
+      line-height: 72px;
+    };
+    // 输入框样式
+    /deep/.el-input__inner {
+      background:#ffffff;
+      border:1px solid #dcdfe6;
+      border-radius:4px;
+      width:170px;
+      height:30px!important;
+      font-size: 12px;
+    };
+    // 弹出框元素对齐
+    /deep/.el-form-item{
+      margin-right: 0;
+      margin-bottom: 0;
+    }
+  }
+  // table操作按键样式
+  .tableActionStyle{
+    font-family:PingFangSC-Medium;
+    font-size:12px;
+    color:$publicColor;
+    letter-spacing:0.86px;
+    text-align:left;
+    margin-left: 10px;
+  }
+
+  // table操作按键样式
+  .table-drop-action{
+    font-family:PingFangSC-Medium;
+    font-size:12px;
+    color:$publicColor;
+    letter-spacing:0.86px;
+    display: block;
+    text-align: center;
+  }
+
+  // 弹出框滚动条
+  .form_box {
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-right: -20px;
+    padding-right: 20px;
+  }
+
+  // 切换平台弹框
+  .swithplant-dialog{
+    line-height: 1.5!important;
+    .el-row {
+      text-align: center;
+    }
+  }
+
+  // 搜索框整体样式
+  .search-style {
+    min-height: 72px;
+    background: #ffffff;
+    margin: 10px 0;
+    font-size: 0;
+    padding: 10px 20px 10px 20px;
+    .el-form-item{
+      margin-right: 0;
+      vertical-align: top;
+      margin-bottom: 15px;
+      display: inline-flex;
+      flex-direction: row;
+      .el-form-item__label{
+        width: 120px;
+        white-space: nowrap;
+        height: 32px;
+        line-height: 32px;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #606266;
+        letter-spacing: 0;
+        text-align: right;
+        font-weight: 500;
+      }
+      .el-form-item__content {
+        flex: 3;
+        .el-select {
+          width: 100%;
+        }
+        .el-input {
+          width: 100%;
+        }
+      }
+      .el-input__inner{
+        height: 32px;
+        line-height: 32px;
+        width: 100%;
+      }
+      &:last-child {
+        float: right;
+        .el-button {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 1440px) {
+      .el-form-item{
+        width: 33.333%;
+      }
+    }
+    @media screen and (min-width: 1440px) {
+      .el-form-item{
+        width: 25%;
+      }
+    }
+  }
+  // 搜索条件样式
+  .search-item-style {
+    display: flex;
+    flex-wrap:wrap;
+    justify-content:space-around;
+    flex: 1;
+  }
+
+  // 左侧树查询框背景样式
+  .tree-input-style {
+    height: 60px;
+    width: 100%;
+    background-color: #f4f7fb;
+  }
 }

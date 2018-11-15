@@ -29,4 +29,287 @@ html {
     }
   }
 
+  .el-table--striped {
+    .el-table__body tr.el-table__row--striped td {
+      background: #f9fbfd;
+    }
+    .el-table__body tr:hover > td {
+      background-color: #ecf5ff;
+    }
+  }
+
+  .el-table {
+    .el_state_dot {
+      display: inline-block;
+      padding-left: 15px;
+      position: relative;
+      &:before {
+        content: " ";
+        width: 6px;
+        height: 6px;
+        border-radius: 100px;
+        position: absolute;
+        left: 0;
+        top: 10px;
+        background: #cccccc;
+      }
+    }
+    .el_state_dot.is-enable {
+      &:before {
+        background: #17c232;
+      }
+    }
+  }
+  // 表头字体样式
+  .el-table th>.cell{
+    font-weight: 500;
+  }
+  //左侧树样式
+  .treelist-style {
+    margin-left: 15px;
+    margin-top: 0px;
+    .el-tree-node {
+      position: relative;
+    }
+    .el-tree > .el-tree-node {
+      & > .el-tree-node__content:first-child:after, & > .el-tree-node__content:first-child:before {
+        display: none;
+      }
+    }
+    .el-tree-node:last-child > .el-tree-node__content:before {
+      height: 26px;
+    }
+
+    .el-tree-node__content {
+      height: 23px;
+    }
+
+    .el-tree-node__content:after, .el-tree-node__content:before {
+      content: "";
+      margin-left: -7px;
+      position: absolute;
+      right: auto;
+      border-width: 1px;
+      z-index: 1;
+    }
+    .el-tree-node__content:before {
+      border-left: 1px dashed #c2cad6;
+      bottom: 50px;
+      height: 100%;
+      top: -15px;
+      width: 1px;
+    }
+    .el-tree-node__content:after {
+      border-top: 1px dashed #c2cad6;
+      height: 20px;
+      top: 10px;
+      width: 28px;
+    }
+
+    .el-icon-caret-right:before {
+      visibility: hidden;
+    }
+    .el-tree-node__expand-icon {
+      z-index: 999;
+      background: url("../assets/images/tree/tree_coll.jpg") no-repeat;
+      background-position: 3px;
+    }
+    .el-tree-node__expand-icon.expanded {
+      z-index: 999;
+      background: url("../assets/images/tree/tree_exp.jpg") no-repeat;
+      background-position: 3px 6px;
+      transform: rotate(0deg);
+    }
+    .el-tree-node__expand-icon.is-leaf {
+      visibility: hidden;
+    }
+  }
+  // dialog头部样式
+  .el-dialog__header {
+    border-bottom: 1px solid #e3eaf1;
+    height: 42px;
+    padding: 10px 20px 9px;
+  }
+  // dialog 关闭按键样式
+  .el-dialog__headerbtn {
+    top: 13px;
+  }
+  // dialog 关闭按键样式
+  .el-dialog__headerbtn:hover {
+    height: 22px;
+    width: 22px;
+    background: #fb5555;
+    border-radius:4px;
+    top: 10px;
+    margin-right: -5px;
+    & .el-dialog__close {
+      color: #FFFFFF;
+    }
+  }
+  // dialog 底部样式
+  .el-dialog__footer {
+    border-top: 1px solid #e3eaf1;
+    height: 52px;
+  }
+  .el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #58a4fb;
+  }
+  //弹出框样式
+  .dialogStyle {
+    /deep/ .el-input__inner {
+      background: #ffffff;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      height: 30px;
+      font-size: 12px;
+      font-weigth: 500;
+    }
+    .el-dialog {
+      min-width: 650px;
+    }
+    /deep/.el-form-item__label {
+      font-family:PingFangSC-Regular;
+      font-size:12px;
+      color:#606266;
+      font-weight: 500;
+    }
+    // 弹出框边线样式
+    /deep/ .el-input-number__increase {
+      top: 5px;
+      line-height: 14px
+    }
+    /deep/ .el-input-number__decrease {
+      bottom: 4px
+    }
+
+    // 窜梭框字体
+    /deep/.el-checkbox__label {
+      font-size: 12px;
+    }
+    // 窜梭框title字体
+    /deep/.el-transfer-panel .el-transfer-panel__header .el-checkbox .el-checkbox__label{
+      font-size: 12px;
+    }
+
+    // 窜梭框无数据字体
+    .el-transfer {
+      font-size: 12px;
+    }
+  }
+  // 弹出框标题样式
+  /deep/ .el-dialog__title {
+    font-weight: bolder;
+    font-size: 16px;
+    color: #333333;
+    font-family: PingFangSC-Medium;
+  }
+  // 分页
+  .content-table {
+    .el-pagination {
+      color: #575a5f;
+      font-weight: 500;
+    }
+  }
+  // 分页样式
+  .paginationStyle {
+    text-align: right;
+    padding-top: 20px;
+    /deep/ .el-pagination__total {
+      font-size: 12px;
+    }
+  ;
+    /deep/ .el-input__inner {
+      font-size: 12px;
+    }
+  ;
+    /deep/ .number {
+      font-size: 12px;
+    }
+  ;
+    /deep/ .el-pagination__jump {
+      font-size: 12px;
+    }
+  ;
+  }
+  .tableLastButtonStyleW {
+    /deep/.el-button--primary:hover{
+      background: #ffffff;
+      border-color: #FFFFFF;
+    }
+  }
+
+   // poptip
+  .el-tooltip__popper.is-dark {
+    background: #0b1f3f;
+  }
+  .el-tooltip__popper[x-placement^=right] .popper__arrow::after {
+    border-right-color: #0b1f3f;
+  }
+  .el-icon-plus:before {
+    font-weight: bolder;
+    margin-right: 4px;
+  }
+  .icon-ic-search:before {
+    margin-right: 4px;
+  }
+  .icon-ic-refresh:before {
+    margin-right: 4px;
+  }
+  // checkbox checked status
+  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+    background-color: $publicColor;
+  }
+  // radio checked status
+  .el-radio__input.is-checked .el-radio__inner{
+    background-color: $publicColor;
+  }
+  // radio checked label status
+  .el-radio__input.is-checked+.el-radio__label{
+    color: $publicColor;
+  }
+  // pagetion page seleced status
+  .el-pager li.active{
+    color: $publicColor;
+  }
+
+  //disable文本框样式
+  /deep/ .el-input.is-disabled .el-input__inner {
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  // 穿梭框样式
+  .el-transfer-panel {
+    width: 300px;
+  }
+
+  // 确认框样式
+  /deep/ .el-message-box {
+    .el-button--primary {
+      background-color: $publicColor !important;
+    }
+    .el-message-box__title {
+      font-size: 16px;
+    }
+    .el-message-box__message {
+      font-size: 14px;
+    }
+  }
+  // upload样式
+  .el-upload--picture-card {
+    width: 104px;
+    height: 104px;
+    padding: 10px;
+  }
+  .el-upload-list--picture-card {
+    .el-upload-list__item {
+      width: 104px;
+      height: 104px;
+      padding: 10px;
+    }
+  }
 }
+
+
