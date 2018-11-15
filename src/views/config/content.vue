@@ -7,25 +7,25 @@
     </div>
     <!--表单-->
     <div class="content-search">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline text-right form-top">
-        <el-form-item :label="$t('index.product_name')" prop="f_like_name" class="searchitem">
+      <el-form :inline="true" :model="formInline" class="search-form-style">
+        <el-form-item :label="$t('index.product_name')" prop="f_like_name" class="first-search-item">
           <el-input v-model="formInline.f_like_name" ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('index.unique_identification')"  prop="f_like_mark" class="searchitem">
+        <el-form-item :label="$t('index.unique_identification')" prop="f_like_mark" class="search-item">
           <el-input v-model="formInline.f_like_mark"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('index.creator_name')"  prop="f_like_creatorName" class="searchitem">
+        <el-form-item :label="$t('index.creator_name')" prop="f_like_creatorName" class="search-item">
           <el-input v-model="formInline.f_like_creatorName"></el-input>
         </el-form-item>
-        <el-form-item class="searchitem" style="float: right">
-          <el-button type="primary" @click="buttonConfigList" icon="el-icon-search" class="searchButtonW12">{{$t('common.search')}}</el-button>
+        <el-form-item class="search-item-button">
+          <el-button type="primary" @click="buttonConfigList" icon="el-icon-search" class="tableLastButtonStyleB">{{$t('common.search')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
       <el-row class="line"></el-row>
       <el-row :span="24" class="content">
         <div class="content-table">
-          <el-table :data="index_projectList" style="width: 100%" border>
+          <el-table :data="index_projectList" style="width: 100%" :border="false" :stripe="true">
             <el-table-column :label="$t('index.product_name')" min-width="180" align="center"  prop="name"></el-table-column>
             <el-table-column :label="$t('index.unique_identification')" min-width="180" align="center" prop="mark"></el-table-column>
             <el-table-column :label="$t('index.creator_name')" min-width="180" align="center" prop="creatorName"></el-table-column>
@@ -174,6 +174,56 @@
 </script>
 
 <style lang="less" scoped>
+  // 搜索框样式
+  .search-form-style {
+    display: flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    /deep/.el-form-item__label {
+      font-family:PingFangSC-Regular;
+      font-size:12px;
+      color:#606266;
+      letter-spacing:0;
+      font-weight: 500;
+      text-align:right;
+    };
+    /deep/.el-input__inner {
+      background:#ffffff;
+      border:1px solid #dcdfe6;
+      border-radius:4px;
+      width:170px;
+      height:30px;
+    }
+  }
+  // 首个搜索框样式
+  .first-search-item {
+    margin-left: 20px;
+    margin-top: 15px;
+  }
+  // 单个搜索框样式
+  .search-item {
+    margin-top: 15px;
+  }
+  // 搜索按键样式
+  .search-item-button {
+    margin-right: 20px;
+    margin-top: 20px;
+  }
+  // 搜索按键样式
+  .tableLastButtonStyleB{
+    font-family:PingFangSC-Semibold;
+    font-size:12px;
+    color: #ffffff;
+    background:#016ad5;
+    border:1px solid #e7e9f0;
+    border-radius:4px;
+    padding: 0 10px 0 10px;
+    height:32px;
+    float: right;
+  }
+
+
+
   .content-table {
     height: 72px;
     background: #ffffff;
@@ -205,9 +255,6 @@
       width:170px;
       height:30px;
     }
-  }
-  .searchitem {
-    margin-top: 20px;
   }
   .demo-form-inline {
     margin-left: 20px;
@@ -243,9 +290,6 @@
     border-radius:4px;
     width:77px;
     height:32px;
-  }
-  .el-button {
-    line-height: 0.5;
   }
   .el-input__inner{
     background:#ffffff;
