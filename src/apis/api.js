@@ -33,13 +33,13 @@ axios.interceptors.response.use(response => {
     if (response.data.status != '500' && response.data.status != '404' && response.data.status != '400' && response.data.status != '1002' && response.data.status != '1003' && response.data.status != '1004' && response.data.status != '1005') {
       router.push({path: '/login'})
     }
-    return Promise.reject(response)
+    // return Promise.reject(response)
   }
   return response
 }, err => {
   store.state.config.fullscreenLoading = false
   Message.error('服务器错误，请重试')
-  return Promise.reject(err)
+  return err // Promise.reject(err)
 })
 
 let base = ''

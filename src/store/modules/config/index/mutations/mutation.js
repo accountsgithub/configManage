@@ -15,11 +15,13 @@ export default {
 
   },
   [types.GETCONFIGSLIST] (state, res) {
-    state.index_projectList = res.data.result.data
-    state.formConfigModelData.pageNo = res.data.result.pageNo
-    state.formConfigModelData.pageSize = res.data.result.pageSize
-    state.formConfigModelData.total = res.data.result.total
-    state.formConfigModelData.totalPages = res.data.result.totalPages
+    if (res.data.result) {
+      state.index_projectList = res.data.result.data
+      state.formConfigModelData.pageNo = res.data.result.pageNo
+      state.formConfigModelData.pageSize = res.data.result.pageSize
+      state.formConfigModelData.total = res.data.result.total
+      state.formConfigModelData.totalPages = res.data.result.totalPages
+    }
   },
   [types.GETVALIADATEKEY] (state, res) {
     state.code_result = res.data.result
@@ -28,11 +30,13 @@ export default {
     // state.index_goodsType = res.data.data
   },
   [types.GETPROJECTCONFIGLIST] (state, res) {
-    state.formModelData.pageNo = res.data.result.pageNo
-    state.formModelData.pageSize = res.data.result.pageSize
-    state.formModelData.total = res.data.result.total
-    state.formModelData.totalPages = res.data.result.totalPages
-    state.index_configList = res.data.result.data
+    if (res.data.result) {
+      state.formModelData.pageNo = res.data.result.pageNo
+      state.formModelData.pageSize = res.data.result.pageSize
+      state.formModelData.total = res.data.result.total
+      state.formModelData.totalPages = res.data.result.totalPages
+      state.index_configList = res.data.result.data
+    }
   },
   [types.GETPROJECTCONFIGSHOW] (state, res) {
     // state.index_goodsType = res.data.data
