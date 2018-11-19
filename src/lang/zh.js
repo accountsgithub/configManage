@@ -36,8 +36,10 @@ export default {
     validate_key: '验证秘钥',
     push: '发布',
     expo_config: '导入配置',
-    export_config: '迁出配置',
-    import_config: '迁入配置',
+    export_config: '迁出', // 变更4
+    import_config: '迁入', // 变更4
+    addFile_button: '新增配置', // 变更4
+    searchFrom_place: '请输入key', // 变更4
     project_info: '项目信息',
     project_type: '类型',
     project_path: '路径',

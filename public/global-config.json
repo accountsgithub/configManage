@@ -1,5 +1,5 @@
 {
   "status": "200",
-  "BASE_URL": "https://dev.ctsp.kedacom.com/cconfig",
+  "BASE_URL": "http://dev.ctsp.kedacom.com/cconfig",
   "AJAX_TIMEOUT": "20000"
 }
