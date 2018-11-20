@@ -6,7 +6,8 @@
           <span>{{$t('list.project_info')}}</span>
         </div>
         <div>
-          <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="onConfigPushClick">{{$t('list.push')}}</el-button>
+          <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="onConfigPushMethod">{{$t('list.push')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-export" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
@@ -17,10 +18,10 @@
         <span class="project-detail-style">{{$t('list.project_info')}}： <span>{{projectDetail.name}}</span></span>
         <span class="project-detail-style">{{$t('index.unique_identification')}}： <span>{{projectDetail.mark}}</span></span>
         <span class="project-detail-style">{{$t('list.project_leader')}}： <span>{{projectDetail.creatorName}}</span></span>
-        <span class="project-detail-style">{{$t('list.puth_time')}}： <span>{{timestampToTimeFun(projectDetail.createTime)}}</span></span>
+        <span class="project-detail-style">{{$t('list.puth_time')}}： <span>{{timestampToTimeFun(updateTime)}}</span></span>
         <div class="project-version-style">
           <span>{{$t('list.version')}}：</span>
-          <el-select v-model="ActiveVersion.version">
+          <el-select v-model="ActiveVersion.version" @change="versionChangeMethod" v-loading="versionLoading">
             <el-option v-for="item in list_version"
                        :key="item.id"
                        :value="item.version"
@@ -35,27 +36,46 @@
         <el-collapse-item v-for="item in projectConfigList" :title="item.name" :name="item.id">
           <template slot="title">
             <span>{{item.name}}</span><span style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
+            <i class="icon iconfont icon-ic-edit" @click="editPathMethod(item.id)"></i>
+            <div class="config-file-title">
+            <el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" style="width: 200px;float: right;"></el-input>
+            <el-button class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
+            <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
+            </div>
           </template>
           <div class="content-div-style" v-loading="listLoading">
-            <el-table :data="configDetailList" style="width: 100%" :border="false" >
-              <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="center" class="fontBlod fontSizeBtB12">
+            <el-table :data="configDetailList" style="width: 100%" :border="false">
+              <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="180" align="center" class="fontBlod fontSizeBtB12">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px" class="overKeyWidth">{{ scope.row.configKey }}</span>
-                  <i class="icon iconfont icon-ic-edit"></i>
-                  <!--<el-input :placeholder="$t('list.searchFrom_place')"></el-input>-->
+                  <div slot="reference" :class="{'push-status': true, 'y-push-status': scope.row.publish==1}">
+                    <el-tag size="medium">{{conPushStatus(scope.row.publish)}}</el-tag>
+                  </div>
                 </template>
               </el-table-column>
-              <el-table-column label="Value" min-width="180" align="center">
+              <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
                 <template slot-scope="scope">
-                  <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
+                  <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
+                    <span class="overKeyWidth">{{ scope.row.configKey }}</span>
+                    <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="Value" min-width="180" align="left">
+                <template slot-scope="scope">
+                  <el-popover trigger="hover" placement="top">
+                    <p>{{ scope.row.configValue }}</p>
+                    <div slot="reference" class="value-tag-style">
+                      <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
+                    </div>
+                  </el-popover>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
                 <template slot-scope="scope">
-                  <el-tag size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</el-tag>
+                  <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('list.remarks')" min-width="180" align="center">
+              <el-table-column :label="$t('list.remarks')" min-width="180" align="left">
                 <template slot-scope="scope">
                   <span class="overRemarkWidth">{{scope.row.remark}}</span>
                 </template>
@@ -72,55 +92,45 @@
       </el-collapse>
     </div>
 
-    <!--修改配置-->
+    <!--配置项dialog-->
     <el-dialog
       :title="$t('list.edit_config')"
-      :visible.sync="dialogEditVisible" @close="resetForm('ruleEditForm')"
+      :visible.sync="dialogEditVisible" @close="resetForm('configSaveForm')"
       width="50%">
-      <el-form :model="ruleEditForm" :rules="editFormRules" ref="ruleEditForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="configSaveForm" :rules="saveFormRules" ref="configSaveForm" label-width="100px" class="dialogStyle">
         <el-form-item label="Key" prop="configKey">
-          <el-input v-model="ruleEditForm.configKey"  auto-complete="off" maxlength="253"></el-input>
+          <el-input v-model="configSaveForm.configKey"  auto-complete="off" maxlength="253"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
-          <el-input type="textarea" v-model="ruleEditForm.configValue"  rows="5" maxlength="4096"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('common.file')" prop="profileId">
-          <el-select v-model="ruleEditForm.profileId" :disabled=true>
-            <el-option v-for="(item,index) in projectConfigList"
-                       :key="index"
-                       :value="item.id"
-                       :label="item.name">
-              {{item.name}}
-            </el-option>
-          </el-select>
+          <el-input type="textarea" v-model="configSaveForm.configValue"  rows="5" maxlength="4096"></el-input>
         </el-form-item>
         <el-form-item :label="$t('list.remarks')" prop="remark">
           <el-input type="textarea"
-                    v-model="ruleEditForm.remark"
+                    v-model="configSaveForm.remark"
                     :autosize="{ minRows: 4, maxRows: 4}" maxlength="4096">
           </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('ruleEditForm')" class="dialogButtonB">{{$t('common.modify_now')}}</el-button>
+        <el-button type="primary" @click="submitForm('configSaveForm')" class="dialogButtonB">{{$t('common.modify_now')}}</el-button>
         <el-button @click="dialogEditVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--添加文件弹框-->
     <el-dialog
       :title="$t('tags.add_file')"
-      :visible.sync="dialogAddVisible" @close="resetForm('ruleAddFormTag')"
+      :visible.sync="dialogAddVisible" @close="resetForm('saveConfigFile')"
       width="60%">
-      <el-form :model="ruleAddFormTag" :rules="addFormRulesTag" ref="ruleAddFormTag" label-width="100px" class="demo-ruleForm">
+      <el-form :model="saveConfigFile" :rules="addFormRulesTag" ref="saveConfigFile" label-width="100px" class="dialogStyle">
         <el-form-item :label="$t('tags.file_name')" prop="name">
-          <el-input v-model="ruleAddFormTag.name" auto-complete="off" maxlength="4096"></el-input>
+          <el-input v-model="saveConfigFile.name" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
-        <el-form-item :class="{disStyle:disAddFilePath}" :label="$t('tags.file_path')" prop="path">
-          <el-input v-model="ruleAddFormTag.path" auto-complete="off" maxlength="4096"></el-input>
+        <el-form-item :label="$t('tags.file_path')" prop="path">
+          <el-input v-model="saveConfigFile.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button class="dialogButtonB" type="primary" @click="submitForm('ruleAddFormTag')">{{$t('common.create_now')}}</el-button>
+          <el-button class="dialogButtonB" type="primary" @click="submitFileForm('saveConfigFile')">{{$t('common.create_now')}}</el-button>
           <el-button class="dialogButtonW" @click="dialogAddVisible=false">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -136,8 +146,6 @@
         :action='url'
         :data="expofiledata"
         :default-file-list="defaultUploadList"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
         :file-list="fileList"
         :on-success="handleSuccess"
         :limit="1"
@@ -155,7 +163,8 @@
     <!--迁入配置-->
     <el-dialog
       :title="$t('list.import_config')"
-      :visible.sync="dialogImportVisible" @close="dialogExpoClose"
+      :visible.sync="dialogImportVisible"
+      @close="dialogExpoClose"
       :before-close="beforeClose"
       width="60%">
       <el-upload
@@ -164,8 +173,6 @@
         :action='url2'
         :data="expofiledata"
         :default-file-list="defaultUploadList"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
         :file-list="fileList"
         :on-success="handleSuccess"
         :limit="1"
@@ -180,141 +187,24 @@
           <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
       </span>
     </el-dialog>
-    <!--    &lt;!&ndash;添加配置&ndash;&gt;
-        <el-dialog
-          :title="$t('list.add_config')"
-          :visible.sync="dialogAddVisible" @close="resetForm('ruleAddForm')" @open="openAddForm"
-          width="60%">
-          <el-form :model="ruleAddForm" :rules="addFormRules" ref="ruleAddForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="Key" prop="configKey" class="fontSize12">
-              <el-input v-model="ruleAddForm.configKey" auto-complete="off" maxlength="253"></el-input>
-            </el-form-item>
-            <el-form-item label="Value" prop="configValue">
-              <el-input type="textarea" v-model="ruleAddForm.configValue" rows="5" maxlength="4096"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('common.file')" prop="profileId">
-              <el-select v-model="ruleAddForm.profileId" :disabled=true>
-                <el-option v-for="(item,index) in list_files" :key="index" :value="item.id" :label="item.name">{{item.name}}</el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('list.remarks')" prop="remark">
-              <el-input type="textarea"
-                        v-model="ruleAddForm.remark"
-                        :autosize="{ minRows: 4, maxRows: 4}" maxlength="4096">
-              </el-input>
-            </el-form-item>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleAddForm')" class="dialogButtonB">{{$t('common.create_now')}}</el-button>
-            <el-button @click="dialogAddVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
-          </span>
-        </el-dialog>
-
-        &lt;!&ndash;修改配置&ndash;&gt;
-        <el-dialog
-          :title="$t('list.edit_config')"
-          :visible.sync="dialogEditVisible" @close="resetForm('ruleEditForm')"
-          width="60%">
-          <el-form :model="ruleEditForm" :rules="editFormRules" ref="ruleEditForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="Key" prop="configKey">
-              <el-input v-model="ruleEditForm.configKey"  auto-complete="off" maxlength="253"></el-input>
-            </el-form-item>
-            <el-form-item label="Value" prop="configValue">
-              <el-input type="textarea" v-model="ruleEditForm.configValue"  rows="5" maxlength="4096"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('common.file')" prop="profileId">
-              <el-select v-model="ruleEditForm.profileId" :disabled=true>
-                <el-option v-for="(item,index) in list_files" :key="index" :value="item.id" :label="item.name">{{item.name}}</el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('list.remarks')" prop="remark">
-              <el-input type="textarea"
-                        v-model="ruleEditForm.remark"
-                        :autosize="{ minRows: 4, maxRows: 4}" maxlength="4096">
-              </el-input>
-            </el-form-item>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleEditForm')" class="dialogButtonB">{{$t('common.modify_now')}}</el-button>
-            <el-button @click="dialogEditVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
-          </span>
-        </el-dialog>
-
-        &lt;!&ndash;秘钥验证弹窗&ndash;&gt;
-        <el-dialog
-          :title="$t('list.validate_key')"
-          :visible.sync="dialogValidateKeyVisible" @close="resetKeyForm('ruleKeyForm')"
-          width="30%">
-          <el-form :model="ruleKeyForm" :rules="keyFormRules" ref="ruleKeyForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="唯一标识:" class="fontSize12">
-              <el-input v-model="ruleKeyForm.mark" auto-complete="off"  :disabled="true"></el-input>
-            </el-form-item>
-            <el-form-item label="请输入秘钥:" class="fontSize12" prop="key">
-              <el-input v-model="ruleKeyForm.key" auto-complete="off" maxlength="253" type="password"></el-input>
-            </el-form-item>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="handleShow('ruleKeyForm')" class="dialogButtonB">{{$t('common.ensure')}}</el-button>
-            <el-button @click="resetKeyForm('ruleKeyForm')" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
-          </span>
-        </el-dialog>
-
-        &lt;!&ndash;导入配置&ndash;&gt;
-        <el-dialog
-          :title="$t('list.expo_config')"
-          :visible.sync="dialogExpoVisible" @close="dialogExpoClose"
-          :before-close="beforeClose"
-          width="60%">
-          <el-upload
-            class="upload-demo"
-            ref="upload"
-            :action='url'
-            :data="expofiledata"
-            :default-file-list="defaultUploadList"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            :on-success="handleSuccess"
-            :limit="1"
-            :format="['properties','yaml','yml']"
-            :on-exceed="onexceed"
-            :auto-upload="false">
-            <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
-            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">{{$t('list.upload_server')}}</el-button>
-            <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content')}}</div>
-          </el-upload>
-          <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
-          </span>
-        </el-dialog>
-        &lt;!&ndash;迁入配置&ndash;&gt;
-        <el-dialog
-          :title="$t('list.import_config')"
-          :visible.sync="dialogImportVisible" @close="dialogExpoClose"
-          :before-close="beforeClose"
-          width="60%">
-          <el-upload
-            class="upload-demo"
-            ref="upload2"
-            :action='url2'
-            :data="expofiledata"
-            :default-file-list="defaultUploadList"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            :on-success="handleSuccess"
-            :limit="1"
-            :format="['json']"
-            :on-exceed="onexceed"
-            :auto-upload="false">
-            <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
-            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
-            <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content_2')}}</div>
-          </el-upload>
-          <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
-          </span>
-        </el-dialog>-->
+    <!--添加版本号弹框-->
+    <el-dialog
+      :title="$t('tags.add_version')"
+      :visible.sync="dialogAddVersionVisible" @close="resetForm('ruleAddVersionFormTag')"
+      width="60%">
+      <el-form :model="ruleAddVersionFormTag" :rules="addVersionRulesTag" ref="ruleAddVersionFormTag" label-width="100px" class="dialogStyle">
+        <el-form-item :label="$t('tags.select_version')" prop="version">
+          <el-input v-model="ruleAddVersionFormTag.version" auto-complete="off" maxlength="4096"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('tags.remark')" prop="remark">
+          <el-input v-model="ruleAddVersionFormTag.remark" auto-complete="off" maxlength="4096"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+          <el-button class="dialogButtonB" type="primary" @click="submitVersionForm('ruleAddVersionFormTag')">{{$t('common.create_now')}}</el-button>
+          <el-button class="dialogButtonW" @click="dialogAddVersionVisible=false">{{$t('common.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </el-row>
 </template>
 
@@ -328,31 +218,35 @@
       return {
         projectConfigList: [],
         configDetailList: [],
+        // 配置项dialog状态
+        dialogEditVisible: false,
         dialogAddVisible: false, // 新增配置
         dialogImportVisible: false, // 迁入dialog
         dialogExpoVisible: false, // 导入配置
+        dialogAddVersionVisible: false, // 添加版本号
         profiledata: {
           f_eq_projectId: this.$route.params.mark,
           f_eq_version: '',
           paging: false
         },
-        pageLoading: false,
-        listLoading: false,
-        dialogEditVisible: false,
+        updateTime: 0, // 发布时间
+        pageLoading: false, // 主页面加载遮罩
+        listLoading: false, // 配置项页面加载遮罩
+        versionLoading: false, // 版本号加载遮罩
         activeName: '',
         formInline: {
-          f_eq_projectId: '',
-          f_eq_groupId: '',
+          paging: false,
+          f_eq_projectId: this.$route.params.mark,
           f_like_configKey: '',
           'f_eq_profile.id': '',
           'orderType': 0
         },
         // 新增/编辑配置
-        ruleEditForm: {
+        configSaveForm: {
+          id: '',
           projectId: this.$route.params.mark,
           configKey: '',
           configValue: '',
-          groupId: '',
           profileId: '',
           remark: '',
           version:''
@@ -363,7 +257,7 @@
           version: ''
         },
         // 文件新增/编辑
-        ruleAddFormTag: {
+        saveConfigFile: {
           id: '',
           name: '',
           path: '',
@@ -376,19 +270,62 @@
           mark: '',
           createTime: 0,
           creatorName: ''
-        }
+        },
+        // 添加版本号
+        ruleAddVersionFormTag: {
+          id: '',
+          projectId: this.$route.params.mark,
+          version: '',
+          active: '0',
+          remark: ''
+        },
+        // 导入begin
+        defaultUploadList: [],
+        fileList: [],
+        url: this.g_Config.BASE_URL + '/files/config_file_import',
+        url2: this.g_Config.BASE_URL + '/configs/import',
+        expofiledata: {
+          projectId: this.$route.params.mark,
+          version: ''
+        },
+        // 导入end
       }
     },
     mounted () {
+      // 版本号查询
       this.getVersionList()
+      // 配置项查询
       this.getProjectDetailMethod()
+      // 发布时间查询
+      this.getpublish()
     },
     computed: {
+      // 添加配置文件验证
       addFormRulesTag () {
         return {
           name: [
             {required: true, message: this.$t('message.file_name'), trigger: 'change'}
           ]
+        }
+      },
+      // 添加版本号验证
+      addVersionRulesTag () {
+        return {
+          version: [
+            { required: true, validator: this.validateMark, trigger: 'blur' }
+          ]
+        }
+      },
+      // 配置项保存验证
+      saveFormRules () {
+        return {
+          configKey: [
+            {required: true, message: this.$t('message.checkConfigKey'), trigger: 'blur'}
+          ],
+          configValue:
+            [
+              {required: true, message: this.$t('message.value'), trigger: 'blur'}
+            ]
         }
       }
     },
@@ -398,25 +335,129 @@
         'getProjectsConfigList',
         'getdelConfig',
         'getProjectsShow',
-        'getversion'
+        'getversion',
+        'getpushConfig',
+        'getpublishtime',
+        'getdelprofiles',
+        'getAddConfig',
+        'getaddversions'
       ]),
+      // 发布状态展示转换
+      conPushStatus (val) {
+        let pushStatus = ['未发布', '已发布']
+        return pushStatus[0] // val
+      },
+      // key状态展示转换
+      conKeyStatus (val) {
+        let pushStatus = ['新', '删', '改']
+        return pushStatus[0] // val - 1
+      },
+      // 编辑路径方法 temp
+      editPathMethod (val) {
+        if (this.activeName == val) {
+          this.activeName = val
+        }
+      },
+      // 版本号切换方法
+      versionChangeMethod () {
+        this.getConfigFileMethod()
+      },
+      // 添加版本号
+      addVersionMethod () {
+        this.dialogAddVersionVisible = true
+      },
+      // 保存版本号
+      submitVersionForm (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            let params = Object.assign(this.ruleAddVersionFormTag)
+            this.getaddversions(params).then(res => {
+              if (res.data.code == '0' && res.data.status == 200) {
+                this.$message({
+                  type: 'success',
+                  message: this.$t('message.add_success')
+                })
+                this.getVersionListBack()
+                this.$refs[name].resetFields()
+                this.dialogAddVersionVisible = false
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.message || this.$t('message.add_error')
+                })
+              }
+            })
+          }
+        })
+      },
+      // 新增配置项
+      addConfigMethod (val) {
+        this.configSaveForm.id = ''
+        this.configSaveForm.profileId = val
+        this.configSaveForm.version = this.ActiveVersion.version
+        this.dialogEditVisible = true
+      },
+      // 删除配置文件
+      deleteConfigFile (val) {
+        this.$confirm(this.$t('message.delete_file_content'), this.$t('common.prompt'), {
+          confirmButtonText: this.$t('common.ensure'),
+          cancelButtonText: this.$t('common.cancel'),
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let params = Object.assign({id: val})
+          this.getdelprofiles(params).then(res => {
+            if (res.data.code  == '0' && res.data.status == 200) {
+              this.$message({
+                type: 'success',
+                message: this.$t('message.delete_success')
+              })
+              this.getConfigFileMethod()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.message || this.$t('message.delete_error')
+              })
+            }
+          })
+        })
+      },
+      // 新增版本号数据回显
+      getVersionListBack () {
+        this.versionLoading = true
+        let params = Object.assign({projectId: this.profiledata.f_eq_projectId})
+        this.getversion(params).then(res => {
+            if (res.data.result && res.data.result.length > 0) {
+              this.list_version = res.data.result
+              this.list_version.map(item => {
+                if (item.active == 1) {
+                  this.ActiveVersion.version =item.version
+                }
+              })
+            } else {
+              this.list_version = []
+              this.ActiveVersion.version = ''
+            }
+          this.versionLoading = false
+        })
+      },
       // 获取版本号数据集
       getVersionList () {
-        let paramts = Object.assign({projectId: this.profiledata.f_eq_projectId})
-        debugger
-        this.getversion(paramts).then(res => {
+        this.pageLoading = true
+        let params = Object.assign({projectId: this.profiledata.f_eq_projectId})
+        this.getversion(params).then(res => {
           if (res.data.result && res.data.result.length > 0) {
             this.list_version = res.data.result
             this.list_version.map(item => {
               if (item.active == 1) {
-                this.ActiveVersion.version =item.id
+                this.ActiveVersion.version =item.version
               }
             })
           } else {
             this.list_version = []
             this.ActiveVersion.version = ''
           }
-          this.getProjectConfigMethod()
+          this.getConfigFileMethod()
         })
       },
       // 获取项目详细信息方法
@@ -436,9 +477,8 @@
           }
         })
       },
-      // 获取tag方法
-      getProjectConfigMethod () {
-        this.pageLoading = true
+      // 获取配置文件方法
+      getConfigFileMethod () {
         this.profiledata.f_eq_version= this.ActiveVersion.version
         let params = Object.assign(this.profiledata)
         this.pageLoading = false
@@ -447,41 +487,131 @@
           if (res.data.result && res.data.result.data.length > 0) {
             this.activeName = res.data.result.data[0].id
             this.projectConfigList = res.data.result.data
-            this.changeTagMethod()
+            this.changeTagMethod(this.activeName)
           } else {
             this.activeName = ''
             this.projectConfigList = []
           }
         })
       },
-      // tag改变方法
-      changeTagMethod (val) {
-        this.listLoading = true
-        let params = Object.assign(this.formInline)
-        this.getProjectsConfigList(params).then(res => {
-          this.listLoading = false
-          if (res.data.result && res.data.result.data.length > 0) {
-            this.configDetailList = res.data.result.data
-          } else {
-            this.configDetailList = []
+      // 发布方法
+      onConfigPushMethod () {
+        let params = Object.assign({projectId: this.$route.params.mark, version: this.ActiveVersion.version})
+        this.getpushConfig(params).then(res => {
+          if(res.data.status == 200 && res.data.code == 0){
+            this.$message({
+              message: this.$t('message.push_success'),
+              type: 'success'
+            })
+          }else{
+            if(res.data.status == 1005){
+              this.$message({
+                message: res.message || this.$t('message.NO_CONFIGS_TO_PUBLISH'),
+                type: 'error'
+              })
+            }
           }
+          this.getpublish()
         })
       },
-      // 新增配置
-      onFilesClick () {
-        this.dialogAddVisible = true
+      // 获取发布时间
+      getpublish () {
+        let para = Object.assign({projectId: this.$route.params.mark, version: this.ActiveVersion.version})
+        this.getpublishtime(para).then(res => {
+          this.updateTime = res.data.result
+        })
       },
+      // 导入begin
       // 迁入方法
       importFiles() {
+        this.expofiledata.version = this.ActiveVersion.version
         this.dialogImportVisible = true
       },
       // 迁出方法
       exportFiles() {
-        window.open(this.g_Config.BASE_URL+`/configs/export/${   this.ruleAddForm.projectId  }/${  this.ActiveVersion.version}`)
+        window.open(this.g_Config.BASE_URL+`/configs/export/${this.ruleAddForm.projectId}/${this.ActiveVersion.version}`)
       },
       // 导入配置
       expoFiles() {
+        this.expofiledata.version = this.ActiveVersion.version
         this.dialogExpoVisible = true
+      },
+      submitUpload () {
+        this.$refs.upload.submit()
+      },
+      submitUpload2 () {
+        this.$refs.upload2.submit()
+      },
+      // 导入dialog关闭方法
+      dialogExpoClose () {
+        this.dialogExpoVisible = false
+        this.dialogImportVisible = false
+        this.defaultUploadList = []
+        this.fileList = []
+      },
+      // 导入dialog关闭前方法
+      beforeClose (done) {
+        this.defaultUploadList = []
+        this.fileList = []
+        done()
+      },
+      // 导入成功回调函数
+      handleSuccess (file) {
+        if (file.status == '200') {
+          if(file.code == 0){
+            this.$message({
+              message: this.$t('message.success'),
+              type: 'success'
+            })
+          }else {
+            this.$message({
+              message: file.message || this.$t('message.fail'),
+              type: 'error'
+            })
+          }
+        }else if(file.status == 1001 || file.status == 1002){
+          this.$message.error(this.$t('message.fail'))
+        }else if(file.status == 1004){
+          this.$message.error(this.$t('message.duplicated_profile'))
+        }else if(file.status == 1005){
+          this.$message.error(this.$t('message.NO_CONFIGS_TO_PUBLISH'))
+        }else if(file.status == 1003){
+          this.$message.error(this.$t('message.INVALID_CONFIG_FILE_KEY'))
+        }else{
+          this.$message.error(this.$t('message.fail'))
+        }
+        this.dialogExpoVisible = false
+        this.dialogImportVisible = false
+        this.getConfigFileMethod()
+        this.defaultUploadList = []
+        this.fileList = []
+      },
+      onexceed (files, fileList) {
+        this.$message({
+          message: this.$t('message.only_upload_file'),
+          type: 'warning'
+        })
+      },
+      // 导入end
+      // tag改变方法
+      changeTagMethod (val) {
+        if (val) {
+          this.listLoading = true
+          this.formInline['f_eq_profile.id'] = val
+          let params = Object.assign(this.formInline)
+          this.getProjectsConfigList(params).then(res => {
+            this.listLoading = false
+            if (res.data.result && res.data.result.data.length > 0) {
+              this.configDetailList = res.data.result.data
+            } else {
+              this.configDetailList = []
+            }
+          })
+        }
+      },
+      // 新增配置文件
+      onFilesClick () {
+        this.dialogAddVisible = true
       },
       // 列表时间格式化方法
       timestampToTimeFun (val) {
@@ -493,6 +623,7 @@
       },
       // dialog初始化方法
       resetForm (name) {
+        this.configSaveForm.id = ''
         if (this.$refs[name]) {
           this.$refs[name].resetFields()
         }
@@ -500,9 +631,7 @@
       // 编辑配置方法
       handleEdit (index, row) {
         // 修改数据赋值
-        this.ruleEditForm = Object.assign(this.ruleEditForm, row)
-        this.ruleEditForm.groupId = parseInt(row.groupId)
-        this.ruleEditForm.version = row.version
+        this.configSaveForm = Object.assign(this.configSaveForm, row)
         this.dialogEditVisible = true
       },
       // 删除配置方法
@@ -514,78 +643,106 @@
           center: true
         }).then(() => {
           this.getdelConfig(row).then(res => {
-            this.$message({
-              type: 'success',
-              message: this.$t('message.delete_success')
-            })
-            this.changeTagMethod()
+            if (res.data.code == '0' && res.data.status == 200) {
+              this.$message({
+                type: 'success',
+                message: this.$t('message.delete_success')
+              })
+              this.changeTagMethod(row.profileId)
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.message || this.$t('message.delete_error')
+              })
+            }
           })
-        }).catch(() => {
-
+        }).catch((err) => {
+          this.$message({
+            type: 'error',
+            message: err.message || this.$t('message.delete_error')
+          })
         })
       },
-      // 保存配置
-      submitForm (name) {
-        this.ruleAddForm.version = this.ActiveVersion.version
-        this.ruleEditForm.version = this.ActiveVersion.version
+      // 保存配置文件
+      submitFileForm (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            if (name === 'ruleAddForm') {
-              let params = Object.assign(this.ruleAddForm)
+
+          }
+        })
+      },
+      // 保存配置项
+      submitForm (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            if (this.configSaveForm.id == '') {
+              let params = Object.assign(this.configSaveForm)
               this.getAddConfig(params).then(res => {
                 if(res.data.status == 200 && res.data.code == 0){
                   this.$message({
                     type: 'success',
                     message: this.$t('message.add_success')
                   })
+                  this.changeTagMethod(this.configSaveForm.profileId)
+                  if (this.$refs[name]) {
+                    this.$refs[name].resetFields()
+                  }
+                  this.dialogEditVisible = false
                 }else{
                   if(res.data.status == 1001){
-                    this.$message.error(this.$t('message.duplicated_profile'))
+                    this.$message({
+                      type: 'error',
+                      message: res.message || this.$t('message.duplicated_profile')
+                    })
+                  } else {
+                    this.$message({
+                      type: 'error',
+                      message: res.message || this.$t('message.add_error')
+                    })
                   }
                 }
-                this.getConfigList()
-                if (this.$refs[name]) {
-                  this.$refs[name].resetFields()
-                }
-                this.dialogAddVisible = false
               })
             } else if (name === 'ruleEditForm') {
-              let params = Object.assign(this.ruleEditForm)
+              this.configSaveForm.version = this.ActiveVersion.version
+              let params = Object.assign(this.configSaveForm)
               this.geteditConfig(params).then(res => {
                 if(res.data.status == 200 && res.data.code == 0){
                   this.$message({
                     type: 'success',
                     message: this.$t('message.edit_success')
                   })
+                  this.changeTagMethod(this.configSaveForm.profileId)
+                  if (this.$refs[name]) {
+                    this.$refs[name].resetFields()
+                  }
+                  this.dialogEditVisible = false
                 }else{
                   if(res.data.status == 1001){
-                    this.$message.error(this.$t('message.duplicated_profile'))
+                    this.$message({
+                      type: 'error',
+                      message: res.message || this.$t('message.duplicated_profile')
+                    })
+                  } else {
+                    this.$message({
+                      type: 'error',
+                      message: res.message || this.$t('message.edit_error')
+                    })
                   }
                 }
-                this.getConfigList()
-                if (this.$refs[name]) {
-                  this.$refs[name].resetFields()
-                }
-                this.dialogEditVisible = false
               })
             }
           }
         })
       },
-      // 配置保存验证
-      editFormRules () {
-        return {
-          configKey: [
-            {required: true, validator: this.checkConfigKey, trigger: 'blur'}
-          ],
-          configValue:
-            [
-              {required: true, message: this.$t('message.value'), trigger: 'blur'}
-            ],
-          profileId:
-            [
-              {required: true, message: this.$t('message.file'), trigger: 'blur'}
-            ]
+      // 添加版本号验证
+      validateMark (rule, value, callback) {
+        let myreg1 = /^\d+(\.\d+)*/
+        if (!myreg1.test(value) && value != '') {
+          callback(new Error(this.$t('message.enterVersion')))
+        } else if (value === '') {
+          callback(new Error(this.$t('message.version')))
+        } else {
+          callback()
         }
       }
     }
@@ -698,6 +855,7 @@
     letter-spacing: 0;
     text-align: right;
   }
+  // 版本号下拉框样式
   .project-version-style {
     /deep/.el-input__inner {
       height: 32px;
@@ -705,6 +863,73 @@
     }
     /deep/.el-input__icon {
       line-height: 32px;
+    }
+  }
+  // 配置文件tag操作栏样式
+  .config-file-title {
+    margin-top: -40px;
+    /deep/.el-input__inner {
+      height: 32px;
+      width: 200px;
+      margin-top: -5px;
+    }
+  }
+  // 发布状态tag样式
+  .push-status {
+    /deep/ .el-tag--medium {
+      height: 24px;
+      line-height: 22px;
+    }
+    /deep/ .el-tag {
+      border-radius: 100px;
+      background-color: #ffffff;
+      width: 60px;
+      border: 1px solid #FF9A39;
+      color: #FF9A39;
+    }
+  }
+  .y-push-status {
+    /deep/ .el-tag {
+      border: 1px solid #C8C8C8;
+      color: #C8C8C8;
+    }
+  }
+  // key状态样式
+  .key-status {
+    /deep/ .el-tag--medium {
+      height: 20px;
+      line-height: 20px;
+    }
+    /deep/ .el-tag {
+      border-radius: 0;
+      background-color: #ffffff;
+      width: 20px;
+      padding: 0 3px;
+      border: 1px solid #64C42D;
+      color: #64C42D;
+    }
+  }
+  .d-key-status {
+    /deep/ .el-tag {
+      border: 1px solid #F76B68;
+      color: #F76B68;
+    }
+  }
+  .m-key-status {
+    /deep/ .el-tag {
+      border: 1px solid #358FEB;
+      color: #358FEB;
+    }
+  }
+  // 列表value字段tag样式
+  .value-tag-style {
+    /deep/ .el-tag {
+      background-color: #ffffff;
+      border: 1px solid #DFE6ED;
+      font-family: PingFangSC-Regular;
+      font-size: 12px;
+      color: #626469;
+      letter-spacing: 0.86px;
     }
   }
 </style>

@@ -38,7 +38,8 @@ export default {
     expo_config: '导入配置',
     export_config: '迁出', // 变更4
     import_config: '迁入', // 变更4
-    addFile_button: '新增配置', // 变更4
+    addFile_button: '新增配置文件', // 变更4
+    addConfig_button: '新增配置项', // 变更4
     searchFrom_place: '请输入key', // 变更4
     project_info: '项目信息',
     project_type: '类型',
@@ -61,7 +62,8 @@ export default {
     delete_config: '删除文件',
     config_Search: '请输入关键词',
     listName: '列表',
-    version: '版本号'
+    version: '版本号',
+    pushStatus_label: '发布状态'
   },
   tags: {
     file_name: '文件名',
@@ -95,8 +97,11 @@ export default {
     push_success: '发布成功',
     badKey: '错误秘钥',
     add_success: '添加成功',
-    edit_success: '修改成功',
+    add_error: '添加失败', // 变更4
+    edit_success: '修改成功', // 变更4
+    edit_error: '添加失败',
     delete_success: '删除成功',
+    delete_error: '删除失败',
     fail: '上传失败',
     file_name: '文件名不能为空',
     profileType: '类型不能为空',
