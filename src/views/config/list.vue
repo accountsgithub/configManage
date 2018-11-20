@@ -35,12 +35,13 @@
       <el-collapse v-model="activeName" accordion @change="changeTagMethod">
         <el-collapse-item v-for="item in projectConfigList" :title="item.name" :name="item.id">
           <template slot="title">
-            <span>{{item.name}}</span><span style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
-            <i class="icon iconfont icon-ic-edit" @click="editPathMethod(item.id)"></i>
-            <div class="config-file-title">
-            <el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" style="width: 200px;float: right;"></el-input>
-            <el-button class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-            <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
+            <div @click.stop="">
+              <span>{{item.name}}</span><span style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
+              <i class="icon iconfont icon-ic-edit" @click="editPathMethod(item.id)"></i>
+              <div class="config-file-title">
+                <el-button class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
+                <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button><el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" style="width: 200px;float: right;line-height: 32px"></el-input>
+              </div>
             </div>
           </template>
           <div class="content-div-style" v-loading="listLoading">
