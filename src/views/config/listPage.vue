@@ -12,7 +12,7 @@
           <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.project_info')}}: </span><span class="fontSize12">{{projectName}}</span></el-col>
           <el-col :span="3"><span class="fontSizeTitle12">{{$t('index.unique_identification')}}: </span><span class="fontSize12">{{ruleAddForm.projectId}}</span></el-col>
           <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.project_leader')}}: </span><span class="fontSize12">{{creatorName}}</span></el-col>
-          <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.puth_time')}}: </span><span class="fontSize12">{{ timestampToTimeFun(updateTime)}}</span></el-col>
+          <el-col :span="3"><span class="fontSizeTitle12">{{$t('list.push_time')}}: </span><span class="fontSize12">{{ timestampToTimeFun(updateTime)}}</span></el-col>
           <el-col :span="3">
             <span class="fontSizeTitle12">{{$t('list.version')}}:</span>
             <el-select v-model="ActiveVersion.version" class="selectStyle" @change="getSelectVersion" >

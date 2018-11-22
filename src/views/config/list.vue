@@ -1,9 +1,10 @@
 <template>
   <el-row class="main" v-loading="pageLoading">
     <div class="title-div-style">
+      <!--操作栏-->
       <div class="project-list-style">
         <div class="list-title-style">
-          <span>{{$t('list.project_info')}}</span>
+          <span>{{$t('list.project_info')}}<el-tag v-if="unPushCount > 0" size="medium" style="margin-left:20px;">{{$t('common.modify')}}{{unPushCount}}</el-tag></span>
         </div>
         <div>
           <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="onConfigPushMethod">{{$t('list.push')}}</el-button>
@@ -14,11 +15,12 @@
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="importFiles">{{$t('list.import_config')}}</el-button>
         </div>
       </div>
+      <!--项目详细信息-->
       <div class="project-info-style">
         <span class="project-detail-style">{{$t('list.project_info')}}： <span>{{projectDetail.name}}</span></span>
         <span class="project-detail-style">{{$t('index.unique_identification')}}： <span>{{projectDetail.mark}}</span></span>
         <span class="project-detail-style">{{$t('list.project_leader')}}： <span>{{projectDetail.creatorName}}</span></span>
-        <span class="project-detail-style">{{$t('list.puth_time')}}： <span>{{timestampToTimeFun(updateTime)}}</span></span>
+        <span class="project-detail-style">{{$t('list.push_time')}}： <span>{{timestampToTimeFun(updateTime)}}</span></span>
         <div class="project-version-style">
           <span>{{$t('list.version')}}：</span>
           <el-select v-model="ActiveVersion.version" @change="versionChangeMethod" v-loading="versionLoading">
@@ -32,20 +34,27 @@
       </div>
     </div>
     <div class="content-style">
+      <!--折叠窗体-->
       <el-collapse v-model="activeName" accordion @change="changeTagMethod">
         <el-collapse-item v-for="item in projectConfigList" :title="item.name" :name="item.id">
+          <!--折叠窗体标题信息-->
           <template slot="title">
-            <div @click.stop="">
+            <div>
+              <!--编辑路径-->
               <span>{{item.name}}</span><span style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
-              <i class="icon iconfont icon-ic-edit" @click="editPathMethod(item.id)"></i>
-              <div class="config-file-title">
+              <!--<i class="icon iconfont icon-ic-edit edit-icon-style" @click="editPathMethod(item.id, item.path)" @click.stop=""></i>-->
+              <!--tag操作栏-->
+              <div class="config-file-title" @click.stop="">
                 <el-button class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-                <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button><el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" style="width: 200px;float: right;line-height: 32px"></el-input>
+                <el-button class="tableLastButtonStyleW" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
+                <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
+                <el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
               </div>
             </div>
           </template>
-          <div class="content-div-style" v-loading="listLoading">
-            <el-table :data="configDetailList" style="width: 100%" :border="false">
+          <!--配置项列表-->
+          <div :class="{'content-div-style': true, 'table-sort-style': isTagChange}" v-loading="listLoading">
+            <el-table class="table-sort-style" :data="configDetailList" ref="configTable" style="width: 100%" @sort-change="handleSortChange" :border="false">
               <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="180" align="center" class="fontBlod fontSizeBtB12">
                 <template slot-scope="scope">
                   <div slot="reference" :class="{'push-status': true, 'y-push-status': scope.row.publish==1}">
@@ -56,19 +65,31 @@
               <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
                 <template slot-scope="scope">
                   <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
+                    <el-popover v-if="scope.row.configKey.length>20" trigger="hover" placement="top">
+                      <p class="popover-style">{{ scope.row.configKey }}</p>
+                      <div slot="reference">
+                        <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
+                        <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                      </div>
+                    </el-popover>
+                    <div v-else >
                     <span class="overKeyWidth">{{ scope.row.configKey }}</span>
                     <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column label="Value" min-width="180" align="left">
                 <template slot-scope="scope">
-                  <el-popover trigger="hover" placement="top">
-                    <p>{{ scope.row.configValue }}</p>
+                  <el-popover v-if="scope.row.configValue.length>26" trigger="hover" placement="top">
+                    <p class="popover-style">{{ scope.row.configValue }}</p>
                     <div slot="reference" class="value-tag-style">
-                      <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
+                      <el-tag size="medium">{{ scope.row.configValue.substring(0,26) }}…</el-tag>
                     </div>
                   </el-popover>
+                  <div v-else slot="reference" class="value-tag-style">
+                    <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
@@ -76,7 +97,7 @@
                   <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('list.remarks')" min-width="180" align="left">
+              <el-table-column :label="$t('list.remarks')" prop="remark" min-width="180" align="center">
                 <template slot-scope="scope">
                   <span class="overRemarkWidth">{{scope.row.remark}}</span>
                 </template>
@@ -95,8 +116,9 @@
 
     <!--配置项dialog-->
     <el-dialog
-      :title="$t('list.edit_config')"
-      :visible.sync="dialogEditVisible" @close="resetForm('configSaveForm')"
+      :title="configSaveForm.id==''?$t('list.add_config'):$t('list.edit_config')"
+      :visible.sync="dialogEditVisible"
+      @close="resetForm('configSaveForm')"
       width="50%">
       <el-form :model="configSaveForm" :rules="saveFormRules" ref="configSaveForm" label-width="100px" class="dialogStyle">
         <el-form-item label="Key" prop="configKey">
@@ -119,14 +141,14 @@
     </el-dialog>
     <!--添加文件弹框-->
     <el-dialog
-      :title="$t('tags.add_file')"
+      :title="saveConfigFile.id==''?$t('tags.add_file'):$t('list.editConfigFile_title')"
       :visible.sync="dialogAddVisible" @close="resetForm('saveConfigFile')"
       width="60%">
       <el-form :model="saveConfigFile" :rules="addFormRulesTag" ref="saveConfigFile" label-width="100px" class="dialogStyle">
         <el-form-item :label="$t('tags.file_name')" prop="name">
           <el-input v-model="saveConfigFile.name" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('tags.file_path')" prop="path">
+        <el-form-item v-if="saveConfigFile.profileType!='bootstrap'" :label="$t('tags.file_path')" prop="path">
           <el-input v-model="saveConfigFile.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
       </el-form>
@@ -217,6 +239,16 @@
     name: 'indexList',
     data () {
       return {
+        // 编辑的路径数据
+        savePathData: '',
+        // 编辑路径dialog状态
+        dialogEditPathVisible: false,
+        // tag是否切换
+        isTagChange: false,
+        // 未发布数据个数
+        unPushCount: 0,
+        // 离开页面提示信息
+        leavePage_message: this.$t('message.leavePage_message'),
         projectConfigList: [],
         configDetailList: [],
         // 配置项dialog状态
@@ -263,7 +295,8 @@
           name: '',
           path: '',
           projectId: this.$route.params.mark,
-          version: ''
+          version: '',
+          profileType: '' // 类型
         },
         // 项目详细信息
         projectDetail: {
@@ -293,12 +326,23 @@
       }
     },
     mounted () {
+      // 查询修改个数
+      this.getUnPushCountMethod()
       // 版本号查询
       this.getVersionList()
       // 配置项查询
       this.getProjectDetailMethod()
       // 发布时间查询
       this.getpublish()
+    },
+    beforeDestroy () {
+      debugger
+      if (this.unPushCount > 0) {
+        this.$message({
+          type: 'warning',
+          message: this.leavePage_message
+        })
+      }
     },
     computed: {
       // 添加配置文件验证
@@ -341,8 +385,21 @@
         'getpublishtime',
         'getdelprofiles',
         'getAddConfig',
-        'getaddversions'
+        'getaddversions',
+        'getUnPushCountApi',
+        'geteditConfig'
       ]),
+      // 获取未发布数据个数方法
+      getUnPushCountMethod () {
+        let params = Object.assign({projectId: this.formInline.f_eq_projectId, version: this.ActiveVersion.version})
+        this.getUnPushCountApi(params).then(res => {
+          if (res.data && res.data.result) {
+            this.unPushCount = res.data.result
+          } else {
+            this.unPushCount = 0
+          }
+        })
+      },
       // 发布状态展示转换
       conPushStatus (val) {
         let pushStatus = ['未发布', '已发布']
@@ -354,10 +411,9 @@
         return pushStatus[0] // val - 1
       },
       // 编辑路径方法 temp
-      editPathMethod (val) {
-        if (this.activeName == val) {
-          this.activeName = val
-        }
+      editPathMethod (val, path) {
+        this.editTagMark = val
+        this.savePathData = path
       },
       // 版本号切换方法
       versionChangeMethod () {
@@ -397,6 +453,24 @@
         this.configSaveForm.profileId = val
         this.configSaveForm.version = this.ActiveVersion.version
         this.dialogEditVisible = true
+      },
+      // 配置项查询排序
+      handleSortChange({prop, order}) {
+        this.isTagChange = false
+        if (prop === 'configKey') {
+          if (order === 'descending') {
+            this.formInline.orderType = 2
+          } else {
+            this.formInline.orderType = 1
+          }
+        }else if (prop === 'updateTime') {
+          if (order === 'descending') {
+            this.formInline.orderType = 4
+          } else {
+            this.formInline.orderType = 3
+          }
+        }
+        this.getConfingListMethod('no')
       },
       // 删除配置文件
       deleteConfigFile (val) {
@@ -480,6 +554,8 @@
       },
       // 获取配置文件方法
       getConfigFileMethod () {
+        // 查询修改个数
+        this.getUnPushCountMethod()
         this.profiledata.f_eq_version= this.ActiveVersion.version
         let params = Object.assign(this.profiledata)
         this.pageLoading = false
@@ -594,21 +670,29 @@
         })
       },
       // 导入end
+      // 配置项查询方法
+      getConfingListMethod (searchCount) {
+        if (searchCount != 'no') {
+          // 查询修改个数
+          this.getUnPushCountMethod()
+        }
+        this.listLoading = true
+        let params = Object.assign(this.formInline)
+        this.getProjectsConfigList(params).then(res => {
+          this.listLoading = false
+          if (res.data.result && res.data.result.data.length > 0) {
+            this.configDetailList = res.data.result.data
+          } else {
+            this.configDetailList = []
+          }
+        })
+      },
       // tag改变方法
       changeTagMethod (val) {
-        if (val) {
-          this.listLoading = true
-          this.formInline['f_eq_profile.id'] = val
-          let params = Object.assign(this.formInline)
-          this.getProjectsConfigList(params).then(res => {
-            this.listLoading = false
-            if (res.data.result && res.data.result.data.length > 0) {
-              this.configDetailList = res.data.result.data
-            } else {
-              this.configDetailList = []
-            }
-          })
-        }
+        this.isTagChange = true
+        this.formInline['f_eq_profile.id'] = val
+        this.formInline.orderType = 0
+        this.getConfingListMethod('no')
       },
       // 新增配置文件
       onFilesClick () {
@@ -624,18 +708,29 @@
       },
       // dialog初始化方法
       resetForm (name) {
-        this.configSaveForm.id = ''
         if (this.$refs[name]) {
           this.$refs[name].resetFields()
         }
+        this[name].id = ''
+        this[name].projectId = this.$route.params.mark
+        this.saveConfigFile.profileType = '' // 类型
+        /*
+        this[name].version = ''
+        this.configSaveForm.configKey = ''
+        this.configSaveForm.configValue = ''
+        this.configSaveForm.profileId = ''
+        this.configSaveForm.remark = ''
+
+        this.saveConfigFile.name = ''
+        this.saveConfigFile.path = '' */
       },
-      // 编辑配置方法
+      // 编辑配置项方法
       handleEdit (index, row) {
         // 修改数据赋值
         this.configSaveForm = Object.assign(this.configSaveForm, row)
         this.dialogEditVisible = true
       },
-      // 删除配置方法
+      // 删除配置项方法
       handleDelete (index, row) {
         this.$confirm(this.$t('message.delete_config_content'), this.$t('common.prompt'), {
           confirmButtonText: this.$t('common.ensure'),
@@ -649,7 +744,7 @@
                 type: 'success',
                 message: this.$t('message.delete_success')
               })
-              this.changeTagMethod(row.profileId)
+              this.getConfingListMethod()
             } else {
               this.$message({
                 type: 'error',
@@ -664,11 +759,60 @@
           })
         })
       },
+      // 编辑配置文件
+      editConfigFileMethod (val) {
+        /* this.saveConfigFile.id = val.id
+        this.saveConfigFile.name = val.name
+        this.saveConfigFile.path = val.path
+        this.saveConfigFile.projectId = val.projectId
+        this.saveConfigFile.version = val.version
+        this.saveConfigFile.profileType = val.profileType */
+        this.saveConfigFile = Object.assign(this.saveConfigFile, val)
+        this.dialogAddVisible = true
+      },
       // 保存配置文件
       submitFileForm (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-
+            if (this.saveConfigFile.id == '') {
+              let params = Object.assign(this.saveConfigFile)
+              this.getaddprofiles(params).then(res => {
+                if (res.data.code == '0' && res.data.status == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: this.$t('message.add_success')
+                  })
+                  this.dialogAddVisible = false
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: res.data.message || this.$t('message.add_error')
+                  })
+                  this.dialogAddVisible = false
+                }
+              })
+            } else {
+              let params = Object.assign({
+                id: this.saveConfigFile.id,
+                name: this.saveConfigFile.name,
+                projectId: this.saveConfigFile.projectId,
+                path: this.saveConfigFile.profileType == 'bootstrap' ? undefined : this.saveConfigFile.projectId,
+                version: this.ActiveVersion.version
+              })
+              this.geteditprofiles(params).then(res => {
+                if (res.data.code == '0' && res.data.status == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: this.$t('message.edit_success')
+                  })
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: res.data.message || this.$t('message.edit_error')
+                  })
+                }
+              })
+            }
           }
         })
       },
@@ -684,7 +828,12 @@
                     type: 'success',
                     message: this.$t('message.add_success')
                   })
-                  this.changeTagMethod(this.configSaveForm.profileId)
+                  if (this.configSaveForm.profileId == this.formInline['f_eq_profile.id']) {
+                    this.getConfingListMethod()
+                  } else {
+                    // 查询修改个数
+                    this.getUnPushCountMethod()
+                  }
                   if (this.$refs[name]) {
                     this.$refs[name].resetFields()
                   }
@@ -703,7 +852,7 @@
                   }
                 }
               })
-            } else if (name === 'ruleEditForm') {
+            } else {
               this.configSaveForm.version = this.ActiveVersion.version
               let params = Object.assign(this.configSaveForm)
               this.geteditConfig(params).then(res => {
@@ -712,7 +861,7 @@
                     type: 'success',
                     message: this.$t('message.edit_success')
                   })
-                  this.changeTagMethod(this.configSaveForm.profileId)
+                  this.getConfingListMethod()
                   if (this.$refs[name]) {
                     this.$refs[name].resetFields()
                   }
@@ -782,10 +931,20 @@
     height: 110px;
     margin: 10px;
   }
-  //
+  // 项目信息标题样式
   .list-title-style {
     margin-left: 1.5%;
     margin-top: 14px;
+    /deep/ .el-tag--medium {
+      height: 20px;
+      line-height: 18px;
+    }
+    /deep/ .el-tag {
+      border-radius: 100px;
+      background-color: #FF9A39;
+      border: 1px solid #FF9A39;
+      color: #ffffff;
+    }
   }
   // 列表标题样式
   .project-list-style {
@@ -932,5 +1091,39 @@
       color: #626469;
       letter-spacing: 0.86px;
     }
+    /deep/ .el-tag:hover {
+      background: #ECF5FF;
+      border: 1px solid #CAE4FF;
+      color: #409EFF;
+    }
+  }
+  // popover样式
+  .popover-style {
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: #409EFF;
+  }
+  // 配置项搜索框样式
+  .search-config-style {
+    width: 200px;
+    float: right;
+    line-height: 32px;
+    /deep/.el-input__icon {
+      line-height: 32px;
+    }
+  }
+  /deep/ .table-sort-style {
+    .el-table .descending .sort-caret.descending {
+      border-top-color: #c0c4cc;
+    }
+    .el-table .ascending .sort-caret.ascending {
+      border-bottom-color: #c0c4cc;
+    }
+  }
+  // 标记标签样式
+  .edit-icon-style {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #016AD5;
   }
 </style>

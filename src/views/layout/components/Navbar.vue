@@ -15,29 +15,33 @@
             <i class="el-icon-caret-bottom"></i>
           </div>
           <el-dropdown-menu class="user-dropdown" slot="dropdown">
+            <!--<el-dropdown-item divided>
+              <span @click="updataPassword" style="display:block;text-align: center;">{{$t('common.modifyPassword')}}</span>
+            </el-dropdown-item>-->
             <el-dropdown-item divided>
               <span @click="logout" style="display:block;text-align: center;">{{$t('common.logout')}}</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-dialog
-          title="修改密码" @close="closeDialog"
+          :title="$t('common.modifyPassword')"
+          @close="closeDialog"
           :visible.sync="dialogVisible"
           width="60%">
-          <el-form :model="pwEditForm" :rules="PWEditFormRules" ref="pwEditForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="旧密码" prop="oldPassword">
-              <el-input type="password" v-model="pwEditForm.oldPassword" auto-complete="off"></el-input>
+          <el-form :model="pwEditForm" :rules="PWEditFormRules" ref="pwEditForm" label-width="100px" class="dialogStyle">
+            <el-form-item :label="$t('list.oldPW_label')" prop="oldPwd">
+              <el-input type="password" v-model="pwEditForm.oldPwd" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="新密码" prop="password">
+            <el-form-item :label="$t('list.newPW_label')" prop="password">
               <el-input type="password" v-model="pwEditForm.password" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="newPassword">
-              <el-input type="password" v-model="pwEditForm.newPassword" auto-complete="off"></el-input>
+            <el-form-item :label="$t('list.surlyPW_label')" prop="newPwd">
+              <el-input type="password" v-model="pwEditForm.newPwd" auto-complete="off"></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitForm('pwEditForm')" class="fontSizeBtW12">提交</el-button>
-      </span>
+            <el-button type="primary" @click="submitForm('pwEditForm')" class="dialogButtonB">{{$t('list.submit_button')}}</el-button>
+          </span>
         </el-dialog>
       </div>
     </div>
@@ -57,9 +61,9 @@
     data () {
       var validatepw = (rule, value, callback) => {
         if (value != this.pwEditForm.password && value != '') {
-          callback(new Error('密码不一致'))
+          callback(new Error(this.$t('list.pwsame_message')))
         } else if (value === '') {
-          callback(new Error('确认密码不能为空'))
+          callback(new Error(this.$t('list.surlyPW_validate')))
         } else {
           callback()
         }
@@ -67,18 +71,18 @@
       return {
         dialogVisible: false,
         pwEditForm: {
-          newPassword: '',
-          oldPassword: '',
+          newPwd: '',
+          oldPwd: '',
           password: ''
         },
         PWEditFormRules: {
           password: [
-            { required: true, message: '新密码不能为空', trigger: 'blur' }
+            { required: true, message: this.$t('list.newPW_validate'), trigger: 'blur' }
           ],
-          oldPassword: [
-            { required: true, message: '旧密码不能为空', trigger: 'blur' }
+          oldPwd: [
+            { required: true, message: this.$t('list.oldPW_validate'), trigger: 'blur' }
           ],
-          newPassword: [
+          newPwd: [
             { required: true, validator: validatepw, trigger: 'blur' }
           ]
         },
@@ -140,13 +144,20 @@
       submitForm (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            let params = Object.assign(this.pwEditForm)
+            let params = Object.assign({oldPwd: this.pwEditForm.oldPwd, newPwd: this.pwEditForm.newPwd})
             this.getEditPW(params).then(res => {
-              this.$message({
-                type: 'success',
-                message: this.$t('message.edit_success')
-              })
-              this.dialogVisible = false
+              if (res.data && res.data.result) {
+                this.$message({
+                  type: 'success',
+                  message: this.$t('message.edit_success')
+                })
+                this.dialogVisible = false
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: this.$t('message.edit_error')
+                })
+              }
             })
           } else {
             console.log('error submit!!')
@@ -174,7 +185,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   .navbar {
     height: 60px;
-    line-height: 60px;
+    /*line-height: 60px;*/
     border-radius: 0px !important;
     .hamburger-container {
       line-height: 60px;

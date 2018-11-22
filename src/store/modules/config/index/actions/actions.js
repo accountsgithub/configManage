@@ -215,5 +215,16 @@ export default {
         reject(thrown)
       })
     })
+  },
+  // 新版本
+  // 获取未发布数据个数
+  getUnPushCountApi ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_UNPUSHCOUNT(params).then((res) => {
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
   }
 }

@@ -5,24 +5,24 @@
         <h3 class="title">统一权限管理平台</h3>
         <h3 class="title2">PUBLIC APPLICATION MANAGEMENT PLATFORM</h3>
         <el-form-item prop="username">
-          <el-input class="textStyle" placeholder="请输入用户名" v-model="loginForm.username" autoComplete="off">
+          <el-input class="textStyle" :placeholder="$t('message.placeholder_projectMark')" v-model="loginForm.username" autoComplete="off">
             <i slot="prefix" class="icon iconfont icon-ic-name" style="margin: 0 15px 15px 13px;font-size: 20px;"></i>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input class="textStyle" name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="off" placeholder="请输入用密码">
+          <el-input class="textStyle" name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="off" :placeholder="$t('message.placeholder_projectKey')">
             <i slot="prefix" class="icon iconfont icon-ic-lock" style="margin: 0 15px 15px 13px;font-size: 20px;"></i>
             <i slot="suffix" class="show-pwd el-icon-view" @click="showPwd" style="margin: 10px 15px 15px 15px;font-size: 20px"></i>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-checkbox v-model="isSavePW"><span style="font-size: 12px;">记住密码</span></el-checkbox>
+          <el-checkbox v-model="isSavePW"><span style="font-size: 12px;">{{$t('message.remainPW_label')}}</span></el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      style="width:100%;background:#016ad5;border-radius:4px;height:50px;font-size: 16px"
                      :loading="loading"
-                     @click.native.prevent="handleLogin">登录
+                     @click.native.prevent="handleLogin">{{$t('message.login_button')}}
           </el-button>
         </el-form-item>
       </el-form>
@@ -32,111 +32,111 @@
 
 
 <script>
-import { mapActions } from 'vuex'
-import {getCookie, setCookie, delCookie} from '@/utils/helps'
+  import { mapActions } from 'vuex'
+  import {getCookie, setCookie, delCookie} from '@/utils/helps'
 
-export default {
-  name: 'login',
-  data () {
-    return {
-      isSavePW: !!getCookie('isSavePW'),
-      loginForm: {
-        username: getCookie('username') ? getCookie('username') : '',// admin
-        password: getCookie('PW') ? getCookie('PW') : ''// 111111
-      },
-      loginRules: {
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ]
-      },
-      loading: false,
-      pwdType: 'password'
-    }
-  },
-  methods: {
-    ...mapActions([
-      'getLogin'
-    ]),
-    showPwd () {
-      if (this.pwdType === 'password') {
-        this.pwdType = ''
-      } else {
-        this.pwdType = 'password'
+  export default {
+    name: 'login',
+    data () {
+      return {
+        isSavePW: !!getCookie('isSavePW'),
+        loginForm: {
+          username: getCookie('username') ? getCookie('username') : '',// admin
+          password: getCookie('PW') ? getCookie('PW') : ''// 111111
+        },
+        loginRules: {
+          username: [
+            { required: true, message: this.$t('message.validate_projectMark'), trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: this.$t('message.validate_projectKey'), trigger: 'blur' }
+          ]
+        },
+        loading: false,
+        pwdType: 'password'
       }
     },
+    methods: {
+      ...mapActions([
+        'getLogin'
+      ]),
+      showPwd () {
+        if (this.pwdType === 'password') {
+          this.pwdType = ''
+        } else {
+          this.pwdType = 'password'
+        }
+      },
 
 
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.getLogin(this.loginForm)
-            .then(() => {
-              if (this.isSavePW) {
-                if (!getCookie('username')) {
-                  setCookie('username', this.loginForm.username)
+      handleLogin() {
+        this.$refs.loginForm.validate(valid => {
+          if (valid) {
+            this.getLogin(this.loginForm)
+              .then(() => {
+                if (this.isSavePW) {
+                  if (!getCookie('username')) {
+                    setCookie('username', this.loginForm.username)
+                  }
+                  if (!getCookie('PW')) {
+                    setCookie('PW', this.loginForm.password)
+                  }
+                  if (!getCookie('isSavePW')) {
+                    setCookie('isSavePW', 'true')
+                  }
+                } else {
+                  delCookie('isSavePW')
+                  delCookie('username')
+                  delCookie('PW')
                 }
-                if (!getCookie('PW')) {
-                  setCookie('PW', this.loginForm.password)
-                }
-                if (!getCookie('isSavePW')) {
-                  setCookie('isSavePW', 'true')
-                }
-              } else {
-                delCookie('isSavePW')
-                delCookie('username')
-                delCookie('PW')
+
+                this.$router.push({ path: '/homePage' })
+              })
+              .catch(error => {
+                this.$message({
+                  type: 'error',
+                  message: 'error'
+                })
+              })
+          } else {
+            this.loadingStatus = false
+                this.logButtonLabel = this.$t('login.button_login')
+            return false
+          }
+        })
+      },
+
+
+
+      xx () {
+        this.$refs.loginForm.validate(valid => {
+          if (valid) {
+            this.loading = true
+            let params = Object.assign(this.loginForm)
+            this.getLogin(params).then(res => {
+              if (res.data.code == '-1') {
+                this.$message({
+                  message: res.data.message
+                })
+              } else if (res.data.code == '0') {
+                this.$router.push({ path: '/homePage' })
               }
-
-              this.$router.push({ path: '/homePage' })
             })
-            .catch(error => {
-              this.$message({
-                type: 'error',
-                message: 'error'
-              })
-            })
-        } else {
-          this.loadingStatus = false
-          this.logButtonLabel = this.$t('login.button_login')
-          return false
-        }
-      })
-    },
-
-
-
-    xx () {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          let params = Object.assign(this.loginForm)
-          this.getLogin(params).then(res => {
-            if (res.data.code == '-1') {
-              this.$message({
-                message: res.data.message
-              })
-            } else if (res.data.code == '0') {
-              this.$router.push({ path: '/homePage' })
-            }
-          })
-          this.loading = false
-          // this.$store.dispatch('Login', this.loginForm).then(() => {
-          //   this.loading = false
-          //   this.$router.push({ path: '/' })
-          // }).catch(() => {
-          //   this.loading = false
-          // })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+            this.loading = false
+            // this.$store.dispatch('Login', this.loginForm).then(() => {
+            //   this.loading = false
+            //   this.$router.push({ path: '/' })
+            // }).catch(() => {
+            //   this.loading = false
+            // })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      }
     }
   }
-}
 </script>
 
 <style rel="stylesheet/scss" lang="scss">

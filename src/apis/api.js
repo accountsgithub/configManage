@@ -53,7 +53,7 @@ export default {
   },
   // 修改密码
   GET_EDITPW (params) {
-    return api.fetch('put', `${base}/user/password`, params)
+    return api.fetch('put', `${base}/pwd/` + params.oldPwd + `/` + params.newPwd, params)
   },
   // 统一项目
   // GET_ADDPROJECTS (params) {
@@ -257,12 +257,15 @@ export default {
   },
   // 统一权限添加人员
   GET_RADDPERSON (params) {
-    'use strict'
     return api.fetch('post', `${base}/person`, params)
   },
   // 统一权限编辑人员
   GET_REDITPERSON (params) {
-    'use strict'
     return api.fetch('put', `${base}/person` + params.id, params)
+  },
+  // 新版本
+  // 获取未发布数据个数
+  GET_UNPUSHCOUNT (params) {
+    return api.fetch('get', `${base}/configs/unpublished/count`, params)
   }
 }

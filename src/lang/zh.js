@@ -44,7 +44,7 @@ export default {
     project_info: '项目信息',
     project_type: '类型',
     project_path: '路径',
-    puth_time: '发布时间',
+    push_time: '发布时间', // 变更4
     create_time: '创建时间',
     modify_time: '修改时间',
     project_leader: '项目负责人',
@@ -63,7 +63,16 @@ export default {
     config_Search: '请输入关键词',
     listName: '列表',
     version: '版本号',
-    pushStatus_label: '发布状态'
+    submit_button: '提交', // 变更4
+    pushStatus_label: '发布状态',
+    oldPW_label: '旧密码', // 变更4
+    newPW_label: '新密码', // 变更4
+    surlyPW_label: '旧密码', // 变更4
+    pwsame_message: '密码不一致', // 变更4
+    surlyPW_validate: '确认密码不能为空', // 变更4
+    newPW_validate: '新密码不能为空', // 变更4
+    oldPW_validate: '旧密码不能为空', // 变更4
+    editConfigFile_title: '编辑配置文件' // 变更4
   },
   tags: {
     file_name: '文件名',
@@ -99,7 +108,7 @@ export default {
     add_success: '添加成功',
     add_error: '添加失败', // 变更4
     edit_success: '修改成功', // 变更4
-    edit_error: '添加失败',
+    edit_error: '修改失败', // 变更4
     delete_success: '删除成功',
     delete_error: '删除失败',
     fail: '上传失败',
@@ -110,6 +119,16 @@ export default {
     enterVersion: '请输入正确的版本号。(以数字开头，只能包含数字和" . ", 如 1 或 1.0 或 1.0.0 或 1.0.0.0 )',
     duplicated_profile:'重复的配置文件',
     NO_CONFIGS_TO_PUBLISH:'没有需要发布的配置',
-    INVALID_CONFIG_FILE_KEY:'无效的配置文件'
+    INVALID_CONFIG_FILE_KEY:'无效的配置文件',
+    placeholder_projectMark: '请输入项目标识', // 变更4
+    placeholder_projectKey: '请输入项目密钥', // 变更4
+    login_button: '登陆', // 变更4
+    remainPW_label: '记住密码', // 变更4
+    validate_projectMark: '项目标识不可为空', // 变更4
+    validate_projectKey: '项目密钥不可为空', // 变更4
+    loginSuccess_message: '登录成功', // 变更4
+    valueError_message: '标识或密钥输入错误', // 变更4
+    leavePage_message: '当前有未发布配置项，请确认是否进行发布', // 变更4
+    system_title: '统一配置中心' // 变更4
   }
 }
