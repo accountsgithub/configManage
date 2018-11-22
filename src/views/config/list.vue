@@ -41,74 +41,94 @@
           <template slot="title">
             <div>
               <!--编辑路径-->
-              <span>{{item.name}}</span><span style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
+              <span>{{item.name}}</span><span v-if="item.profileType!='bootstrap'" style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
               <!--<i class="icon iconfont icon-ic-edit edit-icon-style" @click="editPathMethod(item.id, item.path)" @click.stop=""></i>-->
               <!--tag操作栏-->
               <div class="config-file-title" @click.stop="">
-                <el-button class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-                <el-button class="tableLastButtonStyleW" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
+                <el-button v-if="tabName == 'json' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
+                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
                 <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
-                <el-input v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
+                <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
               </div>
             </div>
           </template>
           <!--配置项列表-->
           <div :class="{'content-div-style': true, 'table-sort-style': isTagChange}" v-loading="listLoading">
-            <el-table class="table-sort-style" :data="configDetailList" ref="configTable" style="width: 100%" @sort-change="handleSortChange" :border="false">
-              <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="180" align="center" class="fontBlod fontSizeBtB12">
-                <template slot-scope="scope">
-                  <div slot="reference" :class="{'push-status': true, 'y-push-status': scope.row.publish==1}">
-                    <el-tag size="medium">{{conPushStatus(scope.row.publish)}}</el-tag>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
-                <template slot-scope="scope">
-                  <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
-                    <el-popover v-if="scope.row.configKey.length>20" trigger="hover" placement="top">
-                      <p class="popover-style">{{ scope.row.configKey }}</p>
-                      <div slot="reference">
-                        <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
-                        <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+            <!--tab标签-->
+            <el-tabs v-model="tabName" @tab-click="tabClickMethod">
+              <el-tab-pane label="json" name="json">
+                <div class="table-div-style">
+                  <el-table class="table-sort-style" :data="configDetailList" ref="configTable" :stripe="true" style="width: 100%" @sort-change="handleSortChange" :border="false">
+                  <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="180" align="center" class="fontBlod fontSizeBtB12">
+                    <template slot-scope="scope">
+                      <div slot="reference" :class="{'push-status': true, 'y-push-status': scope.row.publish==1}">
+                        <el-tag size="medium">{{conPushStatus(scope.row.publish)}}</el-tag>
                       </div>
-                    </el-popover>
-                    <div v-else >
-                    <span class="overKeyWidth">{{ scope.row.configKey }}</span>
-                    <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
-                    </div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column label="Value" min-width="180" align="left">
-                <template slot-scope="scope">
-                  <el-popover v-if="scope.row.configValue.length>26" trigger="hover" placement="top">
-                    <p class="popover-style">{{ scope.row.configValue }}</p>
-                    <div slot="reference" class="value-tag-style">
-                      <el-tag size="medium">{{ scope.row.configValue.substring(0,26) }}…</el-tag>
-                    </div>
-                  </el-popover>
-                  <div v-else slot="reference" class="value-tag-style">
-                    <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
-                <template slot-scope="scope">
-                  <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('list.remarks')" prop="remark" min-width="180" align="center">
-                <template slot-scope="scope">
-                  <span class="overRemarkWidth">{{scope.row.remark}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column :label="$t('common.deal')"  min-width="200" align="center">
-                <template slot-scope="scope">
-                  <a class="tableActionStyle" @click="handleEdit(scope.$index, scope.row)">{{$t('common.edit')}}</a>
-                  <a class="tableActionStyle" style="padding-left: 10px" @click="handleDelete(scope.$index, scope.row)">{{$t('common.delete')}}</a>
-                </template>
-              </el-table-column>
-            </el-table>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
+                    <template slot-scope="scope">
+                      <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
+                        <el-popover v-if="scope.row.configKey.length>20" trigger="hover" placement="top">
+                          <p class="popover-style">{{ scope.row.configKey }}</p>
+                          <div slot="reference">
+                            <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
+                            <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                          </div>
+                        </el-popover>
+                        <div v-else >
+                          <span class="overKeyWidth">{{ scope.row.configKey }}</span>
+                          <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                        </div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="Value" min-width="180" align="left">
+                    <template slot-scope="scope">
+                      <el-popover v-if="scope.row.configValue.length>26" trigger="hover" placement="top">
+                        <p class="popover-style">{{ scope.row.configValue }}</p>
+                        <div slot="reference" class="value-tag-style">
+                          <el-tag size="medium">{{ scope.row.configValue.substring(0,26) }}…</el-tag>
+                        </div>
+                      </el-popover>
+                      <div v-else slot="reference" class="value-tag-style">
+                        <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
+                    <template slot-scope="scope">
+                      <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :label="$t('list.remarks')" prop="remark" min-width="180" align="center">
+                    <template slot-scope="scope">
+                      <span class="overRemarkWidth">{{scope.row.remark}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :label="$t('common.deal')"  min-width="200" align="center">
+                    <template slot-scope="scope">
+                      <a class="tableActionStyle" @click="handleEdit(scope.$index, scope.row)">{{$t('common.edit')}}</a>
+                      <a class="tableActionStyle" style="padding-left: 10px" @click="handleDelete(scope.$index, scope.row)">{{$t('common.delete')}}</a>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="text" name="text">
+                <!--<div>
+                  <el-form :inline="true" :model="ruleTextAddForm" ref="ruleTextAddForm">
+                    <el-input class="textDivStyle" :disabled="disTextEdit"
+                              type="textarea"
+                              :autosize="{ minRows: 10, maxRows: 10}"
+                              v-model="ruleTextAddForm.configValue" auto-complete="off"  maxlength="4096">
+                    </el-input>
+                    <el-button class="float-right buttonStyle fontSizeBtB12" :class="{disStyle:saveButton}" icon="el-icon-edit" type="primary" @click="textEdit" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
+                    <el-button class="float-right buttonStyle fontSizeBtW12" :class="{disStyle:!saveButton}" icon="el-icon-upload" type="primary" @click="textSave" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
+                  </el-form>
+                </div>-->
+              </el-tab-pane>
+            </el-tabs>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -239,6 +259,8 @@
     name: 'indexList',
     data () {
       return {
+        // tab标记
+        tabName: 'json',
         // 编辑的路径数据
         savePathData: '',
         // 编辑路径dialog状态
@@ -387,8 +409,18 @@
         'getAddConfig',
         'getaddversions',
         'getUnPushCountApi',
-        'geteditConfig'
+        'geteditConfig',
+        'getaddprofiles',
+        'geteditprofiles'
       ]),
+      // tab切换
+      tabClickMethod (val) {
+        if (val.name == 'json') {
+          this.getConfingListMethod('no')
+        } else if (val.name == 'text') {
+
+        }
+      },
       // 获取未发布数据个数方法
       getUnPushCountMethod () {
         let params = Object.assign({projectId: this.formInline.f_eq_projectId, version: this.ActiveVersion.version})
@@ -580,6 +612,7 @@
               message: this.$t('message.push_success'),
               type: 'success'
             })
+            this.getConfingListMethod()
           }else{
             if(res.data.status == 1005){
               this.$message({
@@ -714,7 +747,7 @@
         this[name].id = ''
         this[name].projectId = this.$route.params.mark
         this.saveConfigFile.profileType = '' // 类型
-        /*
+
         this[name].version = ''
         this.configSaveForm.configKey = ''
         this.configSaveForm.configValue = ''
@@ -722,7 +755,7 @@
         this.configSaveForm.remark = ''
 
         this.saveConfigFile.name = ''
-        this.saveConfigFile.path = '' */
+        this.saveConfigFile.path = ''
       },
       // 编辑配置项方法
       handleEdit (index, row) {
@@ -775,6 +808,7 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             if (this.saveConfigFile.id == '') {
+              this.saveConfigFile.version = this.ActiveVersion.version
               let params = Object.assign(this.saveConfigFile)
               this.getaddprofiles(params).then(res => {
                 if (res.data.code == '0' && res.data.status == 200) {
@@ -918,6 +952,9 @@
     margin: 0 1.5%;
     overflow-y: auto;
     height: 400px;
+    /deep/ .el-tabs__content {
+      margin-top: 0;
+    }
   }
   .main {
     background-color: #f0f4f8;
@@ -974,7 +1011,13 @@
     letter-spacing: 0;
   }
   .tableLastButtonStyleB {
-    margin: 0 20px 0 10px;
+    margin: 0 20px 0 0;
+  }
+  .tableLastButtonStyleW {
+    margin: 0 10px 0 0;
+  }
+  .tableLastButtonStyleWLast {
+    margin: 0 20px 0 0;
   }
   // 发布icon样式
   .icon-ic-release:before {
@@ -1108,6 +1151,7 @@
     width: 200px;
     float: right;
     line-height: 32px;
+    margin-right: 10px;
     /deep/.el-input__icon {
       line-height: 32px;
     }
@@ -1125,5 +1169,16 @@
     margin-left: 10px;
     font-size: 12px;
     color: #016AD5;
+  }
+  // 表格样式
+  /deep/ .table-div-style {
+    .el-table {
+      font-size: 12px;
+    }
+    .el-table th {
+      background-color:  #F9FBFD;
+      line-height: 36px;
+      padding: 0;
+    }
   }
 </style>
