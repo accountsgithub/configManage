@@ -116,17 +116,17 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="text" name="text">
-                <!--<div>
+                <div>
                   <el-form :inline="true" :model="ruleTextAddForm" ref="ruleTextAddForm">
-                    <el-input class="textDivStyle" :disabled="disTextEdit"
+                    <el-input class="textDivStyle" :disabled="editButtonShow"
                               type="textarea"
-                              :autosize="{ minRows: 10, maxRows: 10}"
+                              :autosize="{ minRows: 14, maxRows: 14}"
                               v-model="ruleTextAddForm.configValue" auto-complete="off"  maxlength="4096">
                     </el-input>
-                    <el-button class="float-right buttonStyle fontSizeBtB12" :class="{disStyle:saveButton}" icon="el-icon-edit" type="primary" @click="textEdit" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
-                    <el-button class="float-right buttonStyle fontSizeBtW12" :class="{disStyle:!saveButton}" icon="el-icon-upload" type="primary" @click="textSave" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
+                    <el-button v-if="editButtonShow" class="tableLastButtonStyleB" type="primary" @click="textEditMethod" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
+                    <el-button v-else class="tableLastButtonStyleB" type="primary" @click="textSaveMethod" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
                   </el-form>
-                </div>-->
+                </div>
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -259,6 +259,8 @@
     name: 'indexList',
     data () {
       return {
+        // 显示text编辑按键
+        editButtonShow: true,
         // tab标记
         tabName: 'json',
         // 编辑的路径数据
@@ -289,12 +291,23 @@
         listLoading: false, // 配置项页面加载遮罩
         versionLoading: false, // 版本号加载遮罩
         activeName: '',
+        // 查询数据集合
         formInline: {
           paging: false,
           f_eq_projectId: this.$route.params.mark,
           f_like_configKey: '',
           'f_eq_profile.id': '',
           'orderType': 0
+        },
+        // text数据集合
+        ruleTextAddForm: {
+          id: '',
+          projectId: this.$route.params.mark,
+          configKey: 'text',
+          configValue: '',
+          profileId: '',
+          remark: '',
+          version:''
         },
         // 新增/编辑配置
         configSaveForm: {
@@ -411,15 +424,74 @@
         'getUnPushCountApi',
         'geteditConfig',
         'getaddprofiles',
-        'geteditprofiles'
+        'geteditprofiles',
+        'geteditConfig',
+        'getAddConfig'
       ]),
       // tab切换
       tabClickMethod (val) {
         if (val.name == 'json') {
           this.getConfingListMethod('no')
         } else if (val.name == 'text') {
-
+          this.getTextConfigMethod()
         }
+      },
+      // text编辑方法
+      textEditMethod () {
+        this.editButtonShow = false
+      },
+      // text保存方法
+      textSaveMethod () {
+        this.editButtonShow = true
+        if (this.ruleTextAddForm.id != '') {
+          let params = Object.assign(this.ruleTextAddForm)
+          this.geteditConfig(params).then(res => {
+            this.$message({
+              type: 'success',
+              message: this.$t('message.edit_success')
+            })
+          })
+        } else {
+          this.ruleTextAddForm.profileId = this.filesID
+          this.ruleTextAddForm.version = this.ActiveVersion.version
+          let params = Object.assign(this.ruleTextAddForm)
+          this.getAddConfig(params).then(res => {
+            if(res.data.status == 200 && res.data.code == 0){
+              this.$message({
+                type: 'success',
+                message: this.$t('message.add_success')
+              })
+            }else{
+              if(res.data.status == 1001){
+                this.$message.error(this.$t('message.duplicated_profile'))
+              }
+            }
+          })
+          this.getTextConfigMethod()
+        }
+      },
+      // text查询方法
+      getTextConfigMethod () {
+        let params = Object.assign(this.formInline)
+        this.getProjectsConfigList(params).then(res => {
+          if (res.data.result.data.length > 0) {
+            this.ruleTextAddForm = Object.assign(this.ruleTextAddForm, res.data.result.data[0])
+          } else {
+            this.ruleTextAddForm.projectId = this.$route.params.mark
+            this.ruleTextAddForm.configKey = 'text'
+            this.ruleTextAddForm.configValue = ''
+            this.ruleTextAddForm.profileId = ''
+            this.ruleTextAddForm.remark = ''
+            this.ruleTextAddForm.id = ''
+          }
+        }).catch((e) => {
+          this.ruleTextAddForm.projectId = this.$route.params.mark
+          this.ruleTextAddForm.configKey = 'text'
+          this.ruleTextAddForm.configValue = ''
+          this.ruleTextAddForm.profileId = ''
+          this.ruleTextAddForm.remark = ''
+          this.ruleTextAddForm.id = ''
+        })
       },
       // 获取未发布数据个数方法
       getUnPushCountMethod () {
@@ -951,7 +1023,6 @@
   .content-div-style {
     margin: 0 1.5%;
     overflow-y: auto;
-    height: 400px;
     /deep/ .el-tabs__content {
       margin-top: 0;
     }
@@ -1180,5 +1251,10 @@
       line-height: 36px;
       padding: 0;
     }
+  }
+  // text文本框样式
+  .textDivStyle{
+    padding: 10px 0;
+    width: 99.9%;
   }
 </style>
