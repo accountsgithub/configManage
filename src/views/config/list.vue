@@ -46,7 +46,7 @@
               <!--tag操作栏-->
               <div class="config-file-title" @click.stop="">
                 <el-button v-if="tabName == 'json' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
+                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
                 <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
                 <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
               </div>
@@ -115,7 +115,7 @@
                 </el-table>
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="text" name="text">
+              <el-tab-pane v-if="item.profileType!='bootstrap'" label="text" name="text">
                 <div>
                   <el-form :inline="true" :model="ruleTextAddForm" ref="ruleTextAddForm">
                     <el-input class="textDivStyle" :disabled="editButtonShow"
@@ -134,7 +134,7 @@
       </el-collapse>
     </div>
 
-    <!--配置项dialog-->
+    <!--添加配置项dialog-->
     <el-dialog
       :title="configSaveForm.id==''?$t('list.add_config'):$t('list.edit_config')"
       :visible.sync="dialogEditVisible"
@@ -171,6 +171,9 @@
         <el-form-item v-if="saveConfigFile.profileType!='bootstrap'" :label="$t('tags.file_path')" prop="path">
           <el-input v-model="saveConfigFile.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
+        <div v-if="saveConfigFile.profileType!='bootstrap'&&saveConfigFile.id==''" class="path-message-style">
+          <span>{{$t('list.path_message')}}</span>
+        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button class="dialogButtonB" type="primary" @click="submitFileForm('saveConfigFile')">{{$t('common.create_now')}}</el-button>
@@ -181,26 +184,38 @@
     <el-dialog
       :title="$t('list.expo_config')"
       :visible.sync="dialogExpoVisible" @close="dialogExpoClose"
-      :before-close="beforeClose"
-      width="60%">
+      width="600px">
       <el-upload
         class="upload-demo"
         ref="upload"
-        :action='url'
+        :action="url"
+        drag
         :data="expofiledata"
-        :default-file-list="defaultUploadList"
         :file-list="fileList"
         :on-success="handleSuccess"
+        :on-error="handleError"
+        :before-upload="beforeUpload"
+        :show-file-list="true"
         :limit="1"
-        :format="['properties','yaml','yml']"
+        :format="['properties','yaml','yml','json','js']"
         :on-exceed="onexceed"
         :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">{{$t('list.upload_server')}}</el-button>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">{{$t('list.upload_message')}}<em>{{$t('list.upload_messageButton')}}</em></div>
         <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content')}}</div>
       </el-upload>
+      <div class="upload-path-style">
+        <div>{{$t('list.project_path')}}:</div>
+        <div>
+          <el-input v-model="expofiledata.path" auto-complete="off" maxlength="4096" :placeholder="$t('list.uploadPath_place')"></el-input>
+        </div>
+      </div>
+      <div class="path-message-style">
+        <span>{{$t('list.path_message')}}</span>
+      </div>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonW" @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonB":disabled="doubleDisable"  size="small" @click="submitUpload">{{$t('list.upload_server')}}</el-button>
       </span>
     </el-dialog>
     <!--迁入配置-->
@@ -208,22 +223,21 @@
       :title="$t('list.import_config')"
       :visible.sync="dialogImportVisible"
       @close="dialogExpoClose"
-      :before-close="beforeClose"
       width="60%">
       <el-upload
         class="upload-demo"
         ref="upload2"
         :action='url2'
         :data="expofiledata"
-        :default-file-list="defaultUploadList"
         :file-list="fileList"
         :on-success="handleSuccess"
+        :before-upload="beforeUpload2"
         :limit="1"
         :format="['json']"
         :on-exceed="onexceed"
         :auto-upload="false">
         <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
+        <el-button style="margin-left: 10px;" :disabled="doubleDisable" size="small" type="success" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
         <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content_2')}}</div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
@@ -259,6 +273,8 @@
     name: 'indexList',
     data () {
       return {
+        // 配置文件上传路径
+        configUploadPath: '',
         // 显示text编辑按键
         editButtonShow: true,
         // tab标记
@@ -349,12 +365,14 @@
           remark: ''
         },
         // 导入begin
-        defaultUploadList: [],
+        // 防止二次上传状态
+        doubleDisable: false,
         fileList: [],
         url: this.g_Config.BASE_URL + '/files/config_file_import',
         url2: this.g_Config.BASE_URL + '/configs/import',
         expofiledata: {
           projectId: this.$route.params.mark,
+          path: '',
           version: ''
         },
         // 导入end
@@ -719,33 +737,90 @@
         this.dialogExpoVisible = true
       },
       submitUpload () {
+        this.doubleDisable = true
         this.$refs.upload.submit()
       },
       submitUpload2 () {
+        this.doubleDisable = true
         this.$refs.upload2.submit()
       },
       // 导入dialog关闭方法
       dialogExpoClose () {
         this.dialogExpoVisible = false
         this.dialogImportVisible = false
-        this.defaultUploadList = []
+        this.expofiledata.path = ''
         this.fileList = []
       },
-      // 导入dialog关闭前方法
-      beforeClose (done) {
-        this.defaultUploadList = []
-        this.fileList = []
-        done()
+      // 上传之前判断文件格式
+      beforeUpload (file) {
+        let isZip = false
+        const isLtM = file.size / 1024 / 1024 < 10
+        if (file.name) {
+          let arrayTemp = file.name.split('.')
+          let fileType = ''
+          if (arrayTemp.length > 0) {
+            fileType = arrayTemp[1]
+          }
+          if (fileType == 'json' || fileType == 'js' || fileType == 'yaml' || fileType == 'yml' || fileType == 'properties') {
+            isZip = true
+          } else {
+            isZip = false
+          }
+        }
+        if (!isZip) {
+          this.doubleDisable = false // 上传按键可用
+          this.$message.error(this.$t('message.dialog_UploadTypeMessage'))
+        }
+        if (!isLtM) {
+          this.doubleDisable = false // 上传按键可用
+          this.$message.error(this.$t('message.dialog_UploadSizeMessage'))
+        }
+        return isZip && isLtM
+      },
+      // 迁入配置上传之前判断文件格式
+      beforeUpload2 (file) {
+        let isZip = false
+        const isLtM = file.size / 1024 / 1024 < 10
+        if (file.name) {
+          let arrayTemp = file.name.split('.')
+          let fileType = ''
+          if (arrayTemp.length > 0) {
+            fileType = arrayTemp[1]
+          }
+          if (fileType == 'json') {
+            isZip = true
+          } else {
+            isZip = false
+          }
+        }
+        if (!isZip) {
+          this.doubleDisable = false // 上传按键可用
+          this.$message.error(this.$t('message.dialog_UploadTypeMessage'))
+        }
+        if (!isLtM) {
+          this.doubleDisable = false // 上传按键可用
+          this.$message.error(this.$t('message.dialog_UploadSizeMessage'))
+        }
+        return isZip && isLtM
+      },
+      // 导入失败回调函数
+      handleError (err, file) {
+        this.doubleDisable = false
+        this.handleSuccess(file)
       },
       // 导入成功回调函数
       handleSuccess (file) {
+        this.doubleDisable = false
         if (file.status == '200') {
           if(file.code == 0){
             this.$message({
               message: this.$t('message.success'),
               type: 'success'
             })
-          }else {
+            this.dialogExpoVisible = false
+            this.dialogImportVisible = false
+            this.getConfigFileMethod()
+          } else {
             this.$message({
               message: file.message || this.$t('message.fail'),
               type: 'error'
@@ -762,11 +837,6 @@
         }else{
           this.$message.error(this.$t('message.fail'))
         }
-        this.dialogExpoVisible = false
-        this.dialogImportVisible = false
-        this.getConfigFileMethod()
-        this.defaultUploadList = []
-        this.fileList = []
       },
       onexceed (files, fileList) {
         this.$message({
@@ -795,6 +865,7 @@
       // tag改变方法
       changeTagMethod (val) {
         this.isTagChange = true
+        this.tabName = 'json'
         this.formInline['f_eq_profile.id'] = val
         this.formInline.orderType = 0
         this.getConfingListMethod('no')
@@ -1256,5 +1327,35 @@
   .textDivStyle{
     padding: 10px 0;
     width: 99.9%;
+  }
+  // 上次配置文件样式
+  .upload-demo {
+    /deep/ .el-upload-dragger {
+      width: 560px;
+    }
+  }
+  // 上传配置文件路径样式
+  .upload-path-style {
+    width: 554px;
+    height: 55px;
+    background-color: #F9FBFD;
+    display: flex;
+    line-height: 56px;
+    margin-top: 10px;
+    div:first-of-type {
+      width: 69px;
+      text-align: center;
+      font-size: 12px;
+    }
+    /deep/ .el-input__inner {
+      height: 32px;
+      width: 465px;
+    }
+  }
+  // 路径提示语样式
+  .path-message-style {
+    text-align: center;
+    color: #FF9A39;
+    margin-top: 10px;
   }
 </style>

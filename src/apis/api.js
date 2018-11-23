@@ -16,7 +16,8 @@ axios.interceptors.request.use(config => {
 }, err => {
   store.state.config.fullscreenLoading = false
   Message.error('服务器错误，请重试')
-  return Promise.reject(err)
+  // return Promise.reject(err)
+  return err
 })
 axios.interceptors.response.use(response => {
   if (response.data.code == '401') {

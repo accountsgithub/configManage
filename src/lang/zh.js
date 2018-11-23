@@ -41,6 +41,7 @@ export default {
     addFile_button: '新增配置文件', // 变更4
     addConfig_button: '新增配置项', // 变更4
     searchFrom_place: '请输入key', // 变更4
+    uploadPath_place: '请输入路径', // 变更4
     project_info: '项目信息',
     project_type: '类型',
     project_path: '路径',
@@ -72,7 +73,10 @@ export default {
     surlyPW_validate: '确认密码不能为空', // 变更4
     newPW_validate: '新密码不能为空', // 变更4
     oldPW_validate: '旧密码不能为空', // 变更4
-    editConfigFile_title: '编辑配置文件' // 变更4
+    editConfigFile_title: '编辑配置文件', // 变更4
+    upload_message: '将文件拖到此处，或', // 变更4
+    upload_messageButton: '点击上传', // 变更4
+    path_message: '提示【上传前端配置文件请正确填写路径信息，上传后端文件无需填写路径】' // 变更4
   },
   tags: {
     file_name: '文件名',
@@ -96,7 +100,9 @@ export default {
     value: '值不能为空',
     file: '请选择文件夹',
     lang: '请选择语言',
-    list_config_content: '只能上传properties/yaml /yml 文件，且不超过10MB',
+    dialog_UploadTypeMessage: '只能上传 properties / yaml / yml / json / js 文件', // 变更4
+    dialog_UploadSizeMessage: '文件不可超过10MB', // 变更4
+    list_config_content: '只能上传 properties / yaml / yml / json / js 文件，且不超过10MB',
     list_config_content_2: '只能上传json 文件，且不超过10MB',
     delete_config_content: '此操作将删除这项配置, 是否继续?',
     delete_file_content: '此操作将永久删除该文件, 是否继续?',
