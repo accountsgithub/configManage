@@ -226,5 +226,15 @@ export default {
         reject(thrown)
       })
     })
-  }
+  },
+  // 获取未发布数据列表
+  getUnPushListApi ({state, commit}, params) {
+    return new Promise((resolve, reject) => {
+      return getDate.GET_UNPUSHLIST(params).then((res) => {
+        resolve(res)
+      }).catch((thrown) => {
+        reject(thrown)
+      })
+    })
+  },
 }

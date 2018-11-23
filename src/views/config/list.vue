@@ -7,7 +7,7 @@
           <span>{{$t('list.project_info')}}<el-tag v-if="unPushCount > 0" size="medium" style="margin-left:20px;">{{$t('common.modify')}}{{unPushCount}}</el-tag></span>
         </div>
         <div>
-          <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="onConfigPushMethod">{{$t('list.push')}}</el-button>
+          <el-button :disabled="unPushCount < 1" class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
@@ -69,7 +69,7 @@
                   <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
                     <template slot-scope="scope">
                       <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
-                        <el-popover v-if="scope.row.configKey.length>20" trigger="hover" placement="top">
+                        <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>20" trigger="hover" placement="top">
                           <p class="popover-style">{{ scope.row.configKey }}</p>
                           <div slot="reference">
                             <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
@@ -85,13 +85,13 @@
                   </el-table-column>
                   <el-table-column label="Value" min-width="180" align="left">
                     <template slot-scope="scope">
-                      <el-popover v-if="scope.row.configValue.length>26" trigger="hover" placement="top">
+                      <el-popover v-if="scope.row.configValue&&scope.row.configValue.length>26" trigger="hover" placement="top">
                         <p class="popover-style">{{ scope.row.configValue }}</p>
                         <div slot="reference" class="value-tag-style">
                           <el-tag size="medium">{{ scope.row.configValue.substring(0,26) }}…</el-tag>
                         </div>
                       </el-popover>
-                      <div v-else slot="reference" class="value-tag-style">
+                      <div v-else-if="scope.row.configValue" slot="reference" class="value-tag-style">
                         <el-tag size="medium">{{ scope.row.configValue }}</el-tag>
                       </div>
                     </template>
@@ -103,7 +103,17 @@
                   </el-table-column>
                   <el-table-column :label="$t('list.remarks')" prop="remark" min-width="180" align="center">
                     <template slot-scope="scope">
-                      <span class="overRemarkWidth">{{scope.row.remark}}</span>
+                      <div slot="reference">
+                        <el-popover v-if="scope.row.remark&&scope.row.remark.length>20" trigger="hover" placement="top">
+                          <p class="popover-style">{{ scope.row.remark }}</p>
+                          <div slot="reference">
+                            <span size="medium">{{ scope.row.remark.substring(0,20) }}…</span>
+                          </div>
+                        </el-popover>
+                        <div v-else >
+                          <span class="overKeyWidth">{{ scope.row.remark }}</span>
+                        </div>
+                      </div>
                     </template>
                   </el-table-column>
                   <el-table-column :label="$t('common.deal')"  min-width="200" align="center">
@@ -134,6 +144,71 @@
       </el-collapse>
     </div>
 
+    <!--未发布数据列表-->
+    <el-dialog
+      :title="$t('list.push')"
+      :visible.sync="pushJsonDialogVisible"
+      @close="unPushJsonCloseMethod"
+      width="60%">
+      <div>
+        <div class="table-div-style">
+          <el-table class="table-sort-style" :data="unPushDataList" ref="unPushTable" :stripe="true" style="width: 100%" :border="false">
+            <el-table-column label="Key" prop="configKey" min-width="15%" align="left">
+              <template slot-scope="scope">
+                <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
+                  <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>20" trigger="hover" placement="top">
+                    <p class="popover-style">{{ scope.row.configKey }}</p>
+                    <div slot="reference">
+                      <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
+                      <el-tag size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                    </div>
+                  </el-popover>
+                  <div v-else-if="scope.row.configKey&&scope.row.configKey.length>0" >
+                    <span class="overKeyWidth">{{ scope.row.configKey }}</span>
+                    <el-tag size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('list.originPush_label')" prop="effectiveValue" min-width="30%" align="left">
+              <template slot-scope="scope">
+                <el-popover v-if="scope.row.effectiveValue&&scope.row.effectiveValue.length>26" trigger="hover" placement="top">
+                  <p class="popover-style">{{ scope.row.effectiveValue }}</p>
+                  <div slot="reference" class="value-tag-style">
+                    <span size="medium">{{ scope.row.effectiveValue.substring(0,26) }}…</span>
+                  </div>
+                </el-popover>
+                <div v-else-if="scope.row.effectiveValue" slot="reference" class="value-tag-style">
+                  <span size="medium">{{ scope.row.effectiveValue }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('list.unPush_label')" prop="ineffectiveValue" min-width="30%" align="left">
+              <template slot-scope="scope">
+                <el-popover v-if="scope.row.ineffectiveValue&&scope.row.ineffectiveValue.length>26" trigger="hover" placement="top">
+                  <p class="popover-style">{{ scope.row.ineffectiveValue }}</p>
+                  <div slot="reference" class="value-tag-style">
+                    <span size="medium">{{ scope.row.ineffectiveValue.substring(0,26) }}…</span>
+                  </div>
+                </el-popover>
+                <div v-else-if="scope.row.ineffectiveValue" slot="reference" class="value-tag-style">
+                  <span size="medium">{{ scope.row.ineffectiveValue }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('list.modify_time')" prop="updateTime" min-width="15%" align="center">
+              <template slot-scope="scope">
+                <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onConfigPushMethod" class="dialogButtonB">{{$t('list.push')}}</el-button>
+        <el-button @click="pushJsonDialogVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
+      </span>
+    </el-dialog>
     <!--添加配置项dialog-->
     <el-dialog
       :title="configSaveForm.id==''?$t('list.add_config'):$t('list.edit_config')"
@@ -190,11 +265,13 @@
         ref="upload"
         :action="url"
         drag
+        with-credentials
         :data="expofiledata"
         :file-list="fileList"
         :on-success="handleSuccess"
         :on-error="handleError"
         :before-upload="beforeUpload"
+        :on-change="uploadChange"
         :show-file-list="true"
         :limit="1"
         :format="['properties','yaml','yml','json','js']"
@@ -223,7 +300,7 @@
       :title="$t('list.import_config')"
       :visible.sync="dialogImportVisible"
       @close="dialogExpoClose"
-      width="60%">
+      width="600px">
       <el-upload
         class="upload-demo"
         ref="upload2"
@@ -231,17 +308,22 @@
         :data="expofiledata"
         :file-list="fileList"
         :on-success="handleSuccess"
+        :on-error="handleError"
+        :on-change="uploadChange"
         :before-upload="beforeUpload2"
         :limit="1"
+        drag
+        with-credentials
         :format="['json']"
         :on-exceed="onexceed"
         :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">{{$t('list.select_files')}}</el-button>
-        <el-button style="margin-left: 10px;" :disabled="doubleDisable" size="small" type="success" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">{{$t('list.upload_message')}}<em>{{$t('list.upload_messageButton')}}</em></div>
         <div slot="tip" class="el-upload__tip">{{$t('message.list_config_content_2')}}</div>
       </el-upload>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonW" @click="dialogExpoClose">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonB":disabled="doubleDisable"  size="small" @click="submitUpload2">{{$t('list.upload_server')}}</el-button>
       </span>
     </el-dialog>
     <!--添加版本号弹框-->
@@ -273,6 +355,10 @@
     name: 'indexList',
     data () {
       return {
+        // 未发布数据集
+        unPushDataList: [],
+        // 发布弹窗状态
+        pushJsonDialogVisible: false,
         // 配置文件上传路径
         configUploadPath: '',
         // 显示text编辑按键
@@ -368,6 +454,8 @@
         // 防止二次上传状态
         doubleDisable: false,
         fileList: [],
+        fileListTemp: '',
+        fileTemp: null,
         url: this.g_Config.BASE_URL + '/files/config_file_import',
         url2: this.g_Config.BASE_URL + '/configs/import',
         expofiledata: {
@@ -444,7 +532,8 @@
         'getaddprofiles',
         'geteditprofiles',
         'geteditConfig',
-        'getAddConfig'
+        'getAddConfig',
+        'getUnPushListApi'
       ]),
       // tab切换
       tabClickMethod (val) {
@@ -525,12 +614,12 @@
       // 发布状态展示转换
       conPushStatus (val) {
         let pushStatus = ['未发布', '已发布']
-        return pushStatus[0] // val
+        return pushStatus[val] // val
       },
       // key状态展示转换
       conKeyStatus (val) {
-        let pushStatus = ['新', '删', '改']
-        return pushStatus[0] // val - 1
+        let pushStatus = ['新','改', '删']
+        return pushStatus[val - 1] // val - 1
       },
       // 编辑路径方法 temp
       editPathMethod (val, path) {
@@ -693,6 +782,22 @@
           }
         })
       },
+      // json窗口关闭方法
+      unPushJsonCloseMethod () {
+        this.unPushDataList = []
+      },
+      // 打开json发布弹窗
+      openPushJsonDialog () {
+        let params = Object.assign({projectId: this.formInline.f_eq_projectId, version: this.ActiveVersion.version})
+        this.getUnPushListApi(params).then(res => {
+          if (res.data.result && res.data.result.length > 0) {
+            this.unPushDataList = res.data.result
+            this.pushJsonDialogVisible = true
+          } else {
+            this.unPushDataList = []
+          }
+        })
+      },
       // 发布方法
       onConfigPushMethod () {
         let params = Object.assign({projectId: this.$route.params.mark, version: this.ActiveVersion.version})
@@ -702,6 +807,7 @@
               message: this.$t('message.push_success'),
               type: 'success'
             })
+            this.pushJsonDialogVisible = false
             this.getConfingListMethod()
           }else{
             if(res.data.status == 1005){
@@ -729,7 +835,7 @@
       },
       // 迁出方法
       exportFiles() {
-        window.open(this.g_Config.BASE_URL+`/configs/export/${this.ruleAddForm.projectId}/${this.ActiveVersion.version}`)
+        window.open(this.g_Config.BASE_URL+`/configs/export/${this.profiledata.f_eq_projectId}/${this.ActiveVersion.version}`)
       },
       // 导入配置
       expoFiles() {
@@ -737,19 +843,39 @@
         this.dialogExpoVisible = true
       },
       submitUpload () {
-        this.doubleDisable = true
-        this.$refs.upload.submit()
+        if (this.fileListTemp == '') {
+          this.$message.error(this.$t('message.selectFile'))
+        } else {
+          this.doubleDisable = true
+          this.$refs.upload.submit()
+        }
       },
       submitUpload2 () {
-        this.doubleDisable = true
-        this.$refs.upload2.submit()
+        if (this.fileListTemp == '') {
+          this.$message.error(this.$t('message.selectFile'))
+        } else {
+          this.doubleDisable = true
+          this.$refs.upload2.submit()
+        }
       },
       // 导入dialog关闭方法
       dialogExpoClose () {
+        this.fileListTemp = ''
         this.dialogExpoVisible = false
         this.dialogImportVisible = false
         this.expofiledata.path = ''
+        this.expofiledata.version = ''
         this.fileList = []
+      },
+      // 上传文件改变函数
+      uploadChange (file, fileList) {
+        if (fileList.length > 0) {
+          this.fileListTemp = fileList[0].name
+          this.fileTemp = file
+        } else {
+          this.fileListTemp = ''
+          this.fileTemp = null
+        }
       },
       // 上传之前判断文件格式
       beforeUpload (file) {
@@ -805,6 +931,7 @@
       },
       // 导入失败回调函数
       handleError (err, file) {
+        // this.fileList = [{name: this.fileListTemp}]
         this.doubleDisable = false
         this.handleSuccess(file)
       },
@@ -1287,6 +1414,10 @@
     font-family: PingFangSC-Regular;
     font-size: 12px;
     color: #409EFF;
+    max-width: 600px;
+    word-wrap: break-word;
+    max-height: 100px;
+    overflow-y: auto;
   }
   // 配置项搜索框样式
   .search-config-style {
@@ -1332,6 +1463,9 @@
   .upload-demo {
     /deep/ .el-upload-dragger {
       width: 560px;
+    }
+    /deep/ .el-upload-list__item .el-icon-upload-success {
+      color: #ffffff;
     }
   }
   // 上传配置文件路径样式

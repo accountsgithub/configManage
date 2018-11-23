@@ -268,5 +268,9 @@ export default {
   // 获取未发布数据个数
   GET_UNPUSHCOUNT (params) {
     return api.fetch('get', `${base}/configs/unpublished/count`, params)
-  }
+  },
+  // 获取未发布数据列表
+  GET_UNPUSHLIST (params) {
+    return api.fetch('get', `${base}/configs/comparison/` + params.projectId+ `/` + params.version)
+  },
 }
