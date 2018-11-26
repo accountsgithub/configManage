@@ -94,7 +94,7 @@ export const GETGROUPS = 'getGroups'
 // 添加配置文件
 export const GETADDPROFILES = 'getaddprofiles'
 // 添加版本号
-export const GETADDVERSIONS = 'getaddversions'
+// export const GETADDVERSIONS = 'getaddversions'
 // 修改配置文件
 export const GETEDITPROFILES = 'geteditprofiles'
 // 配置文件导入

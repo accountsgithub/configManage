@@ -4,7 +4,7 @@
       <!--操作栏-->
       <div class="project-list-style">
         <div class="list-title-style">
-          <span>{{$t('list.project_info')}}<el-tag v-if="unPushCount > 0" size="medium" style="margin-left:20px;">{{$t('common.modify')}}{{unPushCount}}</el-tag></span>
+          <span>{{$t('list.project_info')}}<el-tag v-if="unPushCount&&unPushCount > 0" size="medium" style="margin-left:20px;">{{$t('common.modify')}}{{unPushCount}}</el-tag></span>
         </div>
         <div>
           <el-button :disabled="unPushCount < 1" class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
@@ -39,7 +39,7 @@
         <el-collapse-item v-for="item in projectConfigList" :title="item.name" :name="item.id">
           <!--折叠窗体标题信息-->
           <template slot="title">
-            <div>
+            <div @keyup.enter.stop="">
               <!--编辑路径-->
               <span>{{item.name}}</span><span v-if="item.profileType!='bootstrap'" style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
               <!--<i class="icon iconfont icon-ic-edit edit-icon-style" @click="editPathMethod(item.id, item.path)" @click.stop=""></i>-->
@@ -48,7 +48,7 @@
                 <el-button v-if="tabName == 'json' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
                 <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
                 <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
-                <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
+                <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" @keyup.enter.native="getConfingListMethod('no')" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
               </div>
             </div>
           </template>
@@ -59,14 +59,14 @@
               <el-tab-pane label="json" name="json">
                 <div class="table-div-style">
                   <el-table class="table-sort-style" :data="configDetailList" ref="configTable" :stripe="true" style="width: 100%" @sort-change="handleSortChange" :border="false">
-                  <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="180" align="center" class="fontBlod fontSizeBtB12">
+                  <el-table-column :label="$t('list.pushStatus_label')" prop="publish" min-width="10%" align="center" class="fontBlod fontSizeBtB12">
                     <template slot-scope="scope">
                       <div slot="reference" :class="{'push-status': true, 'y-push-status': scope.row.publish==1}">
                         <el-tag size="medium">{{conPushStatus(scope.row.publish)}}</el-tag>
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="Key" prop="configKey" sortable="custom" min-width="180" align="left" class="fontBlod fontSizeBtB12">
+                  <el-table-column label="Key" prop="configKey" sortable="custom" min-width="17%" align="left">
                     <template slot-scope="scope">
                       <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
                         <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>20" trigger="hover" placement="top">
@@ -83,12 +83,12 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="Value" min-width="180" align="left">
+                  <el-table-column label="Value" min-width="28%" align="left">
                     <template slot-scope="scope">
-                      <el-popover v-if="scope.row.configValue&&scope.row.configValue.length>26" trigger="hover" placement="top">
+                      <el-popover v-if="scope.row.configValue&&scope.row.configValue.length>36" trigger="hover" placement="top">
                         <p class="popover-style">{{ scope.row.configValue }}</p>
                         <div slot="reference" class="value-tag-style">
-                          <el-tag size="medium">{{ scope.row.configValue.substring(0,26) }}…</el-tag>
+                          <el-tag size="medium">{{ scope.row.configValue.substring(0,36) }}…</el-tag>
                         </div>
                       </el-popover>
                       <div v-else-if="scope.row.configValue" slot="reference" class="value-tag-style">
@@ -96,12 +96,12 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="180" align="center">
+                  <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="10%" align="center">
                     <template slot-scope="scope">
                       <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('list.remarks')" prop="remark" min-width="180" align="center">
+                  <el-table-column :label="$t('list.remarks')" prop="remark" min-width="20%" align="left">
                     <template slot-scope="scope">
                       <div slot="reference">
                         <el-popover v-if="scope.row.remark&&scope.row.remark.length>20" trigger="hover" placement="top">
@@ -116,10 +116,10 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('common.deal')"  min-width="200" align="center">
+                  <el-table-column :label="$t('common.deal')"  min-width="15%" align="center">
                     <template slot-scope="scope">
-                      <a class="tableActionStyle" @click="handleEdit(scope.$index, scope.row)">{{$t('common.edit')}}</a>
-                      <a class="tableActionStyle" style="padding-left: 10px" @click="handleDelete(scope.$index, scope.row)">{{$t('common.delete')}}</a>
+                      <a v-if="scope.row.operation!=3" class="tableActionStyle" @click="handleEdit(scope.$index, scope.row)">{{$t('common.edit')}}</a>
+                      <a v-if="scope.row.operation!=3" class="tableActionStyle" style="padding-left: 10px" @click="handleDelete(scope.$index, scope.row)">{{$t('common.delete')}}</a>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -131,10 +131,11 @@
                     <el-input class="textDivStyle" :disabled="editButtonShow"
                               type="textarea"
                               :autosize="{ minRows: 14, maxRows: 14}"
-                              v-model="ruleTextAddForm.configValue" auto-complete="off"  maxlength="4096">
+                              v-model="ruleTextAddForm.configValue" auto-complete="off" maxlength="4096">
                     </el-input>
+                    <pre class="pre-display-style">{{configValuePre}}</pre>
                     <el-button v-if="editButtonShow" class="tableLastButtonStyleB" type="primary" @click="textEditMethod" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
-                    <el-button v-else class="tableLastButtonStyleB" type="primary" @click="textSaveMethod" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
+                    <el-button v-else class="tableLastButtonStyleB" type="primary" @click="textSaveMethod(item)" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
                   </el-form>
                 </div>
               </el-tab-pane>
@@ -401,6 +402,8 @@
           'f_eq_profile.id': '',
           'orderType': 0
         },
+        // 临时存放testValue值
+        configValuePre: null,
         // text数据集合
         ruleTextAddForm: {
           id: '',
@@ -467,8 +470,6 @@
       }
     },
     mounted () {
-      // 查询修改个数
-      this.getUnPushCountMethod()
       // 版本号查询
       this.getVersionList()
       // 配置项查询
@@ -477,7 +478,6 @@
       this.getpublish()
     },
     beforeDestroy () {
-      debugger
       if (this.unPushCount > 0) {
         this.$message({
           type: 'warning',
@@ -547,34 +547,91 @@
       textEditMethod () {
         this.editButtonShow = false
       },
+      // text保存前验证方法
+      textSaveMethod (val) {
+        let isValidate = false
+        if (val.path) {
+          let pathArray = val.path.split('.')
+          let pathStr = pathArray.length > 0 ? pathArray[pathArray.length - 1] : ''
+          isValidate = pathStr == 'json'
+        }
+        if (isValidate) {
+          try {
+            if (this.ruleTextAddForm.configValue) {
+              let configValueTemp = JSON.parse(this.ruleTextAddForm.configValue)
+              if(!configValueTemp.length && !configValueTemp.isArray && Object.keys(configValueTemp).length > 0 && typeof configValueTemp == 'object' && configValueTemp ){
+                this.configValuePre = configValueTemp
+
+                this.$nextTick(() => {
+                  let preValue = document.getElementsByClassName('pre-display-style')
+                  if (preValue && preValue.length > 0) {
+                    this.ruleTextAddForm.configValue = preValue[0].textContent
+                  }
+                  this.saveTextMethod(val)
+                })
+                /* let timeInit = setInterval(() => {
+                  let preValue = document.getElementsByClassName('pre-display-style')
+                  if (preValue && preValue.length > 0 && preValue[0].textContent == this.ruleTextAddForm.configValue) {
+                    this.ruleTextAddForm.configValue = preValue[0].textContent
+                    clearInterval(timeInit)
+                  }
+                },1) */
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: this.$t('message.validateJson_message')
+                })
+              }
+            }
+          } catch (e) {
+            this.$message({
+              type: 'error',
+              message: this.$t('message.validateJson_message')
+            })
+          }
+        } else {
+          this.saveTextMethod(val)
+        }
+      },
       // text保存方法
-      textSaveMethod () {
+      saveTextMethod (val) {
         this.editButtonShow = true
+        this.ruleTextAddForm.profileId = val.id
         if (this.ruleTextAddForm.id != '') {
+          this.ruleTextAddForm.version = this.ActiveVersion.version
           let params = Object.assign(this.ruleTextAddForm)
           this.geteditConfig(params).then(res => {
-            this.$message({
-              type: 'success',
-              message: this.$t('message.edit_success')
-            })
+            if (res.data.code == '0' && res.data.status == 200) {
+              // 查询修改个数
+              this.getUnPushCountMethod()
+              this.getTextConfigMethod()
+              this.$message({
+                type: 'success',
+                message: this.$t('message.edit_success')
+              })
+            }
           })
         } else {
-          this.ruleTextAddForm.profileId = this.filesID
           this.ruleTextAddForm.version = this.ActiveVersion.version
           let params = Object.assign(this.ruleTextAddForm)
           this.getAddConfig(params).then(res => {
-            if(res.data.status == 200 && res.data.code == 0){
+            if (res.data.status == 200 && res.data.code == 0) {
+              // 查询修改个数
+              this.getUnPushCountMethod()
+              this.getTextConfigMethod()
               this.$message({
                 type: 'success',
                 message: this.$t('message.add_success')
               })
-            }else{
-              if(res.data.status == 1001){
+            } else {
+              if (res.data.status == 1001) {
+                // 查询修改个数
+                this.getUnPushCountMethod()
+                this.getTextConfigMethod()
                 this.$message.error(this.$t('message.duplicated_profile'))
               }
             }
           })
-          this.getTextConfigMethod()
         }
       },
       // text查询方法
@@ -634,7 +691,7 @@
       addVersionMethod () {
         this.dialogAddVersionVisible = true
       },
-      // 保存版本号
+      // 保存添加版本号
       submitVersionForm (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
@@ -651,7 +708,7 @@
               } else {
                 this.$message({
                   type: 'error',
-                  message: res.message || this.$t('message.add_error')
+                  message: res.data.message || this.$t('message.add_error')
                 })
               }
             })
@@ -885,7 +942,7 @@
           let arrayTemp = file.name.split('.')
           let fileType = ''
           if (arrayTemp.length > 0) {
-            fileType = arrayTemp[1]
+            fileType = arrayTemp[arrayTemp.length - 1]
           }
           if (fileType == 'json' || fileType == 'js' || fileType == 'yaml' || fileType == 'yml' || fileType == 'properties') {
             isZip = true
@@ -911,7 +968,7 @@
           let arrayTemp = file.name.split('.')
           let fileType = ''
           if (arrayTemp.length > 0) {
-            fileType = arrayTemp[1]
+            fileType = arrayTemp[arrayTemp.length - 1]
           }
           if (fileType == 'json') {
             isZip = true
@@ -921,7 +978,7 @@
         }
         if (!isZip) {
           this.doubleDisable = false // 上传按键可用
-          this.$message.error(this.$t('message.dialog_UploadTypeMessage'))
+          this.$message.error(this.$t('message.dialog_UploadTypeMessage_2'))
         }
         if (!isLtM) {
           this.doubleDisable = false // 上传按键可用
@@ -995,7 +1052,9 @@
         this.tabName = 'json'
         this.formInline['f_eq_profile.id'] = val
         this.formInline.orderType = 0
-        this.getConfingListMethod('no')
+        if (val != '') {
+          this.getConfingListMethod('no')
+        }
       },
       // 新增配置文件
       onFilesClick () {
@@ -1082,17 +1141,17 @@
               let params = Object.assign(this.saveConfigFile)
               this.getaddprofiles(params).then(res => {
                 if (res.data.code == '0' && res.data.status == 200) {
+                  this.dialogAddVisible = false
+                  this.getConfigFileMethod()
                   this.$message({
                     type: 'success',
                     message: this.$t('message.add_success')
                   })
-                  this.dialogAddVisible = false
                 } else {
                   this.$message({
                     type: 'error',
                     message: res.data.message || this.$t('message.add_error')
                   })
-                  this.dialogAddVisible = false
                 }
               })
             } else {
@@ -1100,11 +1159,15 @@
                 id: this.saveConfigFile.id,
                 name: this.saveConfigFile.name,
                 projectId: this.saveConfigFile.projectId,
-                path: this.saveConfigFile.profileType == 'bootstrap' ? undefined : this.saveConfigFile.projectId,
+                status:1,
+                profileType: this.saveConfigFile.profileType == 'bootstrap' ? this.saveConfigFile.profileType : undefined,
+                path: this.saveConfigFile.path,
                 version: this.ActiveVersion.version
               })
               this.geteditprofiles(params).then(res => {
                 if (res.data.code == '0' && res.data.status == 200) {
+                  this.dialogAddVisible = false
+                  this.getConfigFileMethod()
                   this.$message({
                     type: 'success',
                     message: this.$t('message.edit_success')
@@ -1208,13 +1271,19 @@
   .content-style {
     background-color: #ffffff;
     flex: 1;
-    margin: 0 10px 10px 10px;
+    margin: 0 10px 0 10px;
     /deep/.el-collapse-item__header{
       padding-left: 1.5%;
       font-family: PingFangSC-Medium;
       font-size: 14px;
       color: #4A525E;
       letter-spacing: 0;
+    }
+    /deep/ .el-collapse {
+      background-color: #F0F4F8;
+    }
+    /deep/ .el-collapse-item {
+      margin-bottom: 10px;
     }
   }
   // 主题区域div样式
@@ -1227,7 +1296,7 @@
   }
   .main {
     background-color: #f0f4f8;
-    height: 100vh - 6.5;
+    // height: 100vh - 6.5;
     display: flex;
     flex-direction: column;
   }
@@ -1491,5 +1560,9 @@
     text-align: center;
     color: #FF9A39;
     margin-top: 10px;
+  }
+  // pre隐藏样式
+  .pre-display-style {
+    display: none;
   }
 </style>

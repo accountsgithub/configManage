@@ -107,6 +107,7 @@ export default {
     dialog_UploadSizeMessage: '文件不可超过10MB', // 变更4
     list_config_content: '只能上传 properties / yaml / yml / json / js 文件，且不超过10MB',
     list_config_content_2: '只能上传json 文件，且不超过10MB',
+    dialog_UploadTypeMessage_2: '只能上传json 文件',
     delete_config_content: '此操作将删除这项配置, 是否继续?',
     delete_file_content: '此操作将永久删除该文件, 是否继续?',
     legal_key: '请输入合法的Key',
@@ -138,6 +139,7 @@ export default {
     loginSuccess_message: '登录成功', // 变更4
     valueError_message: '标识或密钥输入错误', // 变更4
     leavePage_message: '当前有未发布配置项，请确认是否进行发布', // 变更4
+    validateJson_message: '输入的json格式不正确', // 变更4
     system_title: '统一配置中心' // 变更4
   }
 }

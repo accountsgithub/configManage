@@ -139,7 +139,7 @@ export default {
   getaddversions ({state, commit}, params) {
     return new Promise((resolve, reject) => {
       return getDate.GET_ADDVERSIONS(params).then((res) => {
-        commit(types.GETADDVERSIONS, res)
+        // commit(types.GETADDVERSIONS, res)
         resolve(res)
       }).catch((thrown) => {
         reject(thrown)
