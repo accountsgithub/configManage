@@ -24,7 +24,7 @@ axios.setConfig = function (config) {
 }
 
 Vue.config.productionTip = false
-axios.get('/global-config.json').then((res) => {
+axios.get('/cconfig/global-config.json').then((res) => {
   // console.log(res)
   Vue.prototype.g_Config = res.data
   axios.setConfig(Vue.prototype.g_Config)

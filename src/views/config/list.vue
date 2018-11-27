@@ -1054,7 +1054,6 @@
         this.getProjectsConfigList(params).then(res => {
           this.listLoading = false
           if (res.data.result && res.data.result.data.length > 0) {
-            debugger
             if (res.data.result.data[0].configKey == '') {
               this.configDetailList = this.jsonToArrayMethod(res.data.result.data[0])
             } else {
@@ -1080,10 +1079,16 @@
       // json配置项保存方法
       saveJsonMethod (arrayTemp) {
         let jsonValue = {}
-        jsonValue.id = arrayTemp[this.jsonIndex].idStr
+        if (arrayTemp.length < 1) {
+          jsonValue.id = this.configDetailList[this.jsonIndex].idStr
+          jsonValue.remark = this.configDetailList[this.jsonIndex].remark
+          jsonValue.status = this.configDetailList[this.jsonIndex].status
+        } else {
+          jsonValue.id = arrayTemp[this.jsonIndex].idStr
+          jsonValue.remark = arrayTemp[this.jsonIndex].remark
+          jsonValue.status = arrayTemp[this.jsonIndex].status
+        }
         jsonValue.configKey = 'text'
-        jsonValue.remark = arrayTemp[this.jsonIndex].remark
-        jsonValue.status = arrayTemp[this.jsonIndex].status
         jsonValue.profileId = this.formInline['f_eq_profile.id']
         jsonValue.version = this.ActiveVersion.version
         let jsonData = this.arrayToJsonStrMethod(arrayTemp)
