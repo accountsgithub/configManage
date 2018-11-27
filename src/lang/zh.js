@@ -35,7 +35,7 @@ export default {
   list: {
     validate_key: '验证秘钥',
     push: '发布',
-    expo_config: '导入配置',
+    expo_config: '导入配置文件',
     export_config: '迁出', // 变更4
     import_config: '迁入', // 变更4
     addFile_button: '新增配置文件', // 变更4
@@ -53,8 +53,8 @@ export default {
     keyword: '关键词',
     new_config: '新建',
     remarks: '备注',
-    add_config: '添加配置',
-    edit_config: '修改配置',
+    add_config: '添加配置项',
+    edit_config: '修改配置项',
     select_files: '选取文件',
     upload_server: '上传到服务器',
     config_info: '项目配置',
@@ -77,6 +77,7 @@ export default {
     upload_message: '将文件拖到此处，或', // 变更4
     upload_messageButton: '点击上传', // 变更4
     path_message: '提示【上传前端配置文件请正确填写路径信息，上传后端文件无需填写路径】', // 变更4
+    addPath_message: '提示【添加前端配置文件请正确填写路径信息，添加后端文件无需填写路径】', // 变更4
     originPush_label: '发布的值', // 变更4
     unPush_label: '未发布的值' // 变更4
   },
@@ -84,8 +85,8 @@ export default {
     file_name: '文件名',
     file_type: '类型',
     file_path: '路径',
-    add_file: '添加新文件',
-    edit_file: '修改文件',
+    add_file: '新增配置文件',
+    edit_file: '修改配置文件',
     select_type: '请选择类型',
     add_version: '添加版本号',
     select_version: '版本号',
@@ -140,6 +141,7 @@ export default {
     valueError_message: '标识或密钥输入错误', // 变更4
     leavePage_message: '当前有未发布配置项，请确认是否进行发布', // 变更4
     validateJson_message: '输入的json格式不正确', // 变更4
+    validateSearchJson_message: 'json格式不正确', // 变更4
     system_title: '统一配置中心' // 变更4
   }
 }

@@ -42,7 +42,7 @@ axios.interceptors.response.use(response => {
   Message.error('服务器错误，请重试')
   return err // Promise.reject(err)
 })
-
+// const isDev= process.env.NODE_DEV
 let base = ''
 
 export default {
@@ -147,7 +147,7 @@ export default {
     return api.fetch('post', `${base}/version/add`, params)
   },
   GET_EDITPROFILES (params) {
-    return api.fetch('put', `${base}/profiles/` + params.id, params)
+    return api.fetch('patch', `${base}/profiles/` + params.id, params)
   },
   GET_PROFILESEXPO (params) {
     return api.fetch('post', `${base}/files/config_file_import`)

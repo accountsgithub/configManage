@@ -41,12 +41,14 @@
           <template slot="title">
             <div @keyup.enter.stop="">
               <!--编辑路径-->
-              <span>{{item.name}}</span><span v-if="item.profileType!='bootstrap'" style="font-size: 12px;margin-left: 4.2%">{{$t('list.project_path')}}：{{item.path}}</span>
+              <span>{{item.name}}</span>
+              <span v-if="item.profileType!='bootstrap'" class="path-label-style">{{$t('list.project_path')}}：</span>
+              <span v-if="item.profileType!='bootstrap'" class="path-style">{{item.path}}</span>
               <!--<i class="icon iconfont icon-ic-edit edit-icon-style" @click="editPathMethod(item.id, item.path)" @click.stop=""></i>-->
               <!--tag操作栏-->
               <div class="config-file-title" @click.stop="">
-                <el-button v-if="tabName == 'json' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
+                <el-button v-if="item.profileType == 'bootstrap' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
+                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id||item.profileType != 'bootstrap'}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
                 <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
                 <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" @keyup.enter.native="getConfingListMethod('no')" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
               </div>
@@ -248,7 +250,7 @@
           <el-input v-model="saveConfigFile.path" auto-complete="off" maxlength="4096"></el-input>
         </el-form-item>
         <div v-if="saveConfigFile.profileType!='bootstrap'&&saveConfigFile.id==''" class="path-message-style">
-          <span>{{$t('list.path_message')}}</span>
+          <span>{{$t('list.addPath_message')}}</span>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -358,6 +360,8 @@
       return {
         // 未发布数据集
         unPushDataList: [],
+        // 编辑数据index值
+        jsonIndex: 0,
         // 发布弹窗状态
         pushJsonDialogVisible: false,
         // 配置文件上传路径
@@ -472,10 +476,8 @@
     mounted () {
       // 版本号查询
       this.getVersionList()
-      // 配置项查询
+      // 详细信息查询
       this.getProjectDetailMethod()
-      // 发布时间查询
-      this.getpublish()
     },
     beforeDestroy () {
       if (this.unPushCount > 0) {
@@ -535,6 +537,14 @@
         'getAddConfig',
         'getUnPushListApi'
       ]),
+      // 验证是否是json文件
+      isJsonValidateMethod (val) {
+        if (val.path) {
+          let pathArray = val.path.split('.')
+          let pathStr = pathArray.length > 0 ? pathArray[pathArray.length - 1] : ''
+          return pathStr == 'json' || pathStr == 'JSON'
+        }
+      },
       // tab切换
       tabClickMethod (val) {
         if (val.name == 'json') {
@@ -553,7 +563,7 @@
         if (val.path) {
           let pathArray = val.path.split('.')
           let pathStr = pathArray.length > 0 ? pathArray[pathArray.length - 1] : ''
-          isValidate = pathStr == 'json'
+          isValidate = pathStr == 'json' || pathStr == 'JSON'
         }
         if (isValidate) {
           try {
@@ -800,6 +810,10 @@
             this.list_version = []
             this.ActiveVersion.version = ''
           }
+
+          // 发布时间查询
+          this.getpublish()
+          // 配置文件查询
           this.getConfigFileMethod()
         })
       },
@@ -1040,11 +1054,110 @@
         this.getProjectsConfigList(params).then(res => {
           this.listLoading = false
           if (res.data.result && res.data.result.data.length > 0) {
-            this.configDetailList = res.data.result.data
+            debugger
+            if (res.data.result.data[0].configKey == '') {
+              this.configDetailList = this.jsonToArrayMethod(res.data.result.data[0])
+            } else {
+              this.configDetailList = res.data.result.data
+            }
           } else {
             this.configDetailList = []
           }
         })
+      },
+      // array转json字符串方法
+      arrayToJsonStrMethod (array) {
+        if (array && array.length > 0) {
+          let jsonData = {}
+          array.map(item => {
+            jsonData[item.configKey] = item.configValue
+          })
+          return jsonData
+        } else {
+          return null
+        }
+      },
+      // json配置项保存方法
+      saveJsonMethod (arrayTemp) {
+        let jsonValue = {}
+        jsonValue.id = arrayTemp[this.jsonIndex].idStr
+        jsonValue.configKey = 'text'
+        jsonValue.remark = arrayTemp[this.jsonIndex].remark
+        jsonValue.status = arrayTemp[this.jsonIndex].status
+        jsonValue.profileId = this.formInline['f_eq_profile.id']
+        jsonValue.version = this.ActiveVersion.version
+        let jsonData = this.arrayToJsonStrMethod(arrayTemp)
+        if (jsonData) {
+          this.configValuePre = jsonData
+          this.$nextTick(() => {
+            let preValue = document.getElementsByClassName('pre-display-style')
+            if (preValue && preValue.length > 0) {
+              jsonValue.configValue = preValue[0].textContent
+            }
+            this.saveJsonForApiMethod(jsonValue)
+          })
+        } else {
+          jsonValue.configValue = ''
+          this.saveJsonForApiMethod(jsonValue)
+        }
+      },
+      // json配置项调用接口方法
+      saveJsonForApiMethod (jsonValue) {
+        let params = Object.assign(jsonValue)
+        this.geteditConfig(params).then(res => {
+          if(res.data.status == 200 && res.data.code == 0){
+            this.$message({
+              type: 'success',
+              message: this.$t('message.edit_success')
+            })
+            this.dialogEditVisible = false
+            this.getConfingListMethod()
+          }else{
+            if(res.data.status == 1001){
+              this.$message({
+                type: 'error',
+                message: res.message || this.$t('message.duplicated_profile')
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.message || this.$t('message.edit_error')
+              })
+            }
+          }
+        })
+      },
+      // json转array方法
+      jsonToArrayMethod (jsonData) {
+        if (jsonData.configValue) {
+          try {
+            let jsonTemp = JSON.parse(jsonData.configValue)
+            let keyArray = Object.keys(jsonTemp)
+            let arrayData = keyArray.map((item, index) => {
+              return {
+                type: 'json',
+                id: index,
+                idStr: jsonData.id,
+                configKey: item,
+                configValue: jsonTemp[item],
+                publish: jsonData.publish,
+                operation: jsonData.operation,
+                remark: jsonData.remark,
+                status: jsonData.status,
+                updateTime: jsonData.updateTime
+              }
+            })
+            return arrayData
+          } catch (e) {
+            this.$message({
+              type: 'error',
+              message: this.$t('message.validateSearchJson_message')
+            })
+            return []
+          }
+        } else {
+          return []
+        }
       },
       // tag改变方法
       changeTagMethod (val) {
@@ -1089,7 +1202,15 @@
       // 编辑配置项方法
       handleEdit (index, row) {
         // 修改数据赋值
-        this.configSaveForm = Object.assign(this.configSaveForm, row)
+        if (row.type && row.type == 'json') {
+          this.jsonIndex = row.id
+          this.configSaveForm.id = row.idStr
+          this.configSaveForm.configKey = row.configKey
+          this.configSaveForm.configValue = row.configKey
+          this.configSaveForm.remark = row.remark
+        } else {
+          this.configSaveForm = Object.assign(this.configSaveForm, row)
+        }
         this.dialogEditVisible = true
       },
       // 删除配置项方法
@@ -1100,20 +1221,26 @@
           type: 'warning',
           center: true
         }).then(() => {
-          this.getdelConfig(row).then(res => {
-            if (res.data.code == '0' && res.data.status == 200) {
-              this.$message({
-                type: 'success',
-                message: this.$t('message.delete_success')
-              })
-              this.getConfingListMethod()
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.message || this.$t('message.delete_error')
-              })
-            }
-          })
+          if (row.type && row.type == 'json') {
+            let arrayTemp = this.configDetailList.slice(0)
+            arrayTemp.splice(row.id, 1)
+            this.saveJsonMethod(arrayTemp)
+          } else {
+            this.getdelConfig(row).then(res => {
+              if (res.data.code == '0' && res.data.status == 200) {
+                this.$message({
+                  type: 'success',
+                  message: this.$t('message.delete_success')
+                })
+                this.getConfingListMethod()
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.message || this.$t('message.delete_error')
+                })
+              }
+            })
+          }
         }).catch((err) => {
           this.$message({
             type: 'error',
@@ -1158,11 +1285,11 @@
               let params = Object.assign({
                 id: this.saveConfigFile.id,
                 name: this.saveConfigFile.name,
-                projectId: this.saveConfigFile.projectId,
-                status:1,
-                profileType: this.saveConfigFile.profileType == 'bootstrap' ? this.saveConfigFile.profileType : undefined,
-                path: this.saveConfigFile.path,
-                version: this.ActiveVersion.version
+                // projectId: this.saveConfigFile.projectId,
+                // status:1,
+                // profileType: this.saveConfigFile.profileType == 'bootstrap' ? this.saveConfigFile.profileType : undefined,
+                // version: this.ActiveVersion.version,
+                path: this.saveConfigFile.path
               })
               this.geteditprofiles(params).then(res => {
                 if (res.data.code == '0' && res.data.status == 200) {
@@ -1185,71 +1312,87 @@
       },
       // 保存配置项
       submitForm (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            if (this.configSaveForm.id == '') {
-              let params = Object.assign(this.configSaveForm)
-              this.getAddConfig(params).then(res => {
-                if(res.data.status == 200 && res.data.code == 0){
-                  this.$message({
-                    type: 'success',
-                    message: this.$t('message.add_success')
-                  })
-                  if (this.configSaveForm.profileId == this.formInline['f_eq_profile.id']) {
-                    this.getConfingListMethod()
-                  } else {
-                    // 查询修改个数
-                    this.getUnPushCountMethod()
-                  }
-                  if (this.$refs[name]) {
-                    this.$refs[name].resetFields()
-                  }
-                  this.dialogEditVisible = false
-                }else{
-                  if(res.data.status == 1001){
-                    this.$message({
-                      type: 'error',
-                      message: res.message || this.$t('message.duplicated_profile')
-                    })
-                  } else {
-                    this.$message({
-                      type: 'error',
-                      message: res.message || this.$t('message.add_error')
-                    })
-                  }
-                }
-              })
-            } else {
-              this.configSaveForm.version = this.ActiveVersion.version
-              let params = Object.assign(this.configSaveForm)
-              this.geteditConfig(params).then(res => {
-                if(res.data.status == 200 && res.data.code == 0){
-                  this.$message({
-                    type: 'success',
-                    message: this.$t('message.edit_success')
-                  })
-                  this.getConfingListMethod()
-                  if (this.$refs[name]) {
-                    this.$refs[name].resetFields()
-                  }
-                  this.dialogEditVisible = false
-                }else{
-                  if(res.data.status == 1001){
-                    this.$message({
-                      type: 'error',
-                      message: res.message || this.$t('message.duplicated_profile')
-                    })
-                  } else {
-                    this.$message({
-                      type: 'error',
-                      message: res.message || this.$t('message.edit_error')
-                    })
-                  }
-                }
-              })
-            }
+        if (this.configDetailList[0] && this.configDetailList[0].type && this.configDetailList[0].type == 'json') {
+          let arrayTemp = this.configDetailList.slice(0)
+          let jsonTemp = {
+            type: 'json',
+            id: this.jsonIndex,
+            idStr: this.configSaveForm.id,
+            configKey: this.configSaveForm.configKey,
+            configValue: this.configSaveForm.configValue,
+            remark: this.configSaveForm.remark,
+            status: arrayTemp[0].status
           }
-        })
+          arrayTemp.splice(this.jsonIndex, 1)
+          arrayTemp.splice(this.jsonIndex, 0, jsonTemp)
+          this.saveJsonMethod(arrayTemp)
+        } else {
+          this.$refs[name].validate((valid) => {
+            if (valid) {
+              if (this.configSaveForm.id == '') {
+                let params = Object.assign(this.configSaveForm)
+                this.getAddConfig(params).then(res => {
+                  if (res.data.status == 200 && res.data.code == 0) {
+                    this.$message({
+                      type: 'success',
+                      message: this.$t('message.add_success')
+                    })
+                    if (this.configSaveForm.profileId == this.formInline['f_eq_profile.id']) {
+                      this.getConfingListMethod()
+                    } else {
+                      // 查询修改个数
+                      this.getUnPushCountMethod()
+                    }
+                    if (this.$refs[name]) {
+                      this.$refs[name].resetFields()
+                    }
+                    this.dialogEditVisible = false
+                  } else {
+                    if (res.data.status == 1001) {
+                      this.$message({
+                        type: 'error',
+                        message: res.message || this.$t('message.duplicated_profile')
+                      })
+                    } else {
+                      this.$message({
+                        type: 'error',
+                        message: res.message || this.$t('message.add_error')
+                      })
+                    }
+                  }
+                })
+              } else {
+                this.configSaveForm.version = this.ActiveVersion.version
+                let params = Object.assign(this.configSaveForm)
+                this.geteditConfig(params).then(res => {
+                  if (res.data.status == 200 && res.data.code == 0) {
+                    this.$message({
+                      type: 'success',
+                      message: this.$t('message.edit_success')
+                    })
+                    this.getConfingListMethod()
+                    if (this.$refs[name]) {
+                      this.$refs[name].resetFields()
+                    }
+                    this.dialogEditVisible = false
+                  } else {
+                    if (res.data.status == 1001) {
+                      this.$message({
+                        type: 'error',
+                        message: res.message || this.$t('message.duplicated_profile')
+                      })
+                    } else {
+                      this.$message({
+                        type: 'error',
+                        message: res.message || this.$t('message.edit_error')
+                      })
+                    }
+                  }
+                })
+              }
+            }
+          })
+        }
       },
       // 添加版本号验证
       validateMark (rule, value, callback) {
@@ -1564,5 +1707,20 @@
   // pre隐藏样式
   .pre-display-style {
     display: none;
+  }
+  // 路径label样式
+  .path-label-style {
+    margin-left: 4.2%;
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: #7E828C;
+    letter-spacing: 0;
+    text-align: right;
+  }
+  .path-style {
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: #333333;
+    letter-spacing: 0;
   }
 </style>

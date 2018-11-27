@@ -12,6 +12,8 @@ export default {
         resolve(axios.put(url, data))
       } else if (method === 'delete') {
         resolve(axios.delete(url, data))
+      } else if (method === 'patch') {
+        resolve(axios.delete(url, data))
       }
     })
   }
