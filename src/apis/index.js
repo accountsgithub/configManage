@@ -13,7 +13,7 @@ export default {
       } else if (method === 'delete') {
         resolve(axios.delete(url, data))
       } else if (method === 'patch') {
-        resolve(axios.delete(url, data))
+        resolve(axios.patch(url, data))
       }
     })
   }

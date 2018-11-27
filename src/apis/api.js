@@ -120,6 +120,8 @@ export default {
     return api.fetch('get', `${base}/projects/` + params.id)
   },
   GET_PROJECTCONFIGLIST (params) {
+    // console.log(process.env.NODE_ENV)
+    // debugger
     return api.fetch('get', `${base}/configs/list/`+ params.orderType, params)
   },
   GET_PROJECTCONFIGSHOW (params) {

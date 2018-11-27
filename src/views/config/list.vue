@@ -545,6 +545,10 @@
           return pathStr == 'json' || pathStr == 'JSON'
         }
       },
+      // 验证是否是json数据
+      isJsonDataMethod (configValueTemp) {
+        return configValueTemp && !configValueTemp.length && !configValueTemp.isArray && Object.keys(configValueTemp).length > 0 && typeof configValueTemp == 'object'
+      },
       // tab切换
       tabClickMethod (val) {
         if (val.name == 'json') {
@@ -569,7 +573,7 @@
           try {
             if (this.ruleTextAddForm.configValue) {
               let configValueTemp = JSON.parse(this.ruleTextAddForm.configValue)
-              if(!configValueTemp.length && !configValueTemp.isArray && Object.keys(configValueTemp).length > 0 && typeof configValueTemp == 'object' && configValueTemp ){
+              if(this.isJsonDataMethod(configValueTemp)){
                 this.configValuePre = configValueTemp
 
                 this.$nextTick(() => {
@@ -609,6 +613,7 @@
         this.ruleTextAddForm.profileId = val.id
         if (this.ruleTextAddForm.id != '') {
           this.ruleTextAddForm.version = this.ActiveVersion.version
+          this.ruleTextAddForm.configKey = 'text'
           let params = Object.assign(this.ruleTextAddForm)
           this.geteditConfig(params).then(res => {
             if (res.data.code == '0' && res.data.status == 200) {
@@ -1069,7 +1074,12 @@
         if (array && array.length > 0) {
           let jsonData = {}
           array.map(item => {
-            jsonData[item.configKey] = item.configValue
+            try {
+              let isJson = JSON.parse(item.configValue)
+              jsonData[item.configKey] = this.isJsonDataMethod(isJson) ? isJson : item.configValue
+            } catch (e) {
+              jsonData[item.configKey] = item.configValue
+            }
           })
           return jsonData
         } else {
@@ -1144,7 +1154,7 @@
                 id: index,
                 idStr: jsonData.id,
                 configKey: item,
-                configValue: jsonTemp[item],
+                configValue: typeof jsonTemp[item] == 'object' ? JSON.stringify(jsonTemp[item]) : jsonTemp[item],
                 publish: jsonData.publish,
                 operation: jsonData.operation,
                 remark: jsonData.remark,
@@ -1211,7 +1221,7 @@
           this.jsonIndex = row.id
           this.configSaveForm.id = row.idStr
           this.configSaveForm.configKey = row.configKey
-          this.configSaveForm.configValue = row.configKey
+          this.configSaveForm.configValue = row.configValue
           this.configSaveForm.remark = row.remark
         } else {
           this.configSaveForm = Object.assign(this.configSaveForm, row)
