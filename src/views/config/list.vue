@@ -1178,6 +1178,14 @@
       changeTagMethod (val) {
         this.isTagChange = true
         this.tabName = 'json'
+        for (let i in this.projectConfigList) {
+          if (this.projectConfigList[i].id == val) {
+            if (this.projectConfigList[i].path) {
+              this.tabName = 'text'
+            }
+            break
+          }
+        }
         this.formInline['f_eq_profile.id'] = val
         this.formInline.orderType = 0
         if (val != '') {
