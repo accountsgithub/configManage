@@ -7,7 +7,7 @@
           <span>{{$t('list.project_info')}}<el-tag v-if="unPushCount&&unPushCount > 0" size="medium" style="margin-left:20px;">{{$t('common.modify')}}{{unPushCount}}</el-tag></span>
         </div>
         <div>
-          <el-button :disabled="unPushCount < 1" class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
+          <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
           <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>

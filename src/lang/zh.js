@@ -76,8 +76,8 @@ export default {
     editConfigFile_title: '编辑配置文件', // 变更4
     upload_message: '将文件拖到此处，或', // 变更4
     upload_messageButton: '点击上传', // 变更4
-    path_message: '提示【上传前端配置文件请正确填写路径信息，上传后端文件无需填写路径】', // 变更4
-    addPath_message: '提示【添加前端配置文件请正确填写路径信息，添加后端文件无需填写路径】', // 变更4
+    path_message: '上传前端配置文件请正确填写路径信息，上传后端文件无需填写路径', // 变更4
+    addPath_message: '添加前端配置文件请正确填写路径信息，添加后端文件无需填写路径', // 变更4
     originPush_label: '发布的值', // 变更4
     unPush_label: '未发布的值' // 变更4
   },

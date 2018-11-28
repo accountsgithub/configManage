@@ -10,7 +10,7 @@
         <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper" style="display: flex;">
             <img src="../../../assets/images/pic-head.png" class="userSign" />
-            <div style="margin-left: 5px;"><span>{{username}}</span></div>
+            <div style="margin-left: 5px;margin-top: 20px;"><span>{{username}}</span></div>
             <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
             <i class="el-icon-caret-bottom"></i>
           </div>
