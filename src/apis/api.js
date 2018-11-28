@@ -134,7 +134,7 @@ export default {
     return api.fetch('delete', `${base}/configs/` + params.id)
   },
   GET_EDITCONFIG (params) {
-    return api.fetch('put', `${base}/configs/` + params.id, params)
+    return api.fetch('patch', `${base}/configs/` + params.id, params)
   },
   GET_PUSHCONFIG (params) {
     return api.fetch('put', `${base}/configs/push/` + params.projectId + `/` + params.version)

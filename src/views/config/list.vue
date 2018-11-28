@@ -416,7 +416,8 @@
           configValue: '',
           profileId: '',
           remark: '',
-          version:''
+          version:'',
+          status: ''
         },
         // 新增/编辑配置
         configSaveForm: {
@@ -426,7 +427,8 @@
           configValue: '',
           profileId: '',
           remark: '',
-          version:''
+          version:'',
+          status: ''
         },
         // 版本号数据集
         list_version: [],
@@ -614,7 +616,15 @@
         if (this.ruleTextAddForm.id != '') {
           this.ruleTextAddForm.version = this.ActiveVersion.version
           this.ruleTextAddForm.configKey = 'text'
-          let params = Object.assign(this.ruleTextAddForm)
+          let jsonTemp = {
+            configKey: this.ruleTextAddForm.configKey,
+            configValue: this.ruleTextAddForm.configValue,
+            id: this.ruleTextAddForm.id,
+            remark: this.ruleTextAddForm.remark,
+            status: this.ruleTextAddForm.status,
+            version: this.ActiveVersion.version
+          }
+          let params = Object.assign(jsonTemp)
           this.geteditConfig(params).then(res => {
             if (res.data.code == '0' && res.data.status == 200) {
               // 查询修改个数
@@ -627,8 +637,16 @@
             }
           })
         } else {
+          let jsonTemps = {
+            profileId: this.ruleTextAddForm.profileId,
+            configKey: this.ruleTextAddForm.configKey,
+            configValue: this.ruleTextAddForm.configValue,
+            projectId: this.ruleTextAddForm.projectId,
+            remark: this.ruleTextAddForm.remark,
+            version: this.ActiveVersion.version
+          }
           this.ruleTextAddForm.version = this.ActiveVersion.version
-          let params = Object.assign(this.ruleTextAddForm)
+          let params = Object.assign(jsonTemps)
           this.getAddConfig(params).then(res => {
             if (res.data.status == 200 && res.data.code == 0) {
               // 查询修改个数
@@ -662,6 +680,7 @@
             this.ruleTextAddForm.profileId = ''
             this.ruleTextAddForm.remark = ''
             this.ruleTextAddForm.id = ''
+            this.ruleTextAddForm.status = ''
           }
         }).catch((e) => {
           this.ruleTextAddForm.projectId = this.$route.params.mark
@@ -670,6 +689,7 @@
           this.ruleTextAddForm.profileId = ''
           this.ruleTextAddForm.remark = ''
           this.ruleTextAddForm.id = ''
+          this.ruleTextAddForm.status = ''
         })
       },
       // 获取未发布数据个数方法
@@ -1190,6 +1210,8 @@
         this.formInline.orderType = 0
         if (val != '') {
           this.getConfingListMethod('no')
+          // 查询text数据
+          this.getTextConfigMethod()
         }
       },
       // 新增配置文件
@@ -1353,7 +1375,15 @@
           this.$refs[name].validate((valid) => {
             if (valid) {
               if (this.configSaveForm.id == '') {
-                let params = Object.assign(this.configSaveForm)
+                let paramsTemp = {
+                  projectId: this.configSaveForm.projectId,
+                  configKey: this.configSaveForm.configKey,
+                  configValue: this.configSaveForm.configValue,
+                  profileId: this.configSaveForm.profileId,
+                  remark: this.configSaveForm.remark,
+                  version: this.ActiveVersion.version
+                }
+                let params = Object.assign(paramsTemp)
                 this.getAddConfig(params).then(res => {
                   if (res.data.status == 200 && res.data.code == 0) {
                     this.$message({
@@ -1385,8 +1415,16 @@
                   }
                 })
               } else {
+                let paramsTemps = {
+                  id: this.configSaveForm.id,
+                  configKey: this.configSaveForm.configKey,
+                  configValue: this.configSaveForm.configValue,
+                  remark: this.configSaveForm.remark,
+                  version: this.ActiveVersion.version,
+                  status: this.configSaveForm.status
+                }
                 this.configSaveForm.version = this.ActiveVersion.version
-                let params = Object.assign(this.configSaveForm)
+                let params = Object.assign(paramsTemps)
                 this.geteditConfig(params).then(res => {
                   if (res.data.status == 200 && res.data.code == 0) {
                     this.$message({
