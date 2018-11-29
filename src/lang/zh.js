@@ -142,6 +142,8 @@ export default {
     leavePage_message: '当前有未发布配置项，请确认是否进行发布', // 变更4
     validateJson_message: '输入的json格式不正确', // 变更4
     validateSearchJson_message: 'json格式不正确', // 变更4
+    doubleFile_message: '重复导入', // 变更4
+    noPath_message: '导入前端配置文件未填写路径', // 变更4
     system_title: '统一配置中心' // 变更4
   }
 }

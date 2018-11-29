@@ -886,7 +886,7 @@
       openPushJsonDialog () {
         let params = Object.assign({projectId: this.formInline.f_eq_projectId, version: this.ActiveVersion.version})
         this.getUnPushListApi(params).then(res => {
-          if (res.data.result && res.data.result.length > 0) {
+          if (res.data.result) {
             this.unPushDataList = res.data.result
             this.pushJsonDialogVisible = true
           } else {
@@ -959,6 +959,7 @@
         this.fileListTemp = ''
         this.dialogExpoVisible = false
         this.dialogImportVisible = false
+        this.doubleDisable = false
         this.expofiledata.path = ''
         this.expofiledata.version = ''
         this.fileList = []
@@ -1034,8 +1035,8 @@
       // 导入成功回调函数
       handleSuccess (file) {
         this.doubleDisable = false
-        if (file.status == '200') {
-          if(file.code == 0){
+        if (file.status && file.status == '200') {
+          if(file.result && file.result == 1){
             this.$message({
               message: this.$t('message.success'),
               type: 'success'
@@ -1043,7 +1044,20 @@
             this.dialogExpoVisible = false
             this.dialogImportVisible = false
             this.getConfigFileMethod()
+          } else if (file.result && file.result == 0) {
+            this.fileList = []
+            this.$message({
+              message: file.message || this.$t('message.doubleFile_message'),
+              type: 'error'
+            })
+          } else if (file.result && file.result == -1) {
+            this.fileList = []
+            this.$message({
+              message: file.message || this.$t('message.noPath_message'),
+              type: 'error'
+            })
           } else {
+            this.fileList = []
             this.$message({
               message: file.message || this.$t('message.fail'),
               type: 'error'
