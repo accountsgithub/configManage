@@ -50,7 +50,9 @@
                 <el-button v-if="item.profileType == 'bootstrap' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
                 <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id||item.profileType != 'bootstrap'}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
                 <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
-                <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" @keyup.enter.native="getConfingListMethod('no')" :placeholder="$t('list.searchFrom_place')" suffix-icon="el-icon-search" class="search-config-style"></el-input>
+                <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" @keyup.enter.native="getConfingListMethod('no')" :placeholder="$t('list.searchFrom_place')" class="search-config-style">
+                  <i slot="suffix" class="el-icon-search" @click="getConfingListMethod('no')"></i>
+                </el-input>
               </div>
             </div>
           </template>
@@ -71,10 +73,10 @@
                   <el-table-column label="Key" prop="configKey" sortable="custom" min-width="17%" align="left">
                     <template slot-scope="scope">
                       <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
-                        <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>20" trigger="hover" placement="top">
+                        <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>30" trigger="hover" placement="top">
                           <p class="popover-style">{{ scope.row.configKey }}</p>
                           <div slot="reference">
-                            <span size="medium">{{ scope.row.configKey.substring(0,20) }}…</span>
+                            <span size="medium">{{ scope.row.configKey.substring(0,30) }}…</span>
                             <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
                           </div>
                         </el-popover>
