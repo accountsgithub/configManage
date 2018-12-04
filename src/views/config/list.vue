@@ -1516,6 +1516,7 @@
       font-size: 14px;
       color: #4A525E;
       letter-spacing: 0;
+      border-bottom: solid 1px #EDEFF4;
     }
     /deep/ .el-collapse {
       background-color: #F0F4F8;
@@ -1525,6 +1526,16 @@
     }
     /deep/.el-collapse-item__arrow {
       float: left;
+    }
+    /*tab标签选中状态样式*/
+    /deep/.el-tabs__item:hover {
+      color: #2068DC;
+    }
+    /deep/.el-tabs__item.is-active {
+      color: #2068DC;
+    }
+    /deep/.el-tabs__active-bar {
+      background-color: #2068DC;
     }
   }
   // 主题区域div样式
