@@ -124,7 +124,7 @@ html {
   .tableLastButtonStyleW{
     font-family:PingFangSC-Semibold;
     font-size:12px;
-    color:#666666;
+    color:#606266;
     background:#f9fbfd;
     border:1px solid #e7e9f0;
     border-radius:4px;
@@ -132,18 +132,28 @@ html {
     height:32px;
     float: right;
   }
+  /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover {
+    color: #409EFF;
+    border-color: #117AE6;
+    background-color: #ecf5ff;
+  }
   .tableLastButtonStyleB{
     font-family:PingFangSC-Semibold;
     font-size:12px;
     color: #ffffff;
     background:$publicColor;
-    border:1px solid #e7e9f0;
+    border:1px solid #117AE6;
     border-radius:4px;
     padding: 0 10px 0 10px;
     height:32px;
     float: right;
   }
 
+  /deep/ .tableLastButtonStyleB .el-button--primary:focus, .el-button--primary:hover {
+    color: #ffffff;
+    border-color: #117AE6;
+    background-color: #117AE6;
+  }
   // 弹出框按键样式
   .dialogButtonW {
     background: #ffffff;

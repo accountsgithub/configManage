@@ -8,11 +8,11 @@
         </div>
         <div>
           <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" type="primary" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-export" type="primary" @click="exportFiles">{{$t('list.export_config')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" type="primary" @click="importFiles">{{$t('list.import_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-export" @click="exportFiles">{{$t('list.export_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" @click="importFiles">{{$t('list.import_config')}}</el-button>
         </div>
       </div>
       <!--项目详细信息-->
@@ -48,8 +48,8 @@
               <!--tag操作栏-->
               <div class="config-file-title" @click.stop="">
                 <el-button v-if="item.profileType == 'bootstrap' && activeName == item.id" class="tableLastButtonStyleB" type="primary" @click="addConfigMethod(item.id)">{{$t('list.addConfig_button')}}</el-button>
-                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id||item.profileType != 'bootstrap'}" type="primary" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
-                <el-button class="tableLastButtonStyleW" type="primary" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
+                <el-button :class="{tableLastButtonStyleW: true, tableLastButtonStyleWLast: tabName != 'json'||activeName != item.id||item.profileType != 'bootstrap'}" @click="editConfigFileMethod(item)">{{$t('list.editConfigFile_title')}}</el-button>
+                <el-button class="tableLastButtonStyleW" @click="deleteConfigFile(item.id)">{{$t('common.delete')}}</el-button>
                 <el-input v-if="tabName == 'json' && activeName == item.id" v-model="formInline.f_like_configKey" @keyup.enter.native="getConfingListMethod('no')" :placeholder="$t('list.searchFrom_place')" class="search-config-style">
                   <i slot="suffix" class="el-icon-search" @click="getConfingListMethod('no')"></i>
                 </el-input>
@@ -70,13 +70,13 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="Key" prop="configKey" sortable="custom" min-width="17%" align="left">
+                  <el-table-column label="Key" prop="configKey" sortable="custom" min-width="26%" align="left">
                     <template slot-scope="scope">
                       <div slot="reference" :class="{'key-status': true, 'd-key-status': scope.row.operation==3, 'm-key-status': scope.row.operation==2}">
-                        <el-popover v-if="scope.row.configKey&&scope.row.configKey.length>30" trigger="hover" placement="top">
+                        <el-popover v-if="scope.row.configKey&&isShortStr(scope.row.configKey)" trigger="hover" placement="top">
                           <p class="popover-style">{{ scope.row.configKey }}</p>
                           <div slot="reference">
-                            <span size="medium">{{ scope.row.configKey.substring(0,30) }}…</span>
+                            <span size="medium">{{ shortStr(scope.row.configKey) }}…</span>
                             <el-tag v-if="scope.row.publish == 0" size="medium" style="margin-left: 10px;">{{conKeyStatus(scope.row.operation)}}</el-tag>
                           </div>
                         </el-popover>
@@ -87,12 +87,12 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="Value" min-width="28%" align="left">
+                  <el-table-column label="Value" min-width="40%" align="left">
                     <template slot-scope="scope">
-                      <el-popover v-if="scope.row.configValue&&scope.row.configValue.length>36" trigger="hover" placement="top">
+                      <el-popover v-if="scope.row.configValue&&isShortStr(scope.row.configValue)" trigger="hover" placement="top">
                         <p class="popover-style">{{ scope.row.configValue }}</p>
                         <div slot="reference" class="value-tag-style">
-                          <el-tag size="medium">{{ scope.row.configValue.substring(0,36) }}…</el-tag>
+                          <el-tag size="medium">{{ shortStr(scope.row.configValue) }}…</el-tag>
                         </div>
                       </el-popover>
                       <div v-else-if="scope.row.configValue" slot="reference" class="value-tag-style">
@@ -100,12 +100,12 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" min-width="10%" align="center">
+                  <el-table-column :label="$t('list.modify_time')" prop="updateTime" sortable="custom" width="150px" align="center">
                     <template slot-scope="scope">
                       <span size="medium">{{ timestampToTimeFun(scope.row.updateTime) }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('list.remarks')" prop="remark" min-width="20%" align="left">
+                  <el-table-column :label="$t('list.remarks')" prop="remark" min-width="10%" align="left">
                     <template slot-scope="scope">
                       <div slot="reference">
                         <el-popover v-if="scope.row.remark&&scope.row.remark.length>20" trigger="hover" placement="top">
@@ -120,7 +120,7 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column :label="$t('common.deal')"  min-width="15%" align="center">
+                  <el-table-column :label="$t('common.deal')"  width="150px" align="center">
                     <template slot-scope="scope">
                       <a v-if="scope.row.operation!=3" class="tableActionStyle" @click="handleEdit(scope.$index, scope.row)">{{$t('common.edit')}}</a>
                       <a v-if="scope.row.operation!=3" class="tableActionStyle" style="padding-left: 10px" @click="handleDelete(scope.$index, scope.row)">{{$t('common.delete')}}</a>
@@ -138,8 +138,8 @@
                               v-model="ruleTextAddForm.configValue" auto-complete="off" maxlength="4096">
                     </el-input>
                     <pre class="pre-display-style">{{configValuePre}}</pre>
-                    <el-button v-if="editButtonShow" class="tableLastButtonStyleB" type="primary" @click="textEditMethod" style="margin-right: 22px;">{{$t('list.text_edit')}}</el-button>
-                    <el-button v-else class="tableLastButtonStyleB" type="primary" @click="textSaveMethod(item)" style="margin-right: 22px;">{{$t('list.text_save')}}</el-button>
+                    <el-button v-if="editButtonShow" class="tableLastButtonStyleB" type="primary" @click="textEditMethod" style="margin-right: 0px;">{{$t('list.text_edit')}}</el-button>
+                    <el-button v-else class="tableLastButtonStyleB" type="primary" @click="textSaveMethod(item)" style="margin-right: 0px;">{{$t('list.text_save')}}</el-button>
                   </el-form>
                 </div>
               </el-tab-pane>
@@ -541,6 +541,24 @@
         'getAddConfig',
         'getUnPushListApi'
       ]),
+      // 判断显示个数
+      getWindowWidth () {
+        let wWidth = window.innerWidth
+        let value = parseInt((wWidth - 1220)*4.5/100) + 22
+        if (wWidth > 1220) {
+          return value
+        } else {
+          return 23
+        }
+      },
+      // 判断长度
+      isShortStr (val) {
+        return val.length > this.getWindowWidth()
+      },
+      shortStr (val) {
+        let count = this.getWindowWidth()
+        return val.substring(0,count)
+      },
       // 验证是否是json文件
       isJsonValidateMethod (val) {
         if (val.path) {
@@ -1489,7 +1507,7 @@
 <style lang="less" scoped>
   // 主体区域样式
   .content-style {
-    background-color: #ffffff;
+    background-color: #f0f4f8;
     flex: 1;
     margin: 0 10px 0 10px;
     /deep/.el-collapse-item__header{
@@ -1505,6 +1523,9 @@
     /deep/ .el-collapse-item {
       margin-bottom: 10px;
     }
+    /deep/.el-collapse-item__arrow {
+      float: left;
+    }
   }
   // 主题区域div样式
   .content-div-style {
@@ -1516,7 +1537,7 @@
   }
   .main {
     background-color: #f0f4f8;
-    // height: 100vh - 6.5;
+    min-height: 93vh;
     display: flex;
     flex-direction: column;
   }
@@ -1569,30 +1590,33 @@
     letter-spacing: 0;
   }
   .tableLastButtonStyleB {
-    margin: 0 20px 0 0;
+    margin: 0 30px 0 0;
   }
   .tableLastButtonStyleW {
     margin: 0 10px 0 0;
   }
   .tableLastButtonStyleWLast {
-    margin: 0 20px 0 0;
+    margin: 0 30px 0 0;
   }
   // 发布icon样式
   .icon-ic-release:before {
     margin-right: -10px;
-    margin-left: -10px;
+    margin-left: -15px;
   }
   // 新增配置ions样式
   .icon-ic-new:before {
     margin-right: 5px;
+    color: #979797;
   }
   // 导入ions样式
   .icon-ic-import:before {
     margin-right: 5px;
+    color: #979797;
   }
   // 导出ions样式
   .icon-ic-export:before {
     margin-right: 5px;
+    color: #979797;
   }
   // 项目详细信息样式
   .project-detail-style {
