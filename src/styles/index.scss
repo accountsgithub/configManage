@@ -136,18 +136,18 @@ html {
     color: #409EFF;
     border-color: #117AE6;
     background-color: #ecf5ff;
-    // 新增配置ions样式
-    .icon-ic-new:before {
-      color: #409EFF;
-    }
-    // 导入ions样式
-    .icon-ic-import:before {
-      color: #409EFF;
-    }
-    // 导出ions样式
-    .icon-ic-export:before {
-      color: #409EFF;
-    }
+  }
+  // 新增配置ions样式
+  /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-new:before {
+    color: #409EFF;
+  }
+  // 导入ions样式
+  /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-import:before {
+    color: #409EFF;
+  }
+  // 导出ions样式
+  /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-export:before {
+    color: #409EFF;
   }
   .tableLastButtonStyleB{
     font-family:PingFangSC-Semibold;

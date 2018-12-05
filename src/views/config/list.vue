@@ -8,11 +8,11 @@
         </div>
         <div>
           <el-button class="tableLastButtonStyleB icon iconfont icon-ic-release" type="primary" @click="openPushJsonDialog">{{$t('list.push')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" @click="addVersionMethod">{{$t('common.addVersion')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-new" @click="onFilesClick">{{$t('list.addFile_button')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" @click="expoFiles">{{$t('list.expo_config')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-export" @click="exportFiles">{{$t('list.export_config')}}</el-button>
-          <el-button class="tableLastButtonStyleW icon iconfont icon-ic-import" @click="importFiles">{{$t('list.import_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW" @click="addVersionMethod"><i class="icon iconfont icon-ic-new" style="font-size: 12px"></i>{{$t('common.addVersion')}}</el-button>
+          <el-button class="tableLastButtonStyleW" @click="onFilesClick"><i class="icon iconfont icon-ic-new" style="font-size: 12px"></i>{{$t('list.addFile_button')}}</el-button>
+          <el-button class="tableLastButtonStyleW" @click="expoFiles"><i class="icon iconfont icon-ic-import" style="font-size: 12px"></i>{{$t('list.expo_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW" @click="exportFiles"><i class="icon iconfont icon-ic-export" style="font-size: 12px"></i>{{$t('list.export_config')}}</el-button>
+          <el-button class="tableLastButtonStyleW" @click="importFiles"><i class="icon iconfont icon-ic-import" style="font-size: 12px"></i>{{$t('list.import_config')}}</el-button>
         </div>
       </div>
       <!--项目详细信息-->
