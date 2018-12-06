@@ -1,10 +1,10 @@
 <template>
   <el-row class="main">
-    <div class="content-header">
+    <!--<div class="content-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
         <el-menu-item index="1">{{$t('index.product_name')}}</el-menu-item>
       </el-menu>
-    </div>
+    </div>-->
     <!--表单-->
     <div class="content-search">
       <el-form :inline="true" :model="formInline" class="search-form-style">
@@ -174,6 +174,10 @@
 </script>
 
 <style lang="less" scoped>
+  .main {
+    background-color: #f0f4f8;
+    min-height: 93vh;
+  }
   // 搜索框样式
   .search-form-style {
     display: flex;
@@ -232,7 +236,7 @@
   .content-search{
     height: 72px;
     background: #ffffff;
-    margin: 0 10px;
+    margin: 10px 10px 0 10px;
   }
   .content-header{
     height: 72px;
@@ -349,7 +353,7 @@
   }
   .paginationStyle{
     text-align: right;
-    padding-top: 20px;
+    padding: 20px 5px;
     /deep/.el-pagination__total{
       font-size: 12px;
     };

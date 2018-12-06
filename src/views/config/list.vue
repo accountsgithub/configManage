@@ -41,7 +41,7 @@
           <template slot="title">
             <div @keyup.enter.stop="">
               <!--编辑路径-->
-              <span>{{item.name}}</span>
+              <span style="min-width: 400px;display:inline-block">{{item.name}}</span>
               <span v-if="item.profileType!='bootstrap'" class="path-label-style">{{$t('list.project_path')}}：</span>
               <span v-if="item.profileType!='bootstrap'" class="path-style">{{item.path}}</span>
               <!--<i class="icon iconfont icon-ic-edit edit-icon-style" @click="editPathMethod(item.id, item.path)" @click.stop=""></i>-->
@@ -210,8 +210,8 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onConfigPushMethod" class="dialogButtonB">{{$t('list.push')}}</el-button>
         <el-button @click="pushJsonDialogVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
+        <el-button type="primary" @click="onConfigPushMethod" class="dialogButtonB">{{$t('list.push')}}</el-button>
       </span>
     </el-dialog>
     <!--添加配置项dialog-->
@@ -219,7 +219,7 @@
       :title="configSaveForm.id==''?$t('list.add_config'):$t('list.edit_config')"
       :visible.sync="dialogEditVisible"
       @close="resetForm('configSaveForm')"
-      width="50%">
+      width="720px">
       <el-form :model="configSaveForm" :rules="saveFormRules" ref="configSaveForm" label-width="100px" class="dialogStyle">
         <el-form-item label="Key" prop="configKey">
           <el-input v-model="configSaveForm.configKey"  auto-complete="off" maxlength="253"></el-input>
@@ -235,15 +235,15 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('configSaveForm')" class="dialogButtonB">{{$t('common.modify_now')}}</el-button>
         <el-button @click="dialogEditVisible=false" class="dialogButtonW">{{$t('common.cancel')}}</el-button>
+        <el-button type="primary" @click="submitForm('configSaveForm')" class="dialogButtonB">{{$t('common.modify_now')}}</el-button>
       </span>
     </el-dialog>
     <!--添加文件弹框-->
     <el-dialog
       :title="saveConfigFile.id==''?$t('tags.add_file'):$t('list.editConfigFile_title')"
       :visible.sync="dialogAddVisible" @close="resetForm('saveConfigFile')"
-      width="60%">
+      width="720px">
       <el-form :model="saveConfigFile" :rules="addFormRulesTag" ref="saveConfigFile" label-width="100px" class="dialogStyle">
         <el-form-item :label="$t('tags.file_name')" prop="name">
           <el-input v-model="saveConfigFile.name" auto-complete="off" maxlength="4096"></el-input>
@@ -256,8 +256,8 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button class="dialogButtonB" type="primary" @click="submitFileForm('saveConfigFile')">{{$t('common.create_now')}}</el-button>
           <el-button class="dialogButtonW" @click="dialogAddVisible=false">{{$t('common.cancel')}}</el-button>
+          <el-button class="dialogButtonB" type="primary" @click="submitFileForm('saveConfigFile')">{{$t('common.create_now')}}</el-button>
       </span>
     </el-dialog>
     <!--导入配置-->
@@ -335,7 +335,7 @@
     <el-dialog
       :title="$t('tags.add_version')"
       :visible.sync="dialogAddVersionVisible" @close="resetForm('ruleAddVersionFormTag')"
-      width="60%">
+      width="720px">
       <el-form :model="ruleAddVersionFormTag" :rules="addVersionRulesTag" ref="ruleAddVersionFormTag" label-width="100px" class="dialogStyle">
         <el-form-item :label="$t('tags.select_version')" prop="version">
           <el-input v-model="ruleAddVersionFormTag.version" auto-complete="off" maxlength="4096"></el-input>
@@ -345,8 +345,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button class="dialogButtonB" type="primary" @click="submitVersionForm('ruleAddVersionFormTag')">{{$t('common.create_now')}}</el-button>
-          <el-button class="dialogButtonW" @click="dialogAddVersionVisible=false">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonW" @click="dialogAddVersionVisible=false">{{$t('common.cancel')}}</el-button>
+        <el-button class="dialogButtonB" type="primary" @click="submitVersionForm('ruleAddVersionFormTag')">{{$t('common.create_now')}}</el-button>
       </span>
     </el-dialog>
   </el-row>
@@ -1540,7 +1540,7 @@
   }
   // 主题区域div样式
   .content-div-style {
-    margin: 0 1.5%;
+    margin: 0 20px 0 30px;
     overflow-y: auto;
     /deep/ .el-tabs__content {
       margin-top: 0;
@@ -1601,13 +1601,13 @@
     letter-spacing: 0;
   }
   .tableLastButtonStyleB {
-    margin: 0 30px 0 0;
+    margin: 0 20px 0 0;
   }
   .tableLastButtonStyleW {
     margin: 0 10px 0 0;
   }
   .tableLastButtonStyleWLast {
-    margin: 0 30px 0 0;
+    margin: 0 20px 0 0;
   }
   // 发布icon样式
   .icon-ic-release:before {

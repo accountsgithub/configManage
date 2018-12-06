@@ -133,21 +133,22 @@ html {
     float: right;
   }
   /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover {
-    color: #409EFF;
-    border-color: #117AE6;
-    background-color: #ecf5ff;
+    background: #ECF5FF;
+    border: 1px solid #61ABFA;
+    border-radius: 4px;
+    color: #016AD5;
   }
   // 新增配置ions样式
   /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-new:before {
-    color: #409EFF;
+    color: #016AD5;
   }
   // 导入ions样式
   /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-import:before {
-    color: #409EFF;
+    color: #016AD5;
   }
   // 导出ions样式
   /deep/ .tableLastButtonStyleW .el-button:focus, .el-button:hover .icon-ic-export:before {
-    color: #409EFF;
+    color: #016AD5;
   }
   .tableLastButtonStyleB{
     font-family:PingFangSC-Semibold;
@@ -191,6 +192,7 @@ html {
   }
   /deep/.dialogButtonB{
     background:$publicColor;
+    border: solid 1px #117AE6;
     border-radius:4px;
     padding: 0 10px;
     height:32px;
@@ -211,11 +213,11 @@ html {
 
     //弹出框按键点击样式
     &.el-button--primary:hover {
-      background: $publicColor!important;
+      background: #117AE6!important;
     }
     //弹出框按键点击样式
     &.el-button--primary:focus {
-      background: $publicColor!important;
+      background: #117AE6!important;
     }
   }
 
