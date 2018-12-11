@@ -135,7 +135,7 @@
                     <el-input class="textDivStyle" :disabled="editButtonShow"
                               type="textarea"
                               :autosize="{ minRows: 14, maxRows: 14}"
-                              v-model="ruleTextAddForm.configValue" auto-complete="off" maxlength="4096">
+                              v-model="ruleTextAddForm.configValue" auto-complete="off" maxlength="10000">
                     </el-input>
                     <pre class="pre-display-style">{{configValuePre}}</pre>
                     <el-button v-if="editButtonShow" class="tableLastButtonStyleB" type="primary" @click="textEditMethod" style="margin-right: 0px;">{{$t('list.text_edit')}}</el-button>
