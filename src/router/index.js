@@ -1,11 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store'
+import { parse } from '@/utils/url'
+
+const projectMark = parse('projectMark')
+const authCode = parse('authCode')
 
 Vue.use(Router)
 
 export const constantRouterMap = [
   // 登陆
-  { path: '/login',
+  {
+    path: '/login',
     component: resolve => require(['@/views/selfLogin/index'], resolve),
     hidden: true
   },
@@ -15,13 +21,16 @@ export const constantRouterMap = [
     component: resolve => require(['@/views/layout/Layout'], resolve),
     name: 'homePage',
     hidden: true,
-    children: [{
-      path: '/homePage',
-      component: resolve => require(['@/views/config/content'], resolve)
-    }]
+    children: [
+      {
+        path: '/homePage',
+        component: resolve => require(['@/views/config/content'], resolve)
+      }
+    ]
   },
   // 404
-  { path: '/404',
+  {
+    path: '/404',
     component: resolve => require(['@/views/404'], resolve),
     hidden: true
   },
@@ -32,10 +41,12 @@ export const constantRouterMap = [
     redirect: '/login',
     name: 'login',
     hidden: true,
-    children: [{
-      path: '/login',
-      component: resolve => require(['@/views/selfLogin/index'], resolve)
-    }]
+    children: [
+      {
+        path: '/login',
+        component: resolve => require(['@/views/selfLogin/index'], resolve)
+      }
+    ]
   },
   // // 统一项目
   // {
@@ -78,12 +89,14 @@ export const constantRouterMap = [
     redirect: '/list',
     name: 'listPage',
     hidden: true,
-    children: [{
-      path: 'list/:id/:mark',
-      name: 'list',
-      component: resolve => require(['@/views/config/list.vue'], resolve),
-      meta: { title: 'listPage', icon: 'edit' }
-    }]
+    children: [
+      {
+        path: 'list/:id/:mark',
+        name: 'list',
+        component: resolve => require(['@/views/config/list.vue'], resolve),
+        meta: { title: 'listPage', icon: 'edit' }
+      }
+    ]
   },
   // 统一权限
   /* {
@@ -134,7 +147,29 @@ export const constantRouterMap = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-export default new Router({
+const router = new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+
+router.beforeEach((to, from, next) => {
+  // 项目标识及密码存在直接执行登录操作
+  if (projectMark && authCode) {
+    const path = location.href
+    store
+      .dispatch('getSelfLogin', {
+        username: projectMark,
+        password: authCode
+      })
+      .then(res => {
+        if (res) {
+          localStorage.setItem('username', projectMark)
+          location.href = path.split(location.search).join('')
+        }
+      })
+  } else {
+    next()
+  }
+})
+
+export default router
