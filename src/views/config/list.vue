@@ -225,7 +225,7 @@
           <el-input v-model="configSaveForm.configKey"  auto-complete="off" maxlength="253"></el-input>
         </el-form-item>
         <el-form-item label="Value" prop="configValue">
-          <el-input type="textarea" v-model="configSaveForm.configValue"  rows="5" maxlength="4096"></el-input>
+          <el-input type="textarea" v-model="configSaveForm.configValue"  rows="5" maxlength="10000"></el-input>
         </el-form-item>
         <el-form-item :label="$t('list.remarks')" prop="remark">
           <el-input type="textarea"
